@@ -1,9 +1,10 @@
 import 'package:audioplayers/audioplayers.dart';
 
 class SoundManager {
-  final AudioPlayer _player = AudioPlayer();
+  // final AudioPlayer player = AudioPlayer();
 
   Future<void> play(String assetPath) async {
-    await _player.play(AssetSource(assetPath));
+    final player = AudioPlayer();
+    await player.play(AssetSource(assetPath));
   }
 }
