@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:hanbae/presentation/home/home_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(Hanbae());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Hanbae extends StatelessWidget {
+  Hanbae({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return MaterialApp(
+      home: HomeScreen(),
+    );
   }
 }
