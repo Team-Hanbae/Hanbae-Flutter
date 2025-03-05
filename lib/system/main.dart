@@ -6,7 +6,7 @@ void main() {
 }
 
 class Hanbae extends StatelessWidget {
-  Hanbae({super.key});
+  const Hanbae({super.key});
 
   @override
   Widget build(BuildContext context) {
