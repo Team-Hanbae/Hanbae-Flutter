@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
         leading: SizedBox(
           width: 44,
           height: 44,
-          child: Image.asset("images/AppLogo.png"),
+          child: Image.asset("assets/images/AppLogo.png"),
         ),
       ),
       body: SingleChildScrollView(
@@ -75,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                                   width: 36,
                                   height: 36,
                                   child: SvgPicture.asset(
-                                    "images/logos/Jinyang.svg",
+                                    "assets/images/logos/Jinyang.svg",
                                   ),
                                 ),
                               ),
