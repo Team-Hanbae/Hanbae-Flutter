@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/data/sound_manager.dart';
+import 'package:hanbae/data/custom_jangdan_data.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -50,8 +51,9 @@ class HomeScreen extends StatelessWidget {
                     height: 84,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: 10,
+                      itemCount: customJangdanList.length,
                       itemBuilder: (context, index) {
+                        final item = customJangdanList[index];
                         return Container(
                           width: 156,
                           height: 84,
@@ -62,7 +64,7 @@ class HomeScreen extends StatelessWidget {
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [Text("흥부가 돈타령"), Text("중중모리")],
+                              children: [Text(item.title), Text(item.janganType)],
                             ),
                           ),
                         );
