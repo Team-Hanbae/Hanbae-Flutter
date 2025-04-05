@@ -30,55 +30,55 @@ class ColorPrimitives {
   static const Color blackBlack13 = Color(0xFF000000);
 }
 
-  class AppColors {
-  static Color backgroundDefault = ColorPrimitives.blackBlack13;
-  static Color backgroundCard = ColorPrimitives.blackBlack11;
-  static Color backgroundSheet = ColorPrimitives.blackBlack12;
-  static Color backgroundBackgroundNavigationbar = ColorPrimitives.blackBlack11;
-  static Color backgroundImageDefault = ColorPrimitives.blackBlack10;
-  static Color backgroundImageActive = ColorPrimitives.orangeOrange400;
+class AppColors {
+  static const Color backgroundDefault = ColorPrimitives.blackBlack13;
+  static const Color backgroundCard = ColorPrimitives.blackBlack11;
+  static const Color backgroundSheet = ColorPrimitives.blackBlack12;
+  static const Color backgroundBackgroundNavigationbar = ColorPrimitives.blackBlack11;
+  static const Color backgroundImageDefault = ColorPrimitives.blackBlack10;
+  static const Color backgroundImageActive = ColorPrimitives.orangeOrange400;
 
-  static Color buttonPrimary = ColorPrimitives.blackBlack8;
-  static Color buttonBpmControlDefault = ColorPrimitives.blackBlack10;
-  static Color buttonBpmControlActive = ColorPrimitives.blackBlack8;
-  static Color buttonToggleOff = ColorPrimitives.blackBlack9;
-  static Color buttonToggleOn = ColorPrimitives.orangeOrange600;
-  static Color buttonToggleKnobInactive = ColorPrimitives.blackBlack8;
-  static Color buttonPlaystart = ColorPrimitives.blackBlack1;
-  static Color buttonPlaystop = ColorPrimitives.blackBlack8;
-  static Color buttonActive = ColorPrimitives.orangeOrange500;
-  static Color buttonReverse = ColorPrimitives.blackBlack1;
-  static Color buttonCancel = ColorPrimitives.blackBlack8;
+  static const Color buttonPrimary = ColorPrimitives.blackBlack8;
+  static const Color buttonBpmControlDefault = ColorPrimitives.blackBlack10;
+  static const Color buttonBpmControlActive = ColorPrimitives.blackBlack8;
+  static const Color buttonToggleOff = ColorPrimitives.blackBlack9;
+  static const Color buttonToggleOn = ColorPrimitives.orangeOrange600;
+  static const Color buttonToggleKnobInactive = ColorPrimitives.blackBlack8;
+  static const Color buttonPlaystart = ColorPrimitives.blackBlack1;
+  static const Color buttonPlaystop = ColorPrimitives.blackBlack8;
+  static const Color buttonActive = ColorPrimitives.orangeOrange500;
+  static const Color buttonReverse = ColorPrimitives.blackBlack1;
+  static const Color buttonCancel = ColorPrimitives.blackBlack8;
 
-  static Color bakBarActiveTop = ColorPrimitives.gradientTop;
-  static Color bakBarActiveBottom = ColorPrimitives.gradientBottom;
-  static Color bakBarInactive = ColorPrimitives.blackBlack9;
-  static Color bakBarLine = ColorPrimitives.blackBlack13;
-  static Color bakBarBorder = ColorPrimitives.blackBlack8;
-  static Color frame = ColorPrimitives.blackBlack11;
-  static Color bakBarNumberBlack = ColorPrimitives.blackBlack11;
-  static Color bakBarNumberWhite = ColorPrimitives.blackBlack1;
-  static Color bakBarNumberGray = ColorPrimitives.blackBlack9;
-  static Color bub = ColorPrimitives.blackBlack3;
-  static Color sobakSegmentDaebak = ColorPrimitives.orangeOrange500;
-  static Color sobakSegmentSobak = ColorPrimitives.orangeOrange300;
-  static Color bakBarIndicator = ColorPrimitives.orangeOrange500;
-  static Color bakBarDivider = ColorPrimitives.blackBlack8;
+  static const Color bakBarActiveTop = ColorPrimitives.gradientTop;
+  static const Color bakBarActiveBottom = ColorPrimitives.gradientBottom;
+  static const Color bakBarInactive = ColorPrimitives.blackBlack9;
+  static const Color bakBarLine = ColorPrimitives.blackBlack13;
+  static const Color bakBarBorder = ColorPrimitives.blackBlack8;
+  static const Color frame = ColorPrimitives.blackBlack11;
+  static const Color bakBarNumberBlack = ColorPrimitives.blackBlack11;
+  static const Color bakBarNumberWhite = ColorPrimitives.blackBlack1;
+  static const Color bakBarNumberGray = ColorPrimitives.blackBlack9;
+  static const Color bub = ColorPrimitives.blackBlack3;
+  static const Color sobakSegmentDaebak = ColorPrimitives.orangeOrange500;
+  static const Color sobakSegmentSobak = ColorPrimitives.orangeOrange300;
+  static const Color bakBarIndicator = ColorPrimitives.orangeOrange500;
+  static const Color bakBarDivider = ColorPrimitives.blackBlack8;
 
-  static Color textDefault = ColorPrimitives.blackBlack1;
-  static Color textSecondary = ColorPrimitives.blackBlack3;
-  static Color textTertiary = ColorPrimitives.blackBlack6;
-  static Color textQuaternary = ColorPrimitives.blackBlack7;
-  static Color textBPMDefault = ColorPrimitives.blackBlack4;
-  static Color textButtonPrimary = ColorPrimitives.blackBlack1;
-  static Color textButtonSecondary = ColorPrimitives.blackBlack2;
-  static Color textButtonCancel = ColorPrimitives.blackBlack6;
-  static Color textButtonEmphasis = ColorPrimitives.blackBlack11;
-  static Color textBPMSearch = ColorPrimitives.orangeOrange600;
+  static const Color textDefault = ColorPrimitives.blackBlack1;
+  static const Color textSecondary = ColorPrimitives.blackBlack3;
+  static const Color textTertiary = ColorPrimitives.blackBlack6;
+  static const Color textQuaternary = ColorPrimitives.blackBlack7;
+  static const Color textBPMDefault = ColorPrimitives.blackBlack4;
+  static const Color textButtonPrimary = ColorPrimitives.blackBlack1;
+  static const Color textButtonSecondary = ColorPrimitives.blackBlack2;
+  static const Color textButtonCancel = ColorPrimitives.blackBlack6;
+  static const Color textButtonEmphasis = ColorPrimitives.blackBlack11;
+  static const Color textBPMSearch = ColorPrimitives.orangeOrange600;
 
-  static Color progressPercentage = ColorPrimitives.orangeOrange500;
-  static Color progressFrame = ColorPrimitives.blackBlack8;
-  static Color blink = ColorPrimitives.etcBlink;
-  static Color jangdanLogoBackground = ColorPrimitives.orangeOrange1300;
-  static Color jangdanLogoPrimary = ColorPrimitives.orangeOrange700;
-  }
+  static const Color progressPercentage = ColorPrimitives.orangeOrange500;
+  static const Color progressFrame = ColorPrimitives.blackBlack8;
+  static const Color blink = ColorPrimitives.etcBlink;
+  static const Color jangdanLogoBackground = ColorPrimitives.orangeOrange1300;
+  static const Color jangdanLogoPrimary = ColorPrimitives.orangeOrange700;
+}
