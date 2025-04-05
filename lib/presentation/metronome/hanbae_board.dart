@@ -72,6 +72,11 @@ class Bakbar extends StatelessWidget {
       child: Stack(
         alignment: Alignment.bottomCenter, // 주황 박스를 아래 정렬
         children: [
+          CustomPaint(
+            size: Size.infinite,
+            painter: AccentDividerPainter(),
+          ),
+
           // 주황 박스
           Align(
             alignment: Alignment.bottomCenter,
@@ -97,4 +102,33 @@ class Bakbar extends StatelessWidget {
       ),
     );
   }
+}
+
+class AccentDividerPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.black.withOpacity(0.3)
+      ..strokeWidth = 1
+      ..style = PaintingStyle.stroke;
+
+    const double dashWidth = 4;
+    const double dashSpace = 2;
+
+    // 1/3, 2/3 높이에 점선 그리기
+    for (var y in [size.height / 3, size.height * 2 / 3]) {
+      double startX = 0;
+      while (startX < size.width) {
+        canvas.drawLine(
+          Offset(startX, y),
+          Offset(startX + dashWidth, y),
+          paint,
+        );
+        startX += dashWidth + dashSpace;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
