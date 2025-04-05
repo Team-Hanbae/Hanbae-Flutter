@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/presentation/home/home_screen.dart';
+import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 
 void main() {
   runApp(Hanbae());
@@ -12,7 +14,7 @@ class Hanbae extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: HomeScreen(),
+      home: MetronomeScreen(jangdan: jinyang,),
     );
   }
 }

@@ -1,20 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'accent.dart';
-
-// struct JangdanEntity {
-//     var name: String
-//     var createdAt: Date?
-//     var bakCount: Int
-//     var daebak: Int
-//     var bpm: Int
-//     var daebakList: [[Daebak]]
-//     var jangdanType: Jangdan  // 부모 장단 타입
-//     var instrument: Instrument  // 악기 타입
-    
-//     struct Daebak {
-//         var bakAccentList: [Accent]
-//     }
-// }
 
 class Jangdan extends Equatable {
   final String name;
@@ -34,3 +20,44 @@ class Jangdan extends Equatable {
   @override
   List<Object> get props => [name, bpm, jangdanType];
 }
+
+const Jangdan jinyang = Jangdan(
+  name: "진양",
+  createdAt: "2024.03.08",
+  bpm: 30,
+  jangdanType: "진양",
+  accents: [
+    [
+      [Accent.strong, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.medium, Accent.none, Accent.none],
+      [Accent.medium, Accent.none, Accent.none],
+    ],
+    [
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.medium, Accent.none, Accent.none],
+      [Accent.medium, Accent.none, Accent.none],
+    ],
+    [
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.medium, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+    ],
+    [
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+      [Accent.medium, Accent.none, Accent.none],
+      [Accent.weak, Accent.none, Accent.none],
+    ],
+  ]
+);
