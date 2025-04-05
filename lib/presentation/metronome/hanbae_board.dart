@@ -33,13 +33,39 @@ class BakbarSet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children:
-          daebak.where((accent) => accent != Accent.none).map((accent) {
-            return Expanded(
-              child: Bakbar(accent: accent, bakNumber: accent.name),
-            );
-          }).toList(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: Container(
+              color: Colors.transparent,
+              child: Row(
+                children: daebak
+                    .where((accent) => accent != Accent.none)
+                    .map((accent) => Expanded(
+                          child: Bakbar(
+                            accent: accent,
+                            bakNumber: accent.name,
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -65,17 +91,11 @@ class Bakbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey,
-        border: Border.all(color: Colors.white, width: 1),
-      ),
+      decoration: BoxDecoration(color: Colors.grey),
       child: Stack(
         alignment: Alignment.bottomCenter, // 주황 박스를 아래 정렬
         children: [
-          CustomPaint(
-            size: Size.infinite,
-            painter: AccentDividerPainter(),
-          ),
+          CustomPaint(size: Size.infinite, painter: AccentDividerPainter()),
 
           // 주황 박스
           Align(
@@ -89,7 +109,7 @@ class Bakbar extends StatelessWidget {
 
           // 상단 숫자
           Positioned(
-            top: 4,
+            top: 20,
             left: 0,
             right: 0,
             child: Text(
@@ -107,21 +127,24 @@ class Bakbar extends StatelessWidget {
 class AccentDividerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.black.withOpacity(0.3)
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke;
+    final paint =
+        Paint()
+          ..color = Colors.black.withAlpha((255 * 0.3).toInt())
+          ..strokeWidth = 1
+          ..style = PaintingStyle.stroke;
 
-    const double dashWidth = 4;
+    const double dashWidth = 2;
     const double dashSpace = 2;
+    const double inset = 1.0;
 
     // 1/3, 2/3 높이에 점선 그리기
     for (var y in [size.height / 3, size.height * 2 / 3]) {
-      double startX = 0;
-      while (startX < size.width) {
+      final adjustedY = y.clamp(inset, size.height - inset);
+      double startX = inset;
+      while (startX < size.width - inset) {
         canvas.drawLine(
-          Offset(startX, y),
-          Offset(startX + dashWidth, y),
+          Offset(startX, adjustedY),
+          Offset(startX + dashWidth, adjustedY),
           paint,
         );
         startX += dashWidth + dashSpace;

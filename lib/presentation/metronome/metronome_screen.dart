@@ -12,6 +12,7 @@ class MetronomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 44.0,
         leading: IconButton(onPressed: () {}, icon: Icon(Icons.chevron_left)),
         title: Text(jangdan.name),
         centerTitle: true,
@@ -19,18 +20,23 @@ class MetronomeScreen extends StatelessWidget {
           IconButton(onPressed: () {}, icon: Icon(Icons.replay)),
           PopupMenuButton(
             icon: Icon(Icons.upload),
-            itemBuilder:
-                (context) => <PopupMenuEntry>[
-                  PopupMenuItem(child: Text("popupMenu1")),
-                  PopupMenuItem(child: Text("popupMenu2")),
-                  PopupMenuItem(child: Text("popupMenu3")),
-                ],
+            itemBuilder: (context) => <PopupMenuEntry>[
+              PopupMenuItem(child: Text("popupMenu1")),
+              PopupMenuItem(child: Text("popupMenu2")),
+              PopupMenuItem(child: Text("popupMenu3")),
+            ],
           ),
         ],
       ),
       body: Column(
         children: [
-          HanbaeBoard(),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8.0,
+              vertical: 36.0,
+            ),
+            child: HanbaeBoard(),
+          ),
           MetronomeSettingControl(),
           MetronomeControl(),
         ],
