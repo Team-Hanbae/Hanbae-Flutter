@@ -38,6 +38,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
+                          color: AppColors.textDefault
                         ),
                       ),
                       TextButton(
@@ -161,6 +162,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
+                          color: AppColors.textDefault
                         ),
                       ),
                     ],
@@ -225,11 +227,13 @@ class HomeScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       item.name,
-                                      style: TextStyle(fontSize: 20),
+                                      style: TextStyle(fontSize: 20,
+                                      color: AppColors.textDefault),
                                     ),
                                     Text(
                                       item.bakType,
-                                      style: TextStyle(fontSize: 15),
+                                      style: TextStyle(fontSize: 15,
+                                      color: AppColors.textQuaternary),
                                     ),
                                   ],
                                 ),
@@ -247,6 +251,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            
+            SizedBox(height: 80,)
             ],
           ),
         ),
