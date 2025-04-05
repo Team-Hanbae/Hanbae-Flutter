@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/presentation/home/home_screen.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
+import 'package:hanbae/theme/colors.dart';
 
 void main() {
   runApp(Hanbae());
@@ -13,8 +14,13 @@ class Hanbae extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark(),
-      home: MetronomeScreen(jangdan: jinyang,),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark().copyWith(
+        // ThemeData.dark()를 유지하면서
+        scaffoldBackgroundColor:
+            AppColors.backgroundDefault, // scaffold 배경색을 오버라이드
+      ),
+      home: HomeScreen(),
     );
   }
 }
