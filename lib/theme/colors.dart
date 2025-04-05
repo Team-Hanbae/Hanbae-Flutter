@@ -34,7 +34,7 @@ class AppColors {
   static const Color backgroundDefault = ColorPrimitives.blackBlack13;
   static const Color backgroundCard = ColorPrimitives.blackBlack11;
   static const Color backgroundSheet = ColorPrimitives.blackBlack12;
-  static const Color backgroundBackgroundNavigationbar = ColorPrimitives.blackBlack11;
+  static const Color backgroundNavigationbar = ColorPrimitives.blackBlack11;
   static const Color backgroundImageDefault = ColorPrimitives.blackBlack10;
   static const Color backgroundImageActive = ColorPrimitives.orangeOrange400;
 
