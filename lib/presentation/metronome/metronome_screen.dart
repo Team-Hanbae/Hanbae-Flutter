@@ -37,7 +37,12 @@ class MetronomeScreen extends StatelessWidget {
             ),
             child: HanbaeBoard(),
           ),
-          MetronomeSettingControl(),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+            ),
+            child: MetronomeSettingControl(),
+          ),
           MetronomeControl(),
         ],
       ),
