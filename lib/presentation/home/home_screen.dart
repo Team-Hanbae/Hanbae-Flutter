@@ -4,6 +4,7 @@ import 'package:hanbae/data/sound_manager.dart';
 import 'package:hanbae/data/custom_jangdan_data.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/theme/colors.dart';
+import 'package:hanbae/theme/TextStyles.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -35,10 +36,8 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       Text(
                         "내가 저장한 장단",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textDefault
+                        style: AppTextStyles.title2B.copyWith(
+                          color: AppColors.textDefault,
                         ),
                       ),
                       TextButton(
@@ -46,10 +45,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextButton.styleFrom(minimumSize: Size(0, 40)),
                         child: Text(
                           "더보기",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: AppColors.textTertiary,
-                          ),
+                          style: AppTextStyles.calloutR.copyWith(color: AppColors.textTertiary),
                         ),
                       ),
                     ],
@@ -162,7 +158,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textDefault
+                          color: AppColors.textDefault,
                         ),
                       ),
                     ],
@@ -227,13 +223,17 @@ class HomeScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       item.name,
-                                      style: TextStyle(fontSize: 20,
-                                      color: AppColors.textDefault),
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: AppColors.textDefault,
+                                      ),
                                     ),
                                     Text(
                                       item.bakType,
-                                      style: TextStyle(fontSize: 15,
-                                      color: AppColors.textQuaternary),
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: AppColors.textQuaternary,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -251,8 +251,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            
-            SizedBox(height: 80,)
+
+              SizedBox(height: 80),
             ],
           ),
         ),
