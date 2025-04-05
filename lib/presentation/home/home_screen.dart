@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/data/sound_manager.dart';
 import 'package:hanbae/data/custom_jangdan_data.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
+import 'package:hanbae/theme/colors.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -37,12 +38,19 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
+                          color: AppColors.textDefault
                         ),
                       ),
                       TextButton(
                         onPressed: () {},
                         style: TextButton.styleFrom(minimumSize: Size(0, 40)),
-                        child: Text("더보기", style: TextStyle(fontSize: 16)),
+                        child: Text(
+                          "더보기",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textTertiary,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -56,7 +64,7 @@ class HomeScreen extends StatelessWidget {
                             ? Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                color: Colors.black,
+                                color: AppColors.backgroundSheet,
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(16),
                                 ),
@@ -66,7 +74,7 @@ class HomeScreen extends StatelessWidget {
                                   "저장한 장단이 없어요",
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.grey,
+                                    color: AppColors.textQuaternary,
                                   ),
                                 ),
                               ),
@@ -87,7 +95,7 @@ class HomeScreen extends StatelessWidget {
                                     width: 156,
                                     height: 84,
                                     decoration: BoxDecoration(
-                                      color: Colors.black,
+                                      color: AppColors.backgroundSheet,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(16),
                                       ),
@@ -97,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                                         "더보기",
                                         style: TextStyle(
                                           fontSize: 17,
-                                          color: Colors.white,
+                                          color: AppColors.textTertiary,
                                         ),
                                       ),
                                     ),
@@ -108,7 +116,7 @@ class HomeScreen extends StatelessWidget {
                                     width: 156,
                                     height: 84,
                                     decoration: BoxDecoration(
-                                      color: Colors.black,
+                                      color: AppColors.backgroundSheet,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(16),
                                       ),
@@ -122,14 +130,14 @@ class HomeScreen extends StatelessWidget {
                                             item.title,
                                             style: TextStyle(
                                               fontSize: 17,
-                                              color: Colors.white,
+                                              color: AppColors.textDefault,
                                             ),
                                           ),
                                           Text(
                                             item.janganType,
                                             style: TextStyle(
                                               fontSize: 15,
-                                              color: Colors.white,
+                                              color: AppColors.textTertiary,
                                             ),
                                           ),
                                         ],
@@ -154,6 +162,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
+                          color: AppColors.textDefault
                         ),
                       ),
                     ],
@@ -176,7 +185,7 @@ class HomeScreen extends StatelessWidget {
                           vertical: 10,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.black,
+                          color: AppColors.backgroundSheet,
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),
                         child: Row(
@@ -186,7 +195,7 @@ class HomeScreen extends StatelessWidget {
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.yellow,
+                                    color: AppColors.jangdanLogoBackground,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(10),
                                     ),
@@ -201,6 +210,10 @@ class HomeScreen extends StatelessWidget {
                                         height: 36,
                                         child: SvgPicture.asset(
                                           "assets/images/logos/Jinyang.svg",
+                                          colorFilter: ColorFilter.mode(
+                                            AppColors.jangdanLogoPrimary,
+                                            BlendMode.srcIn,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -214,17 +227,23 @@ class HomeScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       item.name,
-                                      style: TextStyle(fontSize: 20),
+                                      style: TextStyle(fontSize: 20,
+                                      color: AppColors.textDefault),
                                     ),
                                     Text(
                                       item.bakType,
-                                      style: TextStyle(fontSize: 15),
+                                      style: TextStyle(fontSize: 15,
+                                      color: AppColors.textQuaternary),
                                     ),
                                   ],
                                 ),
                               ],
                             ),
-                            Icon(Icons.chevron_right_rounded),
+                            Icon(
+                              Icons.chevron_right_rounded,
+                              size: 32,
+                              color: AppColors.textTertiary,
+                            ),
                           ],
                         ),
                       );
@@ -232,6 +251,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            
+            SizedBox(height: 80,)
             ],
           ),
         ),
