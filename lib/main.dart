@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/presentation/home/home_screen.dart';
+import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 
 void main() {
