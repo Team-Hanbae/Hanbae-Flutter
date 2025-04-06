@@ -69,6 +69,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/logos/
+    - assets/images/banner/
     - assets/sounds/beep_weak.wav
     - assets/sounds/beep_medium.wav
     - assets/sounds/beep_strong.wav
