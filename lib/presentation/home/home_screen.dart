@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hanbae/data/sound_manager.dart';
 import 'package:hanbae/data/custom_jangdan_data.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/theme/colors.dart';
-import 'package:hanbae/theme/TextStyles.dart';
+import 'package:hanbae/theme/text_styles.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
-  final _soundManager = SoundManager();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +26,7 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              Image.asset("assets/images/banner/SurveyBannerTest.png"),
+              Image.asset("assets/images/banner/SurveyBanner.png"),
               Column(
                 children: [
                   Row(
