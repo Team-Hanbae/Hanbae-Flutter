@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/data/custom_jangdan_data.dart';
+import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
 import '../../model/jangdan_type.dart';
@@ -43,7 +47,9 @@ class HomeScreen extends StatelessWidget {
                         style: TextButton.styleFrom(minimumSize: Size(0, 40)),
                         child: Text(
                           "더보기",
-                          style: AppTextStyles.calloutR.copyWith(color: AppColors.textTertiary),
+                          style: AppTextStyles.calloutR.copyWith(
+                            color: AppColors.textTertiary,
+                          ),
                         ),
                       ),
                     ],
@@ -172,76 +178,89 @@ class HomeScreen extends StatelessWidget {
                     separatorBuilder: (context, index) => SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       final jangdan = JangdanType.values[index];
-                      return Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.backgroundSheet,
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.jangdanLogoBackground,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(10),
+                      final selectedJangdan = basicJangdanData[jangdan.name]!;
+                      return InkWell(
+                        onTap: () {
+                          context.read<MetronomeBloc>().add(SelectJangdan(selectedJangdan));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MetronomeScreen(jangdan: basicJangdanData[jangdan.name]!),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.backgroundSheet,
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.jangdanLogoBackground,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
                                     ),
-                                  ),
-                                  child: SizedBox(
-                                    width: 64,
-                                    height: 64,
-                                    child: Center(
-                                      child: SizedBox(
-                                        width: 36,
-                                        height: 36,
-                                        child: SvgPicture.asset(
-                                          "assets/${jangdan.logoAssetPath}",
-                                          colorFilter: ColorFilter.mode(
-                                            AppColors.jangdanLogoPrimary,
-                                            BlendMode.srcIn,
+                                    child: SizedBox(
+                                      width: 64,
+                                      height: 64,
+                                      child: Center(
+                                        child: SizedBox(
+                                          width: 36,
+                                          height: 36,
+                                          child: SvgPicture.asset(
+                                            "assets/${jangdan.logoAssetPath}",
+                                            colorFilter: ColorFilter.mode(
+                                              AppColors.jangdanLogoPrimary,
+                                              BlendMode.srcIn,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
 
-                                SizedBox(width: 20),
+                                  SizedBox(width: 20),
 
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      jangdan.name,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: AppColors.textDefault,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        jangdan.name,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: AppColors.textDefault,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      jangdan.bakInformation,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: AppColors.textQuaternary,
+                                      Text(
+                                        jangdan.bakInformation,
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: AppColors.textQuaternary,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Icon(
-                              Icons.chevron_right_rounded,
-                              size: 32,
-                              color: AppColors.textTertiary,
-                            ),
-                          ],
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Icon(
+                                Icons.chevron_right_rounded,
+                                size: 32,
+                                color: AppColors.textTertiary,
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },

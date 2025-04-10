@@ -15,7 +15,12 @@ class MetronomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 44.0,
-        leading: IconButton(onPressed: () {}, icon: Icon(Icons.chevron_left)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context); // This will pop the current screen off the navigation stack
+          },
+          icon: Icon(Icons.chevron_left),
+        ),
         title: Text(jangdan.name),
         centerTitle: true,
         actions: [
