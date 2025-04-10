@@ -195,8 +195,9 @@ class Bakbar extends StatelessWidget {
                 bakNumber,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
+                  color: AppColors.textDefault,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
