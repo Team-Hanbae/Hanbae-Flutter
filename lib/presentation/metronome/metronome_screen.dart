@@ -32,16 +32,10 @@ class MetronomeScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8.0,
-              vertical: 36.0,
-            ),
-            child: BlocBuilder<MetronomeBloc, MetronomeState>(
-              builder: (context, state) {
-                return HanbaeBoard(jangdan: state.selectedJangdan);
-              },
-            ),
+          BlocBuilder<MetronomeBloc, MetronomeState>(
+            builder: (context, state) {
+              return HanbaeBoard(jangdan: state.selectedJangdan);
+            },
           ),
           Padding(
             padding: const EdgeInsets.symmetric(

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:hanbae/model/jangdan.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc package
+import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/theme/colors.dart'; // Import the MetronomeBloc
 
 class HanbaeBoard extends StatelessWidget {
   const HanbaeBoard({super.key, required this.jangdan});
@@ -11,26 +14,33 @@ class HanbaeBoard extends StatelessWidget {
     return SizedBox(
       height: 372,
       child: Column(
-        children:
-            jangdan.accents.asMap().entries.map((rowEntry) {
-              final rowIndex = rowEntry.key;
-              final row = rowEntry.value;
-              return Expanded(
+        children: [
+          const SizedBox(height: 36.0),
+          ...jangdan.accents.asMap().entries.map((rowEntry) {
+            final rowIndex = rowEntry.key;
+            final row = rowEntry.value;
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(
-                  children: row.asMap().entries.map((colEntry) {
-                    final colIndex = colEntry.key;
-                    final daebak = colEntry.value;
-                    return Expanded(
-                      child: BakbarSet(
-                        daebak: daebak,
-                        rowIndex: rowIndex,
-                        colIndexBase: colIndex,
-                      ),
-                    );
-                  }).toList(),
+                  children:
+                      row.asMap().entries.map((colEntry) {
+                        final barIndex = colEntry.key;
+                        final daebak = colEntry.value;
+                        return Expanded(
+                          child: BakbarSet(
+                            daebak: daebak,
+                            rowIndex: rowIndex,
+                            barIndex: barIndex,
+                          ),
+                        );
+                      }).toList(),
                 ),
-              );
-            }).toList(),
+              ),
+            );
+          }).toList(),
+          const SizedBox(height: 36.0),
+        ],
       ),
     );
   }
@@ -41,15 +51,48 @@ class BakbarSet extends StatelessWidget {
     super.key,
     required this.daebak,
     required this.rowIndex,
-    required this.colIndexBase,
+    required this.barIndex,
   });
 
   final List<Accent> daebak;
   final int rowIndex;
-  final int colIndexBase;
+  final int barIndex;
 
   @override
   Widget build(BuildContext context) {
+    final isSobakOn = context.select(
+      (MetronomeBloc bloc) => bloc.state.isSobakOn,
+    );
+
+    final accentWidgets =
+        isSobakOn
+            ? daebak
+                .asMap()
+                .entries
+                .map(
+                  (entry) => Expanded(
+                    child: Bakbar(
+                      accent: entry.value,
+                      bakNumber: entry.value.name,
+                      rowIndex: rowIndex,
+                      barIndex: barIndex,
+                      accentIndex: entry.key,
+                    ),
+                  ),
+                )
+                .toList()
+            : [
+              Expanded(
+                child: Bakbar(
+                  accent: daebak.first,
+                  bakNumber: daebak.first.name,
+                  rowIndex: rowIndex,
+                  barIndex: barIndex,
+                  accentIndex: 0,
+                ),
+              ),
+            ];
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
       child: Stack(
@@ -58,26 +101,14 @@ class BakbarSet extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: Container(
               color: Colors.transparent,
-              child: Row(
-                children: daebak.asMap().entries
-                    .where((entry) => entry.value != Accent.none)
-                    .map((entry) => Expanded(
-                          child: Bakbar(
-                            accent: entry.value,
-                            bakNumber: entry.value.name,
-                            rowIndex: rowIndex,
-                            colIndex: colIndexBase + entry.key,
-                          ),
-                        ))
-                    .toList(),
-              ),
+              child: Row(children: accentWidgets),
             ),
           ),
           Positioned.fill(
             child: IgnorePointer(
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 1),
+                  border: Border.all(color: AppColors.bakBarDivider, width: 1),
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -95,13 +126,15 @@ class Bakbar extends StatelessWidget {
     required this.accent,
     required this.bakNumber,
     required this.rowIndex,
-    required this.colIndex,
+    required this.barIndex,
+    required this.accentIndex,
   });
 
   final Accent accent;
   final String bakNumber;
   final int rowIndex;
-  final int colIndex;
+  final int barIndex;
+  final int accentIndex;
 
   double get fillFraction {
     switch (accent) {
@@ -120,10 +153,16 @@ class Bakbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        debugPrint('Tapped Bakbar at row $rowIndex, col $colIndex');
+        context.read<MetronomeBloc>().add(
+          ToggleAccent(
+            rowIndex: rowIndex,
+            barIndex: barIndex,
+            accentIndex: accentIndex,
+          ),
+        );
       },
       child: Container(
-        decoration: BoxDecoration(color: Colors.grey),
+        decoration: BoxDecoration(color: AppColors.frame),
         child: Stack(
           alignment: Alignment.bottomCenter, // 주황 박스를 아래 정렬
           children: [
@@ -135,7 +174,15 @@ class Bakbar extends StatelessWidget {
               child: FractionallySizedBox(
                 heightFactor: fillFraction,
                 widthFactor: 1.0,
-                child: Container(color: Colors.orange),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [AppColors.bakBarActiveTop, AppColors.bakBarActiveBottom],
+                    ),
+                  ),
+                ),
               ),
             ),
 
@@ -147,7 +194,10 @@ class Bakbar extends StatelessWidget {
               child: Text(
                 bakNumber,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -162,7 +212,7 @@ class AccentDividerPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = Colors.black.withAlpha((255 * 0.3).toInt())
+          ..color = AppColors.bakBarDivider
           ..strokeWidth = 1
           ..style = PaintingStyle.stroke;
 

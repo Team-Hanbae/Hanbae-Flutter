@@ -16,8 +16,24 @@ class Jangdan extends Equatable {
     required this.accents
   });
 
+  Jangdan copyWith({
+    String? name,
+    String? jangdanType,
+    String? createdAt,
+    int? bpm,
+    List<List<List<Accent>>>? accents,
+  }) {
+    return Jangdan(
+      name: name ?? this.name,
+      jangdanType: jangdanType ?? this.jangdanType,
+      createdAt: createdAt ?? this.createdAt,
+      bpm: bpm ?? this.bpm,
+      accents: accents ?? this.accents,
+    );
+  }
+
   @override
-  List<Object> get props => [name, bpm, jangdanType];
+  List<Object> get props => [name, jangdanType, createdAt, bpm, accents];
 }
 
 const Jangdan jinyang = Jangdan(
