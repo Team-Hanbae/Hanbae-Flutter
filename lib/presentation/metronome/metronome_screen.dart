@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/presentation/metronome/hanbae_board.dart';
 import 'package:hanbae/presentation/metronome/metronome_control.dart';
 import 'package:hanbae/presentation/metronome/metronome_setting_control.dart';
+import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 
 class MetronomeScreen extends StatelessWidget {
   const MetronomeScreen({super.key, required this.jangdan});
@@ -35,7 +37,11 @@ class MetronomeScreen extends StatelessWidget {
               horizontal: 8.0,
               vertical: 36.0,
             ),
-            child: HanbaeBoard(),
+            child: BlocBuilder<MetronomeBloc, MetronomeState>(
+              builder: (context, state) {
+                return HanbaeBoard(jangdan: state.selectedJangdan);
+              },
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
