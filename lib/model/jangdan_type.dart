@@ -6,7 +6,7 @@ enum JangdanType {
   gutgeori,
   hwimori,
   dongsalpuri,
-  eotmori,
+  eonmori,
   eotjungmori,
   semachi,
   ginyeombul,
@@ -23,7 +23,7 @@ extension JangdanTypeExtension on JangdanType {
       case JangdanType.gutgeori: return "굿거리";
       case JangdanType.hwimori: return "휘모리";
       case JangdanType.dongsalpuri: return "동살풀이";
-      case JangdanType.eotmori: return "엇모리";
+      case JangdanType.eonmori: return "엇모리";
       case JangdanType.eotjungmori: return "엇중모리";
       case JangdanType.semachi: return "세마치";
       case JangdanType.ginyeombul: return "긴염불";
@@ -40,7 +40,7 @@ extension JangdanTypeExtension on JangdanType {
       case JangdanType.gutgeori: return "images/logos/Gutgeori.svg";
       case JangdanType.hwimori: return "images/logos/Hwimori.svg";
       case JangdanType.dongsalpuri: return "images/logos/Dongsalpuri.svg";
-      case JangdanType.eotmori: return "images/logos/Eonmori.svg";
+      case JangdanType.eonmori: return "images/logos/Eonmori.svg";
       case JangdanType.eotjungmori: return "images/logos/Eotjungmori.svg";
       case JangdanType.semachi: return "images/logos/Semachi.svg";
       case JangdanType.ginyeombul: return "images/logos/Ginyeombul.svg";
@@ -66,7 +66,7 @@ extension JangdanTypeExtension on JangdanType {
       case JangdanType.gutgeori: return "4박 3소박";
       case JangdanType.hwimori: return "4박 2소박";
       case JangdanType.dongsalpuri: return "4박 2소박";
-      case JangdanType.eotmori: return "4박 3+2소박";
+      case JangdanType.eonmori: return "4박 3+2소박";
       case JangdanType.eotjungmori: return "6박 2소박";
       case JangdanType.semachi: return "3박 3소박";
       case JangdanType.ginyeombul: return "6박 3소박";

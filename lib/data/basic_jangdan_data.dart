@@ -140,7 +140,7 @@ const List<Jangdan> basicJangdanList = [
   Jangdan(
     name: "엇모리",
     createdAt: "2024.01.01",
-    jangdanType: JangdanType.eotmori,
+    jangdanType: JangdanType.eonmori,
     bpm: 95,
     accents: [
       [
