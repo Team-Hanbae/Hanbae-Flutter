@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hanbae/model/accent.dart';
 import '../../model/jangdan.dart';
+import '../../data/basic_jangdan_data.dart';
 
 part 'metronome_event.dart';
 part 'metronome_state.dart';
@@ -10,10 +11,10 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
   MetronomeBloc()
     : super(
         MetronomeState(
-          selectedJangdan: jinyang,
+          selectedJangdan: basicJangdanData["진양"]!,
           isPlaying: false,
           isSobakOn: false,
-          bpm: jinyang.bpm,
+          bpm: basicJangdanData["진양"]!.bpm,
         ),
       ) {
     on<SelectJangdan>((event, emit) {

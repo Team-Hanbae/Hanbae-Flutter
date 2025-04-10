@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/data/custom_jangdan_data.dart';
-import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
+import '../../model/jangdan_type.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -168,10 +168,10 @@ class HomeScreen extends StatelessWidget {
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     scrollDirection: Axis.vertical,
-                    itemCount: basicJangdanList.length,
+                    itemCount: JangdanType.values.length,
                     separatorBuilder: (context, index) => SizedBox(height: 8),
-                    itemBuilder: (content, index) {
-                      final item = basicJangdanList[index];
+                    itemBuilder: (context, index) {
+                      final jangdan = JangdanType.values[index];
                       return Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
@@ -197,13 +197,12 @@ class HomeScreen extends StatelessWidget {
                                   child: SizedBox(
                                     width: 64,
                                     height: 64,
-
                                     child: Center(
                                       child: SizedBox(
                                         width: 36,
                                         height: 36,
                                         child: SvgPicture.asset(
-                                          "assets/images/logos/Jinyang.svg",
+                                          "assets/${jangdan.logoAssetPath}",
                                           colorFilter: ColorFilter.mode(
                                             AppColors.jangdanLogoPrimary,
                                             BlendMode.srcIn,
@@ -220,14 +219,14 @@ class HomeScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      item.name,
+                                      jangdan.name,
                                       style: TextStyle(
                                         fontSize: 20,
                                         color: AppColors.textDefault,
                                       ),
                                     ),
                                     Text(
-                                      item.bakType,
+                                      jangdan.bakInformation,
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: AppColors.textQuaternary,
