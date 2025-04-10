@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/presentation/home/home_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 
 void main() {
-  runApp(Hanbae());
+  runApp(
+    MultiBlocProvider(
+      providers: [BlocProvider(create: (_) => MetronomeBloc()),],
+      child: Hanbae(),
+    ),
+  );
 }
 
 class Hanbae extends StatelessWidget {
