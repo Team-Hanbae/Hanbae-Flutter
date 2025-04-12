@@ -79,6 +79,15 @@ flutter:
     - assets/sounds/jangu_weak.wav
     - assets/sounds/jangu_medium.wav
     - assets/sounds/jangu_strong.wav
+    - assets/sounds/beep_weak.mp3
+    - assets/sounds/beep_medium.mp3
+    - assets/sounds/beep_strong.mp3
+    - assets/sounds/buk_weak.mp3
+    - assets/sounds/buk_medium.mp3
+    - assets/sounds/buk_strong.mp3
+    - assets/sounds/jangu_weak.mp3
+    - assets/sounds/jangu_medium.mp3
+    - assets/sounds/jangu_strong.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
