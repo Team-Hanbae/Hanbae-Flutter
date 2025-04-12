@@ -48,5 +48,9 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       final updatedJangdan = oldJangdan.copyWith(accents: updatedAccents);
       emit(state.copyWith(selectedJangdan: updatedJangdan));
     });
+
+    on<ToggleSobak>((event, emit) {
+      emit(state.copyWith(isSobakOn: !state.isSobakOn));
+    });
   }
 }

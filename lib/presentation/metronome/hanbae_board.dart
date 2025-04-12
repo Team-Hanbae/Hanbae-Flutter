@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:hanbae/model/accent.dart';
-import 'package:hanbae/model/jangdan.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc package
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/theme/colors.dart'; // Import the MetronomeBloc
 
 class HanbaeBoard extends StatelessWidget {
-  const HanbaeBoard({super.key, required this.jangdan});
-  final Jangdan jangdan;
+  const HanbaeBoard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final jangdan = context.select(
+      (MetronomeBloc bloc) => bloc.state.selectedJangdan,
+    );
+
     return SizedBox(
       height: 372,
       child: Column(
         children: [
-          const SizedBox(height: 36.0),
+          SizedBox(
+            height:
+                (jangdan.jangdanType.sobakSegmentCount != null) ? 24.0 : 36.0,
+          ),
           ...jangdan.accents.asMap().entries.map((rowEntry) {
             final rowIndex = rowEntry.key;
             final row = rowEntry.value;
@@ -27,20 +33,107 @@ class HanbaeBoard extends StatelessWidget {
                       row.asMap().entries.map((colEntry) {
                         final barIndex = colEntry.key;
                         final daebak = colEntry.value;
+                        final bakNumber = jangdan.accents
+                          .take(rowIndex)
+                          .fold<int>(0, (sum, row) => sum + row.length) + barIndex;
+
                         return Expanded(
                           child: BakbarSet(
                             daebak: daebak,
                             rowIndex: rowIndex,
                             barIndex: barIndex,
+                            bakNumber: bakNumber + 1,
                           ),
                         );
                       }).toList(),
                 ),
               ),
             );
-          }).toList(),
-          const SizedBox(height: 36.0),
+          }),
+          SizedBox(
+            height:
+                (jangdan.jangdanType.sobakSegmentCount != null) ? 12.0 : 36.0,
+          ),
+          if (jangdan.jangdanType.sobakSegmentCount != null) ...[
+            SobakSegment(activedSobak: 0),
+            SizedBox(height: 16.0),
+          ],
         ],
+      ),
+    );
+  }
+}
+
+class SobakSegment extends StatelessWidget {
+  final int activedSobak;
+  const SobakSegment({super.key, required this.activedSobak});
+
+  @override
+  Widget build(BuildContext context) {
+    final isSobakOn = context.select(
+      (MetronomeBloc bloc) => bloc.state.isSobakOn,
+    );
+    final isPlaying = context.select(
+      (MetronomeBloc bloc) => bloc.state.isPlaying,
+    );
+
+    return SizedBox(
+      height: 20,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: List.generate(5, (index) {
+                  if (index.isOdd) {
+                    return Container(
+                      width: 1.0,
+                      color:
+                          isSobakOn
+                              ? AppColors.bakBarBorder
+                              : AppColors.bakBarLine,
+                    );
+                  } else {
+                    return Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color:
+                              isSobakOn
+                                  ? isPlaying
+                                      ? activedSobak * 2 == index
+                                          ? AppColors.sobakSegmentDaebak
+                                          : AppColors.sobakSegmentSobak
+                                      : AppColors.frame
+                                  : AppColors.frame,
+                        ),
+                      ),
+                    );
+                  }
+                }),
+              ),
+            ),
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color:
+                          isSobakOn
+                              ? AppColors.bakBarBorder
+                              : AppColors.bakBarLine,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -52,20 +145,25 @@ class BakbarSet extends StatelessWidget {
     required this.daebak,
     required this.rowIndex,
     required this.barIndex,
+    required this.bakNumber,
   });
 
   final List<Accent> daebak;
   final int rowIndex;
   final int barIndex;
+  final int bakNumber;
 
   @override
   Widget build(BuildContext context) {
+    final jangdan = context.select(
+      (MetronomeBloc bloc) => bloc.state.selectedJangdan,
+    );
     final isSobakOn = context.select(
       (MetronomeBloc bloc) => bloc.state.isSobakOn,
     );
 
-    final accentWidgets =
-        isSobakOn
+    final sobaks =
+        isSobakOn && jangdan.jangdanType.sobakSegmentCount == null
             ? daebak
                 .asMap()
                 .entries
@@ -73,7 +171,7 @@ class BakbarSet extends StatelessWidget {
                   (entry) => Expanded(
                     child: Bakbar(
                       accent: entry.value,
-                      bakNumber: entry.value.name,
+                      bakNumber: bakNumber,
                       rowIndex: rowIndex,
                       barIndex: barIndex,
                       accentIndex: entry.key,
@@ -85,7 +183,7 @@ class BakbarSet extends StatelessWidget {
               Expanded(
                 child: Bakbar(
                   accent: daebak.first,
-                  bakNumber: daebak.first.name,
+                  bakNumber: bakNumber,
                   rowIndex: rowIndex,
                   barIndex: barIndex,
                   accentIndex: 0,
@@ -101,7 +199,7 @@ class BakbarSet extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: Container(
               color: Colors.transparent,
-              child: Row(children: accentWidgets),
+              child: Row(children: sobaks),
             ),
           ),
           Positioned.fill(
@@ -131,7 +229,7 @@ class Bakbar extends StatelessWidget {
   });
 
   final Accent accent;
-  final String bakNumber;
+  final int bakNumber;
   final int rowIndex;
   final int barIndex;
   final int accentIndex;
@@ -151,6 +249,10 @@ class Bakbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isPlaying = context.select(
+      (MetronomeBloc bloc) => bloc.state.isPlaying,
+    );
+
     return GestureDetector(
       onTap: () {
         context.read<MetronomeBloc>().add(
@@ -162,7 +264,12 @@ class Bakbar extends StatelessWidget {
         );
       },
       child: Container(
-        decoration: BoxDecoration(color: AppColors.frame),
+        decoration: BoxDecoration(
+          color: isPlaying ? AppColors.frame : Color(0x80FFA91F),
+          border: const Border(
+            left: BorderSide(color: AppColors.bakBarBorder, width: 1),
+          ),
+        ),
         child: Stack(
           alignment: Alignment.bottomCenter, // 주황 박스를 아래 정렬
           children: [
@@ -179,7 +286,10 @@ class Bakbar extends StatelessWidget {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [AppColors.bakBarActiveTop, AppColors.bakBarActiveBottom],
+                      colors: [
+                        AppColors.bakBarActiveTop,
+                        AppColors.bakBarActiveBottom,
+                      ],
                     ),
                   ),
                 ),
@@ -192,7 +302,7 @@ class Bakbar extends StatelessWidget {
               left: 0,
               right: 0,
               child: Text(
-                bakNumber,
+                bakNumber.toString(),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: AppColors.textDefault,

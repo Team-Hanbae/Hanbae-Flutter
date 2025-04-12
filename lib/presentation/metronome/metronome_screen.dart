@@ -39,7 +39,7 @@ class MetronomeScreen extends StatelessWidget {
         children: [
           BlocBuilder<MetronomeBloc, MetronomeState>(
             builder: (context, state) {
-              return HanbaeBoard(jangdan: state.selectedJangdan);
+              return HanbaeBoard();
             },
           ),
           Padding(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../bloc/metronome/metronome_bloc.dart';
 
 class MetronomeSettingControl extends StatelessWidget {
   const MetronomeSettingControl({super.key});
@@ -10,7 +12,9 @@ class MetronomeSettingControl extends StatelessWidget {
       children: [
         IconButton(
           icon: Icon(Icons.splitscreen, size: 32),
-          onPressed: () {},
+          onPressed: () {
+            context.read<MetronomeBloc>().add(ToggleSobak());
+          },
         ),
         IconButton(
           icon: Icon(Icons.offline_bolt_outlined, size: 32),
