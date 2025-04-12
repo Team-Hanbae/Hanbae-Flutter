@@ -114,7 +114,14 @@ class MetronomeControl extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            final isPlaying = context.read<MetronomeBloc>().state.isPlaying;
+                            if (isPlaying) {
+                              context.read<MetronomeBloc>().add(Stop());
+                            } else {
+                              context.read<MetronomeBloc>().add(Play());
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(0, 80),
                             backgroundColor: AppColors.buttonPlaystart,
