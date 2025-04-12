@@ -6,8 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc pack
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart'; // Import the MetronomeBloc
 
 class MetronomeControl extends StatelessWidget {
-  const MetronomeControl({super.key, required this.jangdan});
-  final Jangdan jangdan;
+  const MetronomeControl({super.key});
 
   @override
   Widget build(BuildContext context) {
