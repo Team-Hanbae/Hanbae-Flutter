@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/model/jangdan.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc package
+import 'package:hanbae/bloc/metronome/metronome_bloc.dart'; // Import the MetronomeBloc
 
 class MetronomeControl extends StatelessWidget {
   const MetronomeControl({super.key});
@@ -24,7 +25,6 @@ class MetronomeControl extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-            
                 Text(
                   '빠르기(BPM)',
                   style: AppTextStyles.calloutR.copyWith(
@@ -32,9 +32,9 @@ class MetronomeControl extends StatelessWidget {
                     // backgroundColor: Colors.yellow,
                   ),
                 ),
-            
+
                 // const SizedBox(height: 8),
-            
+
                 // 플마버튼, BPM숫자 row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -53,30 +53,37 @@ class MetronomeControl extends StatelessWidget {
                           size: 32,
                           color: AppColors.textButtonSecondary,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          context.read<MetronomeBloc>().add(ChangeBpm(-1));
+                        },
                       ),
                     ),
                     const SizedBox(width: 12),
-            
+
                     // BPM Text
-                    SizedBox(
-                      width: 136,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: const Text(
-                          '444',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 64,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.textButtonSecondary,
+                    // Bloc 상태를 사용하여 BPM 값을 업데이트
+                    BlocBuilder<MetronomeBloc, MetronomeState>(
+                      builder: (context, state) {
+                        return SizedBox(
+                          width: 136,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              state.bpm.toString(),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 64,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textButtonSecondary,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
-            
+
                     const SizedBox(width: 12),
-            
+
                     // Plus Button
                     Container(
                       width: 56,
@@ -91,12 +98,14 @@ class MetronomeControl extends StatelessWidget {
                           size: 32,
                           color: AppColors.textButtonSecondary,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          context.read<MetronomeBloc>().add(ChangeBpm(1));
+                        },
                       ),
                     ),
                   ],
                 ),
-            
+
                 // Start and Detect Tempo buttons
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
