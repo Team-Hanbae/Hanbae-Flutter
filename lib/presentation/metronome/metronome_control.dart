@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 
 class MetronomeControl extends StatelessWidget {
   const MetronomeControl({super.key});
@@ -103,7 +105,14 @@ class MetronomeControl extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            final isPlaying = context.read<MetronomeBloc>().state.isPlaying;
+                            if (isPlaying) {
+                              context.read<MetronomeBloc>().add(Stop());
+                            } else {
+                              context.read<MetronomeBloc>().add(Play());
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(0, 80),
                             backgroundColor: AppColors.buttonPlaystart,
