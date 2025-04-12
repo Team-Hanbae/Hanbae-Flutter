@@ -15,7 +15,9 @@ class SelectJangdan extends MetronomeEvent {
   List<Object?> get props => [jangdan];
 }
 
-class TogglePlay extends MetronomeEvent {}
+class Play extends MetronomeEvent {}
+
+class Stop extends MetronomeEvent {}
 
 class ChangeBpm extends MetronomeEvent {
   final int delta;

@@ -23,8 +23,12 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       );
     });
 
-    on<TogglePlay>((event, emit) {
-      emit(state.copyWith(isPlaying: !state.isPlaying));
+    on<Play>((event, emit) {
+      emit(state.copyWith(isPlaying: true));
+    });
+
+    on<Stop>((event, emit) {
+      emit(state.copyWith(isPlaying: false));
     });
 
     on<ChangeBpm>((event, emit) {
