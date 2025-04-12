@@ -31,17 +31,17 @@ class HanbaeBoard extends StatelessWidget {
                 child: Row(
                   children:
                       row.asMap().entries.map((colEntry) {
-                        final barIndex = colEntry.key;
+                        final daebakIndex = colEntry.key;
                         final daebak = colEntry.value;
                         final bakNumber = jangdan.accents
                           .take(rowIndex)
-                          .fold<int>(0, (sum, row) => sum + row.length) + barIndex;
+                          .fold<int>(0, (sum, row) => sum + row.length) + daebakIndex;
 
                         return Expanded(
                           child: BakbarSet(
                             daebak: daebak,
                             rowIndex: rowIndex,
-                            barIndex: barIndex,
+                            daebakIndex: daebakIndex,
                             bakNumber: bakNumber + 1,
                           ),
                         );
@@ -55,7 +55,10 @@ class HanbaeBoard extends StatelessWidget {
                 (jangdan.jangdanType.sobakSegmentCount != null) ? 12.0 : 36.0,
           ),
           if (jangdan.jangdanType.sobakSegmentCount != null) ...[
-            SobakSegment(activedSobak: 0),
+            SobakSegment(
+              sobakSegmentCount: jangdan.jangdanType.sobakSegmentCount!,
+              activedSobak: context.select((MetronomeBloc bloc) => bloc.state.currentSobakIndex),
+            ),
             SizedBox(height: 16.0),
           ],
         ],
@@ -65,8 +68,9 @@ class HanbaeBoard extends StatelessWidget {
 }
 
 class SobakSegment extends StatelessWidget {
+  final int sobakSegmentCount;
   final int activedSobak;
-  const SobakSegment({super.key, required this.activedSobak});
+  const SobakSegment({super.key, required this.sobakSegmentCount, required this.activedSobak});
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +92,7 @@ class SobakSegment extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: List.generate(5, (index) {
+                children: List.generate(sobakSegmentCount * 2 - 1, (index) {
                   if (index.isOdd) {
                     return Container(
                       width: 1.0,
@@ -105,8 +109,10 @@ class SobakSegment extends StatelessWidget {
                               isSobakOn
                                   ? isPlaying
                                       ? activedSobak * 2 == index
-                                          ? AppColors.sobakSegmentDaebak
-                                          : AppColors.sobakSegmentSobak
+                                          ? index == 0
+                                              ? AppColors.sobakSegmentDaebak
+                                              : AppColors.sobakSegmentSobak
+                                          : AppColors.frame
                                       : AppColors.frame
                                   : AppColors.frame,
                         ),
@@ -144,13 +150,13 @@ class BakbarSet extends StatelessWidget {
     super.key,
     required this.daebak,
     required this.rowIndex,
-    required this.barIndex,
+    required this.daebakIndex,
     required this.bakNumber,
   });
 
   final List<Accent> daebak;
   final int rowIndex;
-  final int barIndex;
+  final int daebakIndex;
   final int bakNumber;
 
   @override
@@ -173,8 +179,8 @@ class BakbarSet extends StatelessWidget {
                       accent: entry.value,
                       bakNumber: bakNumber,
                       rowIndex: rowIndex,
-                      barIndex: barIndex,
-                      accentIndex: entry.key,
+                      daebakIndex: daebakIndex,
+                      sobakIndex: entry.key,
                     ),
                   ),
                 )
@@ -185,8 +191,8 @@ class BakbarSet extends StatelessWidget {
                   accent: daebak.first,
                   bakNumber: bakNumber,
                   rowIndex: rowIndex,
-                  barIndex: barIndex,
-                  accentIndex: 0,
+                  daebakIndex: daebakIndex,
+                  sobakIndex: 0,
                 ),
               ),
             ];
@@ -224,15 +230,15 @@ class Bakbar extends StatelessWidget {
     required this.accent,
     required this.bakNumber,
     required this.rowIndex,
-    required this.barIndex,
-    required this.accentIndex,
+    required this.daebakIndex,
+    required this.sobakIndex,
   });
 
   final Accent accent;
   final int bakNumber;
   final int rowIndex;
-  final int barIndex;
-  final int accentIndex;
+  final int daebakIndex;
+  final int sobakIndex;
 
   double get fillFraction {
     switch (accent) {
@@ -249,6 +255,13 @@ class Bakbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<MetronomeBloc>().state;
+    final isActive =
+        !state.isPlaying ||
+        (state.currentRowIndex == rowIndex &&
+            state.currentDaebakIndex == daebakIndex &&
+            (state.selectedJangdan.jangdanType.sobakSegmentCount != null ||
+            (!state.isSobakOn || state.currentSobakIndex == sobakIndex)));
     final isPlaying = context.select(
       (MetronomeBloc bloc) => bloc.state.isPlaying,
     );
@@ -258,14 +271,14 @@ class Bakbar extends StatelessWidget {
         context.read<MetronomeBloc>().add(
           ToggleAccent(
             rowIndex: rowIndex,
-            barIndex: barIndex,
-            accentIndex: accentIndex,
+            daebakIndex: daebakIndex,
+            sobakIndex: sobakIndex,
           ),
         );
       },
       child: Container(
         decoration: BoxDecoration(
-          color: isPlaying ? AppColors.frame : Color(0x80FFA91F),
+          color: !isPlaying ? AppColors.frame : isActive ? Color(0x80FFA91F) : AppColors.frame,
           border: const Border(
             left: BorderSide(color: AppColors.bakBarBorder, width: 1),
           ),
@@ -282,35 +295,40 @@ class Bakbar extends StatelessWidget {
                 heightFactor: fillFraction,
                 widthFactor: 1.0,
                 child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppColors.bakBarActiveTop,
-                        AppColors.bakBarActiveBottom,
-                      ],
-                    ),
+                  decoration: BoxDecoration(
+                    gradient:
+                        isActive
+                            ? const LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                AppColors.bakBarActiveTop,
+                                AppColors.bakBarActiveBottom,
+                              ],
+                            )
+                            : null,
+                    color: isActive ? null : AppColors.bakBarInactive,
                   ),
                 ),
               ),
             ),
 
             // 상단 숫자
-            Positioned(
-              top: 20,
-              left: 0,
-              right: 0,
-              child: Text(
-                bakNumber.toString(),
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.textDefault,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
+            if (sobakIndex == 0)
+              Positioned(
+                top: 20,
+                left: 0,
+                right: 0,
+                child: Text(
+                  bakNumber.toString(),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppColors.textDefault,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
