@@ -31,17 +31,17 @@ class ChangeBpm extends MetronomeEvent {
 
 class ToggleAccent extends MetronomeEvent {
   final int rowIndex;
-  final int barIndex;
-  final int accentIndex;
+  final int daebakIndex;
+  final int sobakIndex;
 
   const ToggleAccent({
     required this.rowIndex,
-    required this.barIndex,
-    required this.accentIndex,
+    required this.daebakIndex,
+    required this.sobakIndex,
   });
 
   @override
-  List<Object?> get props => [rowIndex, barIndex, accentIndex];
+  List<Object?> get props => [rowIndex, daebakIndex, sobakIndex];
 }
 
 class ToggleSobak extends MetronomeEvent {}

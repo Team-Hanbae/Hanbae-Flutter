@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hanbae/model/accent.dart';
 import 'dart:async'; // Add this import for Timer
+import 'dart:core'; // Add this import for Stopwatch
 import '../../model/jangdan.dart';
 import '../../data/basic_jangdan_data.dart';
 import '../../data/sound_manager.dart';
@@ -10,25 +11,27 @@ part 'metronome_event.dart';
 part 'metronome_state.dart';
 
 class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
-  Timer? _timer; // Add private Timer field
+  final Stopwatch _stopwatch = Stopwatch(); // Add Stopwatch field
+  Timer? _tickTimer; // Add private Timer field
   final _soundManager = SoundManager();
 
   MetronomeBloc()
-      : super(() {
-          final initialJangdan = basicJangdanData["진양"]!;
-          final lastRowIndex = initialJangdan.accents.length - 1;
-          final lastDaebakIndex = initialJangdan.accents[lastRowIndex].length - 1;
-          final lastSobakIndex = initialJangdan.accents[lastRowIndex][lastDaebakIndex].length - 1;
-          return MetronomeState(
-            selectedJangdan: initialJangdan,
-            isPlaying: false,
-            isSobakOn: false,
-            bpm: initialJangdan.bpm,
-            currentRowIndex: lastRowIndex,
-            currentDaebakIndex: lastDaebakIndex,
-            currentSobakIndex: lastSobakIndex,
-          );
-        }()) {
+    : super(() {
+        final initialJangdan = basicJangdanData["진양"]!;
+        final lastRowIndex = initialJangdan.accents.length - 1;
+        final lastDaebakIndex = initialJangdan.accents[lastRowIndex].length - 1;
+        final lastSobakIndex =
+            initialJangdan.accents[lastRowIndex][lastDaebakIndex].length - 1;
+        return MetronomeState(
+          selectedJangdan: initialJangdan,
+          isPlaying: false,
+          isSobakOn: false,
+          bpm: initialJangdan.bpm,
+          currentRowIndex: lastRowIndex,
+          currentDaebakIndex: lastDaebakIndex,
+          currentSobakIndex: lastSobakIndex,
+        );
+      }()) {
     on<SelectJangdan>((event, emit) {
       emit(
         state.copyWith(selectedJangdan: event.jangdan, bpm: event.jangdan.bpm),
@@ -36,12 +39,22 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
 
     on<Play>((event, emit) {
-      _timer?.cancel();
-      _timer = Timer.periodic(
-        Duration(milliseconds: (60000 / state.bpm).round()),
-        (_) => add(Tick()),
+      final jangdan = state.selectedJangdan;
+      final lastRowIndex = jangdan.accents.length - 1;
+      final lastDaebakIndex = jangdan.accents[lastRowIndex].length - 1;
+      final lastSobakIndex =
+          jangdan.accents[lastRowIndex][lastDaebakIndex].length - 1;
+
+      emit(
+        state.copyWith(
+          isPlaying: true,
+          currentRowIndex: lastRowIndex,
+          currentDaebakIndex: lastDaebakIndex,
+          currentSobakIndex: lastSobakIndex,
+        ),
       );
-      emit(state.copyWith(isPlaying: true));
+
+      _startPreciseTicker();
     });
 
     on<Tick>((event, emit) async {
@@ -49,7 +62,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       int row = state.currentRowIndex;
       int daebak = state.currentDaebakIndex;
       int sobak = state.currentSobakIndex;
-      
+
       sobak++;
       if (sobak >= jangdan.accents[row][daebak].length) {
         daebak++;
@@ -64,22 +77,25 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       }
 
       final accent = jangdan.accents[row][daebak][sobak];
-      if (accent != Accent.none) {
-        _soundManager.play('sounds/beep_${accent.name}.mp3');
+      if (state.isSobakOn || sobak == 0) {
+        if (accent != Accent.none) {
+          _soundManager.play('sounds/beep_${accent.name}.mp3');
+        }
+        print('🔊 $row $daebak $sobak ${accent.name}');
       }
 
-      print('🔊 $row $daebak $sobak ${accent.name}');
 
-      emit(state.copyWith(
-        currentRowIndex: row,
-        currentDaebakIndex: daebak,
-        currentSobakIndex: sobak,
-      ));
+      emit(
+        state.copyWith(
+          currentRowIndex: row,
+          currentDaebakIndex: daebak,
+          currentSobakIndex: sobak,
+        ),
+      );
     });
 
     on<Stop>((event, emit) {
-      _timer?.cancel();
-      _timer = null;
+      _stopPreciseTicker(); // Call to stop precise ticker
       emit(state.copyWith(isPlaying: false));
     });
 
@@ -92,14 +108,16 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       final oldJangdan = state.selectedJangdan;
 
       // Deep copy of accents
-      final updatedAccents = oldJangdan.accents
-          .map((row) => row.map((bar) => List<Accent>.from(bar)).toList())
-          .toList();
+      final updatedAccents =
+          oldJangdan.accents
+              .map((row) => row.map((bar) => List<Accent>.from(bar)).toList())
+              .toList();
 
-      final current = updatedAccents[event.rowIndex][event.barIndex][event.accentIndex];
+      final current =
+          updatedAccents[event.rowIndex][event.daebakIndex][event.sobakIndex];
       final next = Accent.values[(current.index + 1) % Accent.values.length];
 
-      updatedAccents[event.rowIndex][event.barIndex][event.accentIndex] = next;
+      updatedAccents[event.rowIndex][event.daebakIndex][event.sobakIndex] = next;
 
       final updatedJangdan = oldJangdan.copyWith(accents: updatedAccents);
       emit(state.copyWith(selectedJangdan: updatedJangdan));
@@ -108,5 +126,36 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     on<ToggleSobak>((event, emit) {
       emit(state.copyWith(isSobakOn: !state.isSobakOn));
     });
+  }
+
+  void _startPreciseTicker() {
+    _stopwatch.start();
+
+    // Immediately trigger first tick
+    add(Tick());
+
+    void scheduleTick() {
+      final interval = Duration(milliseconds: (60000 / state.bpm).round());
+      final elapsed = _stopwatch.elapsed;
+      final correction =
+          interval -
+          Duration(
+            milliseconds: elapsed.inMilliseconds % interval.inMilliseconds,
+          );
+
+      _tickTimer = Timer(correction, () {
+        add(Tick());
+        scheduleTick(); // schedule next tick
+      });
+    }
+
+    scheduleTick();
+  }
+
+  void _stopPreciseTicker() {
+    _tickTimer?.cancel();
+    _tickTimer = null;
+    _stopwatch.stop();
+    _stopwatch.reset();
   }
 }
