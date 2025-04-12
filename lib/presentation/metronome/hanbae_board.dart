@@ -33,11 +33,16 @@ class HanbaeBoard extends StatelessWidget {
                       row.asMap().entries.map((colEntry) {
                         final barIndex = colEntry.key;
                         final daebak = colEntry.value;
+                        final bakNumber = jangdan.accents
+                          .take(rowIndex)
+                          .fold<int>(0, (sum, row) => sum + row.length) + barIndex;
+
                         return Expanded(
                           child: BakbarSet(
                             daebak: daebak,
                             rowIndex: rowIndex,
                             barIndex: barIndex,
+                            bakNumber: bakNumber + 1,
                           ),
                         );
                       }).toList(),
@@ -140,11 +145,13 @@ class BakbarSet extends StatelessWidget {
     required this.daebak,
     required this.rowIndex,
     required this.barIndex,
+    required this.bakNumber,
   });
 
   final List<Accent> daebak;
   final int rowIndex;
   final int barIndex;
+  final int bakNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +171,7 @@ class BakbarSet extends StatelessWidget {
                   (entry) => Expanded(
                     child: Bakbar(
                       accent: entry.value,
-                      bakNumber: entry.value.name,
+                      bakNumber: bakNumber,
                       rowIndex: rowIndex,
                       barIndex: barIndex,
                       accentIndex: entry.key,
@@ -176,7 +183,7 @@ class BakbarSet extends StatelessWidget {
               Expanded(
                 child: Bakbar(
                   accent: daebak.first,
-                  bakNumber: daebak.first.name,
+                  bakNumber: bakNumber,
                   rowIndex: rowIndex,
                   barIndex: barIndex,
                   accentIndex: 0,
@@ -222,7 +229,7 @@ class Bakbar extends StatelessWidget {
   });
 
   final Accent accent;
-  final String bakNumber;
+  final int bakNumber;
   final int rowIndex;
   final int barIndex;
   final int accentIndex;
@@ -242,6 +249,10 @@ class Bakbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isPlaying = context.select(
+      (MetronomeBloc bloc) => bloc.state.isPlaying,
+    );
+
     return GestureDetector(
       onTap: () {
         context.read<MetronomeBloc>().add(
@@ -254,9 +265,9 @@ class Bakbar extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.frame,
+          color: isPlaying ? AppColors.frame : Color(0x80FFA91F),
           border: const Border(
-            left: BorderSide(color: AppColors.bakBarLine, width: 1),
+            left: BorderSide(color: AppColors.bakBarBorder, width: 1),
           ),
         ),
         child: Stack(
@@ -291,7 +302,7 @@ class Bakbar extends StatelessWidget {
               left: 0,
               right: 0,
               child: Text(
-                bakNumber,
+                bakNumber.toString(),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: AppColors.textDefault,
