@@ -50,7 +50,7 @@ class MetronomeScreen extends StatelessWidget {
           ),
           BlocBuilder<MetronomeBloc, MetronomeState>(
             builder: (context, state) {
-              return MetronomeControl(jangdan: state.selectedJangdan);
+              return MetronomeControl();
             },
           )
         ],
