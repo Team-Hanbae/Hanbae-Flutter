@@ -28,7 +28,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
 
     on<ChangeBpm>((event, emit) {
-      final newBpm = (state.bpm + event.delta).clamp(30, 240);
+      final newBpm = (state.bpm + event.delta).clamp(10, 300);
       emit(state.copyWith(bpm: newBpm));
     });
 
