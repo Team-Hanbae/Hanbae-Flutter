@@ -16,6 +16,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.backgroundDefault,
         leading: Container(
           margin: const EdgeInsets.only(left: 16),
           child: SizedBox(
@@ -30,32 +31,44 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              Image.asset("assets/images/banner/SurveyBanner.png"),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset("assets/images/banner/SurveyBanner.png"),
+              ),
+
+              const SizedBox(height: 24),
+
               Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "내가 저장한 장단",
-                        style: AppTextStyles.title2B.copyWith(
-                          color: AppColors.textDefault,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        style: TextButton.styleFrom(minimumSize: Size(0, 40)),
-                        child: Text(
-                          "더보기",
-                          style: AppTextStyles.calloutR.copyWith(
-                            color: AppColors.textTertiary,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "내가 저장한 장단",
+                          style: AppTextStyles.title2B.copyWith(
+                            color: AppColors.textDefault,
                           ),
                         ),
-                      ),
-                    ],
+                        TextButton(
+                          onPressed: () {},
+                          style: TextButton.styleFrom(
+                            minimumSize: Size(40, 40),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: EdgeInsets.zero,),
+                          child: Text(
+                            "더보기",
+                            style: AppTextStyles.calloutR.copyWith(
+                              color: AppColors.textTertiary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
-                  SizedBox(height: 16),
+                  const SizedBox(height: 8),
 
                   SizedBox(
                     height: 84,
@@ -155,20 +168,26 @@ class HomeScreen extends StatelessWidget {
 
               Column(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        "바로 연습하기",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textDefault,
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: SizedBox(
+                      height: 40,
+                      child: Row(
+                        children: [
+                          Text(
+                            "바로 연습하기",
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textDefault,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
 
-                  SizedBox(height: 16),
+                  SizedBox(height: 8),
 
                   ListView.separated(
                     shrinkWrap: true,

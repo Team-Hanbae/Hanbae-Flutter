@@ -106,7 +106,7 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 
-fonts:
+  fonts:
     - family: Pretendard
       fonts:
         - asset: assets/fonts/Pretendard-Thin.ttf

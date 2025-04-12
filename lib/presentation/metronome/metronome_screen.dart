@@ -5,6 +5,8 @@ import 'package:hanbae/presentation/metronome/hanbae_board.dart';
 import 'package:hanbae/presentation/metronome/metronome_control.dart';
 import 'package:hanbae/presentation/metronome/metronome_setting_control.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/theme/colors.dart';
+import 'package:hanbae/theme/text_styles.dart';
 
 class MetronomeScreen extends StatelessWidget {
   const MetronomeScreen({super.key, required this.jangdan});
@@ -21,7 +23,7 @@ class MetronomeScreen extends StatelessWidget {
           },
           icon: Icon(Icons.chevron_left),
         ),
-        title: Text(jangdan.name),
+        title: Text(jangdan.name, style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary,)),
         centerTitle: true,
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.replay)),
@@ -50,7 +52,7 @@ class MetronomeScreen extends StatelessWidget {
           ),
           BlocBuilder<MetronomeBloc, MetronomeState>(
             builder: (context, state) {
-              return MetronomeControl(jangdan: state.selectedJangdan);
+              return MetronomeControl();
             },
           )
         ],
