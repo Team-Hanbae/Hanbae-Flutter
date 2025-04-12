@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
-import 'package:hanbae/model/jangdan.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc package
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart'; // Import the MetronomeBloc
 
@@ -75,6 +74,7 @@ class MetronomeControl extends StatelessWidget {
                                 fontSize: 64,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.textButtonSecondary,
+                                letterSpacing: -0.5
                               ),
                             ),
                           ),
@@ -123,7 +123,7 @@ class MetronomeControl extends StatelessWidget {
                             "시작",
                             style: TextStyle(
                               fontSize: 34,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w500,
                               color: AppColors.textButtonEmphasis,
                             ),
                           ),
@@ -141,6 +141,7 @@ class MetronomeControl extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: AppTextStyles.bodyR.copyWith(
                             color: AppColors.textButtonPrimary,
+                            height: 1.12
                           ),
                         ),
                       ),
