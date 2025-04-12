@@ -10,13 +10,18 @@ class HanbaeBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final jangdan = context.select((MetronomeBloc bloc) => bloc.state.selectedJangdan);
+    final jangdan = context.select(
+      (MetronomeBloc bloc) => bloc.state.selectedJangdan,
+    );
 
     return SizedBox(
       height: 372,
       child: Column(
         children: [
-          SizedBox(height: (jangdan.jangdanType.sobakSegmentCount != null) ? 24.0 : 36.0),
+          SizedBox(
+            height:
+                (jangdan.jangdanType.sobakSegmentCount != null) ? 24.0 : 36.0,
+          ),
           ...jangdan.accents.asMap().entries.map((rowEntry) {
             final rowIndex = rowEntry.key;
             final row = rowEntry.value;
@@ -40,10 +45,13 @@ class HanbaeBoard extends StatelessWidget {
               ),
             );
           }),
-          SizedBox(height: (jangdan.jangdanType.sobakSegmentCount != null) ? 12.0 : 36.0),
+          SizedBox(
+            height:
+                (jangdan.jangdanType.sobakSegmentCount != null) ? 12.0 : 36.0,
+          ),
           if (jangdan.jangdanType.sobakSegmentCount != null) ...[
             SobakSegment(activedSobak: 0),
-            SizedBox(height: 16.0,),
+            SizedBox(height: 16.0),
           ],
         ],
       ),
@@ -57,8 +65,12 @@ class SobakSegment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSobakOn = context.select((MetronomeBloc bloc) => bloc.state.isSobakOn);
-    final isPlaying = context.select((MetronomeBloc bloc) => bloc.state.isPlaying);
+    final isSobakOn = context.select(
+      (MetronomeBloc bloc) => bloc.state.isSobakOn,
+    );
+    final isPlaying = context.select(
+      (MetronomeBloc bloc) => bloc.state.isPlaying,
+    );
 
     return SizedBox(
       height: 20,
@@ -75,18 +87,23 @@ class SobakSegment extends StatelessWidget {
                   if (index.isOdd) {
                     return Container(
                       width: 1.0,
-                      color: isSobakOn ? AppColors.bakBarBorder : AppColors.bakBarLine,
+                      color:
+                          isSobakOn
+                              ? AppColors.bakBarBorder
+                              : AppColors.bakBarLine,
                     );
                   } else {
                     return Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: isSobakOn 
-                          ? isPlaying
-                          ? activedSobak * 2 == index
-                          ? AppColors.sobakSegmentDaebak : AppColors.sobakSegmentSobak
-                          : AppColors.frame
-                          : AppColors.frame,
+                          color:
+                              isSobakOn
+                                  ? isPlaying
+                                      ? activedSobak * 2 == index
+                                          ? AppColors.sobakSegmentDaebak
+                                          : AppColors.sobakSegmentSobak
+                                      : AppColors.frame
+                                  : AppColors.frame,
                         ),
                       ),
                     );
@@ -98,7 +115,13 @@ class SobakSegment extends StatelessWidget {
               child: IgnorePointer(
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: isSobakOn ? AppColors.bakBarBorder : AppColors.bakBarLine, width: 1),
+                    border: Border.all(
+                      color:
+                          isSobakOn
+                              ? AppColors.bakBarBorder
+                              : AppColors.bakBarLine,
+                      width: 1,
+                    ),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -125,7 +148,9 @@ class BakbarSet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final jangdan = context.select((MetronomeBloc bloc) => bloc.state.selectedJangdan);
+    final jangdan = context.select(
+      (MetronomeBloc bloc) => bloc.state.selectedJangdan,
+    );
     final isSobakOn = context.select(
       (MetronomeBloc bloc) => bloc.state.isSobakOn,
     );
@@ -228,7 +253,12 @@ class Bakbar extends StatelessWidget {
         );
       },
       child: Container(
-        decoration: BoxDecoration(color: AppColors.frame),
+        decoration: BoxDecoration(
+          color: AppColors.frame,
+          border: const Border(
+            left: BorderSide(color: AppColors.bakBarLine, width: 1),
+          ),
+        ),
         child: Stack(
           alignment: Alignment.bottomCenter, // 주황 박스를 아래 정렬
           children: [
@@ -245,7 +275,10 @@ class Bakbar extends StatelessWidget {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [AppColors.bakBarActiveTop, AppColors.bakBarActiveBottom],
+                      colors: [
+                        AppColors.bakBarActiveTop,
+                        AppColors.bakBarActiveBottom,
+                      ],
                     ),
                   ),
                 ),
