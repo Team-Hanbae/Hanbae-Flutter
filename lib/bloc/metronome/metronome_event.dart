@@ -17,6 +17,8 @@ class SelectJangdan extends MetronomeEvent {
 
 class Play extends MetronomeEvent {}
 
+class Tick extends MetronomeEvent {}
+
 class Stop extends MetronomeEvent {}
 
 class ChangeBpm extends MetronomeEvent {
