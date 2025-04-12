@@ -39,3 +39,5 @@ class ToggleAccent extends MetronomeEvent {
   @override
   List<Object?> get props => [rowIndex, barIndex, accentIndex];
 }
+
+class ToggleSobak extends MetronomeEvent {}

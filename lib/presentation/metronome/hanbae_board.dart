@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:hanbae/model/accent.dart';
-import 'package:hanbae/model/jangdan.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc package
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/theme/colors.dart'; // Import the MetronomeBloc
 
 class HanbaeBoard extends StatelessWidget {
-  const HanbaeBoard({super.key, required this.jangdan});
-  final Jangdan jangdan;
+  const HanbaeBoard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final jangdan = context.select((MetronomeBloc bloc) => bloc.state.selectedJangdan);
+
     return SizedBox(
       height: 372,
       child: Column(
         children: [
-          const SizedBox(height: 36.0),
+          SizedBox(height: (jangdan.jangdanType.sobakSegmentCount != null) ? 24.0 : 36.0),
           ...jangdan.accents.asMap().entries.map((rowEntry) {
             final rowIndex = rowEntry.key;
             final row = rowEntry.value;
@@ -38,9 +39,73 @@ class HanbaeBoard extends StatelessWidget {
                 ),
               ),
             );
-          }).toList(),
-          const SizedBox(height: 36.0),
+          }),
+          SizedBox(height: (jangdan.jangdanType.sobakSegmentCount != null) ? 12.0 : 36.0),
+          if (jangdan.jangdanType.sobakSegmentCount != null) ...[
+            SobakSegment(activedSobak: 0),
+            SizedBox(height: 16.0,),
+          ],
         ],
+      ),
+    );
+  }
+}
+
+class SobakSegment extends StatelessWidget {
+  final int activedSobak;
+  const SobakSegment({super.key, required this.activedSobak});
+
+  @override
+  Widget build(BuildContext context) {
+    final isSobakOn = context.select((MetronomeBloc bloc) => bloc.state.isSobakOn);
+    final isPlaying = context.select((MetronomeBloc bloc) => bloc.state.isPlaying);
+
+    return SizedBox(
+      height: 20,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: List.generate(5, (index) {
+                  if (index.isOdd) {
+                    return Container(
+                      width: 1.0,
+                      color: isSobakOn ? AppColors.bakBarBorder : AppColors.bakBarLine,
+                    );
+                  } else {
+                    return Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isSobakOn 
+                          ? isPlaying
+                          ? activedSobak * 2 == index
+                          ? AppColors.sobakSegmentDaebak : AppColors.sobakSegmentSobak
+                          : AppColors.frame
+                          : AppColors.frame,
+                        ),
+                      ),
+                    );
+                  }
+                }),
+              ),
+            ),
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: isSobakOn ? AppColors.bakBarBorder : AppColors.bakBarLine, width: 1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -60,12 +125,13 @@ class BakbarSet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final jangdan = context.select((MetronomeBloc bloc) => bloc.state.selectedJangdan);
     final isSobakOn = context.select(
       (MetronomeBloc bloc) => bloc.state.isSobakOn,
     );
 
-    final accentWidgets =
-        isSobakOn
+    final sobaks =
+        isSobakOn && jangdan.jangdanType.sobakSegmentCount == null
             ? daebak
                 .asMap()
                 .entries
@@ -101,7 +167,7 @@ class BakbarSet extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: Container(
               color: Colors.transparent,
-              child: Row(children: accentWidgets),
+              child: Row(children: sobaks),
             ),
           ),
           Positioned.fill(
