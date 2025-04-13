@@ -8,53 +8,86 @@ import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
 
-class MetronomeScreen extends StatelessWidget {
+class MetronomeScreen extends StatefulWidget {
   const MetronomeScreen({super.key, required this.jangdan});
   final Jangdan jangdan;
 
   @override
+  _MetronomeScreenState createState() => _MetronomeScreenState();
+}
+
+class _MetronomeScreenState extends State<MetronomeScreen> {
+  bool _showFlashOverlay = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 44.0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context); // This will pop the current screen off the navigation stack
-          },
-          icon: Icon(Icons.chevron_left),
-        ),
-        title: Text(jangdan.name, style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary,)),
-        centerTitle: true,
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.replay)),
-          PopupMenuButton(
-            icon: Icon(Icons.upload),
-            itemBuilder: (context) => <PopupMenuEntry>[
-              PopupMenuItem(child: Text("popupMenu1")),
-              PopupMenuItem(child: Text("popupMenu2")),
-              PopupMenuItem(child: Text("popupMenu3")),
-            ],
-          ),
-        ],
-      ),
-      body: Column(
+    return BlocListener<MetronomeBloc, MetronomeState>(
+      listener: (context, state) {
+        if (state.isFlashOn &&
+            state.isPlaying &&
+            state.currentRowIndex == 0 &&
+            state.currentDaebakIndex == 0 &&
+            state.currentSobakIndex == 0) {
+          setState(() => _showFlashOverlay = true);
+          Future.delayed(const Duration(milliseconds: 100), () {
+            setState(() => _showFlashOverlay = false);
+          });
+        }
+      },
+      child: Stack(
         children: [
-          BlocBuilder<MetronomeBloc, MetronomeState>(
-            builder: (context, state) {
-              return HanbaeBoard();
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
+          Scaffold(
+            appBar: AppBar(
+              toolbarHeight: 44.0,
+              leading: IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.chevron_left),
+              ),
+              title: Text(
+                widget.jangdan.name,
+                style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary),
+              ),
+              centerTitle: true,
+              actions: [
+                IconButton(onPressed: () {}, icon: const Icon(Icons.replay)),
+                PopupMenuButton(
+                  icon: const Icon(Icons.upload),
+                  itemBuilder: (c) => const [
+                    PopupMenuItem(child: Text("popupMenu1")),
+                    PopupMenuItem(child: Text("popupMenu2")),
+                    PopupMenuItem(child: Text("popupMenu3")),
+                  ],
+                ),
+              ],
             ),
-            child: MetronomeOptions(),
+            body: Column(
+              children: [
+                BlocBuilder<MetronomeBloc, MetronomeState>(
+                  builder: (context, state) => HanbaeBoard(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: MetronomeOptions(),
+                ),
+                BlocBuilder<MetronomeBloc, MetronomeState>(
+                  builder: (context, state) => MetronomeControl(),
+                ),
+              ],
+            ),
           ),
-          BlocBuilder<MetronomeBloc, MetronomeState>(
-            builder: (context, state) {
-              return MetronomeControl();
-            },
-          )
+          Positioned.fill(
+            child: IgnorePointer(
+              ignoring: !_showFlashOverlay,
+              child: AnimatedOpacity(
+                opacity: _showFlashOverlay ? 1.0 : 0.0,
+                duration: _showFlashOverlay
+                    ? Duration.zero
+                    : const Duration(milliseconds: 300),
+                curve: Curves.linear,
+                child: Container(color: AppColors.blink),
+              ),
+            ),
+          ),
         ],
       ),
     );
