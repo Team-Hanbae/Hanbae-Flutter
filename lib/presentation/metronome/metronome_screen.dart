@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/presentation/metronome/hanbae_board.dart';
 import 'package:hanbae/presentation/metronome/metronome_control.dart';
@@ -20,7 +19,9 @@ class MetronomeScreen extends StatelessWidget {
         toolbarHeight: 44.0,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context); // This will pop the current screen off the navigation stack
+            Navigator.pop(
+              context,
+            ); // This will pop the current screen off the navigation stack
           },
           icon: Icon(Icons.chevron_left),
         ),
@@ -30,10 +31,12 @@ class MetronomeScreen extends StatelessWidget {
         ),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: () {
-            context.read<MetronomeBloc>().add(SelectJangdan(basicJangdanData[jangdan.jangdanType.name] ?? jangdan));
-        },
-        icon: Icon(Icons.replay))
+          IconButton(
+            onPressed: () {
+              context.read<MetronomeBloc>().add(const ResetMetronome());
+            },
+            icon: Icon(Icons.replay),
+          ),
         ],
       ),
       body: Column(
@@ -44,16 +47,14 @@ class MetronomeScreen extends StatelessWidget {
             },
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: MetronomeSettingControl(),
           ),
           BlocBuilder<MetronomeBloc, MetronomeState>(
             builder: (context, state) {
               return MetronomeControl();
             },
-          )
+          ),
         ],
       ),
     );

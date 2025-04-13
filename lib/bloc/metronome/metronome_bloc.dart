@@ -45,6 +45,15 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       );
     });
 
+    on<ResetMetronome>((event, emit) {
+      final jangdan = state.selectedJangdan;
+      final original = basicJangdanData[jangdan.jangdanType.name] ?? jangdan;
+      emit(state.copyWith(
+        selectedJangdan: original,
+        bpm: original.bpm,
+      ));
+    });
+
     on<Play>((event, emit) {
       final jangdan = state.selectedJangdan;
       final lastRowIndex = jangdan.accents.length - 1;
