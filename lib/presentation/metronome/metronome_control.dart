@@ -9,7 +9,9 @@ class MetronomeControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isTapping = context.select((MetronomeBloc bloc) => bloc.state.isTapping);
+    final isTapping = context.select(
+      (MetronomeBloc bloc) => bloc.state.isTapping,
+    );
 
     return Expanded(
       child: Container(
@@ -156,27 +158,35 @@ class MetronomeControl extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final isPlaying = context.read<MetronomeBloc>().state.isPlaying;
-                            if (isPlaying) {
-                              context.read<MetronomeBloc>().add(Stop());
-                            } else {
-                              context.read<MetronomeBloc>().add(Play());
-                            }
+                        child: BlocBuilder<MetronomeBloc, MetronomeState>(
+                          builder: (context, state) {
+                            final isPlaying = state.isPlaying;
+                            return ElevatedButton(
+                              onPressed: () {
+                                if (isPlaying) {
+                                  context.read<MetronomeBloc>().add(Stop());
+                                } else {
+                                  context.read<MetronomeBloc>().add(Play());
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(0, 80),
+                                backgroundColor: isPlaying
+                                    ? AppColors.buttonPlaystop
+                                    : AppColors.buttonPlaystart,
+                              ),
+                              child: Text(
+                                isPlaying ? "멈춤" : "시작",
+                                style: TextStyle(
+                                  fontSize: 34,
+                                  fontWeight: FontWeight.w500,
+                                  color: isPlaying
+                                      ? AppColors.textButtonPrimary
+                                      : AppColors.textButtonEmphasis,
+                                ),
+                              ),
+                            );
                           },
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(0, 80),
-                            backgroundColor: AppColors.buttonPlaystart,
-                          ),
-                          child: const Text(
-                            "시작",
-                            style: TextStyle(
-                              fontSize: 34,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.textButtonEmphasis,
-                            ),
-                          ),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -186,21 +196,23 @@ class MetronomeControl extends StatelessWidget {
                         },
                         style: ElevatedButton.styleFrom(
                           fixedSize: const Size(120, 80),
-                          backgroundColor: isTapping
-                              ? AppColors.buttonActive
-                              : AppColors.buttonPrimary,
+                          backgroundColor:
+                              isTapping
+                                  ? AppColors.buttonActive
+                                  : AppColors.buttonPrimary,
                         ),
                         child: Text(
                           isTapping ? "탭" : "빠르기\n찾기",
                           textAlign: TextAlign.center,
-                          style: isTapping
-                              ? AppTextStyles.title1R.copyWith(
-                                  color: AppColors.textButtonEmphasis,
-                                )
-                              : AppTextStyles.bodyR.copyWith(
-                                  color: AppColors.textButtonPrimary,
-                                  height: 1.12,
-                                ),
+                          style:
+                              isTapping
+                                  ? AppTextStyles.title1R.copyWith(
+                                    color: AppColors.textButtonEmphasis,
+                                  )
+                                  : AppTextStyles.bodyR.copyWith(
+                                    color: AppColors.textButtonPrimary,
+                                    height: 1.12,
+                                  ),
                         ),
                       ),
                     ],
