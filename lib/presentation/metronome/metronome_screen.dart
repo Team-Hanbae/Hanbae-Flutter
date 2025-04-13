@@ -50,7 +50,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
           icon: Icon(Icons.chevron_left),
         ),
         title: Text(
-          jangdan.name,
+          widget.jangdan.name,
           style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary),
         ),
         centerTitle: true,
