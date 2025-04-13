@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/theme/text_styles.dart';
@@ -42,7 +43,9 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                 ),
                 child: IconButton(
                   icon: SvgPicture.asset(
-                    'assets/images/icon/Icon_ViewSobak.svg',
+                    state.selectedJangdan.jangdanType.sobakSegmentCount == null
+                        ? 'assets/images/icon/Icon_ListenSobak.svg'
+                        : 'assets/images/icon/Icon_ViewSobak.svg',
                     width: 32,
                     height: 32,
                     colorFilter: ColorFilter.mode(
