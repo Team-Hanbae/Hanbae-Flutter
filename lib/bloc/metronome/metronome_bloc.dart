@@ -97,7 +97,6 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         if (accent != Accent.none) {
           _soundManager.play('sounds/${state.currentSound.name}_${accent.name}.mp3'); // Update sound playback
         }
-        print('🔊 $row $daebak $sobak ${accent.name}');
       }
 
 
@@ -152,22 +151,36 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
   void _startPreciseTicker() {
     _stopwatch.start();
 
-    // Immediately trigger first tick
     add(Tick());
 
     void scheduleTick() {
-      final interval = Duration(milliseconds: (60000 / state.bpm).round());
-      final elapsed = _stopwatch.elapsed;
-      final correction =
-          interval -
-          Duration(
-            milliseconds: elapsed.inMilliseconds % interval.inMilliseconds,
-          );
+      DateTime lastPlayTime = DateTime.now();
 
-      _tickTimer = Timer(correction, () {
-        add(Tick());
-        scheduleTick(); // schedule next tick
-      });
+      void tickLoop() {
+        final jangdan = state.selectedJangdan;
+        final totalDaebak = jangdan.accents.expand((row) => row).length;
+        final totalSobak = jangdan.accents
+            .expand((row) => row)
+            .expand((daebak) => daebak)
+            .length;
+        final averageSobakPerDaebak = totalSobak / totalDaebak;
+
+        final interval = Duration(
+          milliseconds: (60000 / (state.bpm * averageSobakPerDaebak)).round(),
+        );
+
+        final now = DateTime.now();
+        final nextPlayTime = lastPlayTime.add(interval);
+        final delay = nextPlayTime.difference(now);
+
+        _tickTimer = Timer(delay.isNegative ? Duration.zero : delay, () {
+          lastPlayTime = DateTime.now();
+          add(Tick());
+          tickLoop();
+        });
+      }
+
+      tickLoop();
     }
 
     scheduleTick();
