@@ -54,6 +54,8 @@ class ChangeSound extends MetronomeEvent {
   List<Object?> get props => [sound];
 }
 
+class ToggleFlash extends MetronomeEvent {}
+
 class ResetMetronome extends MetronomeEvent {
   const ResetMetronome();
 }

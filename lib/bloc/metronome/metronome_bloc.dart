@@ -30,6 +30,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           selectedJangdan: initialJangdan,
           isPlaying: false,
           isSobakOn: false,
+          isFlashOn: false,
           bpm: initialJangdan.bpm,
           currentRowIndex: lastRowIndex,
           currentDaebakIndex: lastDaebakIndex,
@@ -189,6 +190,10 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
     on<ToggleSobak>((event, emit) {
       emit(state.copyWith(isSobakOn: !state.isSobakOn));
+    });
+
+    on<ToggleFlash>((event, emit) { // Add ToggleFlash event handler
+      emit(state.copyWith(isFlashOn: !state.isFlashOn));
     });
   }
 
