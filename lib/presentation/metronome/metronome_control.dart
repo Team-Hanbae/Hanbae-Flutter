@@ -138,7 +138,9 @@ class MetronomeControl extends StatelessWidget {
                       ),
                       const SizedBox(width: 16),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.read<MetronomeBloc>().add(const TapTempo());
+                        },
                         style: ElevatedButton.styleFrom(
                           fixedSize: const Size(120, 80),
                           backgroundColor: AppColors.buttonPrimary,

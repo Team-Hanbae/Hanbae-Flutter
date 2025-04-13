@@ -16,6 +16,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
   final Stopwatch _stopwatch = Stopwatch(); // Add Stopwatch field
   Timer? _tickTimer; // Add private Timer field
   final _soundManager = SoundManager();
+  final List<DateTime> _tapHistory = []; // Add private list to hold tap timestamps
 
   MetronomeBloc()
     : super(() {
@@ -123,6 +124,32 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     on<ChangeSound>((event, emit) { // Add new event handler
       SoundPreferences.save(event.sound); // Save selected sound to preferences
       emit(state.copyWith(currentSound: event.sound));
+    });
+
+    on<TapTempo>((event, emit) { // Handle TapTempo event
+      final now = DateTime.now();
+
+      if (_tapHistory.isNotEmpty &&
+          now.difference(_tapHistory.last).inMilliseconds > 6000) {
+        _tapHistory.clear(); // Reset if taps are too far apart
+      }
+
+      _tapHistory.add(now);
+
+      if (_tapHistory.length >= 2) {
+        final intervals = <int>[];
+        for (int i = 1; i < _tapHistory.length; i++) {
+          intervals.add(_tapHistory[i].difference(_tapHistory[i - 1]).inMilliseconds);
+        }
+        final averageMs = intervals.reduce((a, b) => a + b) / intervals.length;
+        final bpm = (60000 / averageMs).round().clamp(10, 300);
+
+        emit(state.copyWith(bpm: bpm));
+      }
+
+      if (_tapHistory.length > 5) {
+        _tapHistory.removeAt(0); // Keep last 5 taps
+      }
     });
 
     on<ToggleAccent>((event, emit) {
