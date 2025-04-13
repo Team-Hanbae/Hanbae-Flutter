@@ -4,6 +4,7 @@ class MetronomeState extends Equatable {
   final Jangdan selectedJangdan;
   final bool isPlaying;
   final bool isSobakOn;
+  final bool isFlashOn;
   final int bpm;
   final int currentRowIndex;
   final int currentDaebakIndex;
@@ -14,6 +15,7 @@ class MetronomeState extends Equatable {
     required this.selectedJangdan,
     required this.isPlaying,
     required this.isSobakOn,
+    required this.isFlashOn,
     required this.bpm,
     this.currentRowIndex = 0,
     this.currentDaebakIndex = 0,
@@ -25,6 +27,7 @@ class MetronomeState extends Equatable {
     Jangdan? selectedJangdan,
     bool? isPlaying,
     bool? isSobakOn,
+    bool? isFlashOn,
     int? bpm,
     int? currentRowIndex,
     int? currentDaebakIndex,
@@ -35,6 +38,7 @@ class MetronomeState extends Equatable {
       selectedJangdan: selectedJangdan ?? this.selectedJangdan,
       isPlaying: isPlaying ?? this.isPlaying,
       isSobakOn: isSobakOn ?? this.isSobakOn,
+      isFlashOn: isFlashOn ?? this.isFlashOn,
       bpm: bpm ?? this.bpm,
       currentRowIndex: currentRowIndex ?? this.currentRowIndex,
       currentDaebakIndex: currentDaebakIndex ?? this.currentDaebakIndex,
@@ -48,6 +52,7 @@ class MetronomeState extends Equatable {
         selectedJangdan,
         isPlaying,
         isSobakOn,
+        isFlashOn,
         bpm,
         currentRowIndex,
         currentDaebakIndex,

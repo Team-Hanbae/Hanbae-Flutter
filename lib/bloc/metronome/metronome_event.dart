@@ -53,3 +53,5 @@ class ChangeSound extends MetronomeEvent {
   @override
   List<Object?> get props => [sound];
 }
+
+class ToggleFlash extends MetronomeEvent {}
