@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/presentation/metronome/hanbae_board.dart';
 import 'package:hanbae/presentation/metronome/metronome_control.dart';
-import 'package:hanbae/presentation/metronome/metronome_setting_control.dart';
+import 'package:hanbae/presentation/metronome/metronome_options.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
@@ -48,7 +48,7 @@ class MetronomeScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
             ),
-            child: MetronomeSettingControl(),
+            child: MetronomeOptions(),
           ),
           BlocBuilder<MetronomeBloc, MetronomeState>(
             builder: (context, state) {
