@@ -7,6 +7,7 @@ import '../../model/jangdan.dart';
 import '../../data/basic_jangdan_data.dart';
 import '../../data/sound_manager.dart';
 import '../../model/sound.dart'; // Add this import for Sound
+import '../../data/sound_preferences.dart'; // Add import for SoundPreferences
 
 part 'metronome_event.dart';
 part 'metronome_state.dart';
@@ -34,6 +35,10 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentSound: Sound.clave, // Initialize currentSound field
         );
       }()) {
+    SoundPreferences.load().then((loaded) { // Load stored sound
+      add(ChangeSound(loaded));
+    });
+
     on<SelectJangdan>((event, emit) {
       emit(
         state.copyWith(selectedJangdan: event.jangdan, bpm: event.jangdan.bpm),
@@ -107,6 +112,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
 
     on<ChangeSound>((event, emit) { // Add new event handler
+      SoundPreferences.save(event.sound); // Save selected sound to preferences
       emit(state.copyWith(currentSound: event.sound));
     });
 

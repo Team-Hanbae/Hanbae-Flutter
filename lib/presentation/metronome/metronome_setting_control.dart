@@ -8,6 +8,8 @@ class MetronomeSettingControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentSound = context.select((MetronomeBloc bloc) => bloc.state.currentSound);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -22,13 +24,19 @@ class MetronomeSettingControl extends StatelessWidget {
           onPressed: () {},
         ),
         PopupMenuButton<Sound>(
-          icon: Icon(Icons.music_note, size: 28),
-          itemBuilder:
-              (context) => const [
-                PopupMenuItem(value: Sound.jangu, child: Text('장구')),
-                PopupMenuItem(value: Sound.buk, child: Text('북')),
-                PopupMenuItem(value: Sound.clave, child: Text('나무')),
-              ],
+          icon: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.music_note, size: 28),
+              SizedBox(width: 4),
+              Text(currentSound.label),
+            ],
+          ),
+          itemBuilder: (context) => const [
+            PopupMenuItem(value: Sound.jangu, child: Text('장구')),
+            PopupMenuItem(value: Sound.buk, child: Text('북')),
+            PopupMenuItem(value: Sound.clave, child: Text('나무')),
+          ],
           onSelected: (value) {
             context.read<MetronomeBloc>().add(ChangeSound(value));
           },
