@@ -59,7 +59,7 @@ abstract class AppTextStyles {
 
   static const TextStyle title3Sb = TextStyle(
     fontSize: 20,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w600,
     fontFamily: "Pretendard",
     height: 1.25,
     letterSpacing: -0.08,
