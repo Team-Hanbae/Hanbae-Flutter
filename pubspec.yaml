@@ -71,6 +71,7 @@ flutter:
     - assets/images/
     - assets/images/logos/
     - assets/images/banner/
+    - assets/images/icon/
     - assets/sounds/clave_weak.mp3
     - assets/sounds/clave_medium.mp3
     - assets/sounds/clave_strong.mp3
