@@ -55,3 +55,7 @@ class ChangeSound extends MetronomeEvent {
 }
 
 class ToggleFlash extends MetronomeEvent {}
+
+class ResetMetronome extends MetronomeEvent {
+  const ResetMetronome();
+}

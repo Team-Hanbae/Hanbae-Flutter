@@ -21,6 +21,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     // 화면 반짝임 기능
     return BlocListener<MetronomeBloc, MetronomeState>(
       listener: (context, state) {
@@ -36,33 +37,33 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
         }
       },
       child: Stack(
-        children: [
-          // 메트로놈 스크린
-          Scaffold(
-            appBar: AppBar(
-              toolbarHeight: 44.0,
-              leading: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.chevron_left),
-              ),
-              title: Text(
-                widget.jangdan.name,
-                style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary),
-              ),
-              centerTitle: true,
-              actions: [
-                IconButton(onPressed: () {}, icon: const Icon(Icons.replay)),
-                PopupMenuButton(
-                  icon: const Icon(Icons.upload),
-                  itemBuilder: (c) => const [
-                    PopupMenuItem(child: Text("popupMenu1")),
-                    PopupMenuItem(child: Text("popupMenu2")),
-                    PopupMenuItem(child: Text("popupMenu3")),
-                  ],
-                ),
-              ],
-            ),
-            body: Column(
+    children: [
+      Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 44.0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(
+              context,
+            ); // This will pop the current screen off the navigation stack
+          },
+          icon: Icon(Icons.chevron_left),
+        ),
+        title: Text(
+          jangdan.name,
+          style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<MetronomeBloc>().add(const ResetMetronome());
+            },
+            icon: Icon(Icons.replay),
+          ),
+        ],
+      ),
+      body: Column(
               children: [
                 BlocBuilder<MetronomeBloc, MetronomeState>(
                   builder: (context, state) => HanbaeBoard(),
