@@ -37,6 +37,7 @@ class AppColors {
   static const Color backgroundNavigationbar = ColorPrimitives.blackBlack11;
   static const Color backgroundImageDefault = ColorPrimitives.blackBlack10;
   static const Color backgroundImageActive = ColorPrimitives.orangeOrange400;
+  static const Color backgroundPopupMenu = ColorPrimitives.blackBlack10;
 
   static const Color buttonPrimary = ColorPrimitives.blackBlack8;
   static const Color buttonBpmControlDefault = ColorPrimitives.blackBlack10;
