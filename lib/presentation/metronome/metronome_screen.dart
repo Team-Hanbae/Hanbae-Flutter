@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/presentation/metronome/hanbae_board.dart';
 import 'package:hanbae/presentation/metronome/metronome_control.dart';
@@ -28,7 +29,12 @@ class MetronomeScreen extends StatelessWidget {
           style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary),
         ),
         centerTitle: true,
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.replay))],
+        actions: [
+          IconButton(onPressed: () {
+            context.read<MetronomeBloc>().add(SelectJangdan(basicJangdanData[jangdan.jangdanType.name] ?? jangdan));
+        },
+        icon: Icon(Icons.replay))
+        ],
       ),
       body: Column(
         children: [
