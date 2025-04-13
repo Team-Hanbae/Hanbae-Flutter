@@ -19,21 +19,23 @@ class MetronomeScreen extends StatelessWidget {
         toolbarHeight: 44.0,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context); // This will pop the current screen off the navigation stack
+            Navigator.pop(
+              context,
+            ); // This will pop the current screen off the navigation stack
           },
           icon: Icon(Icons.chevron_left),
         ),
-        title: Text(jangdan.name, style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary,)),
+        title: Text(
+          jangdan.name,
+          style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary),
+        ),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.replay)),
-          PopupMenuButton(
-            icon: Icon(Icons.upload),
-            itemBuilder: (context) => <PopupMenuEntry>[
-              PopupMenuItem(child: Text("popupMenu1")),
-              PopupMenuItem(child: Text("popupMenu2")),
-              PopupMenuItem(child: Text("popupMenu3")),
-            ],
+          IconButton(
+            onPressed: () {
+              context.read<MetronomeBloc>().add(const ResetMetronome());
+            },
+            icon: Icon(Icons.replay),
           ),
         ],
       ),
@@ -45,16 +47,14 @@ class MetronomeScreen extends StatelessWidget {
             },
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: MetronomeSettingControl(),
           ),
           BlocBuilder<MetronomeBloc, MetronomeState>(
             builder: (context, state) {
               return MetronomeControl();
             },
-          )
+          ),
         ],
       ),
     );
