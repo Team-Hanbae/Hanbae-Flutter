@@ -8,6 +8,7 @@ class MetronomeState extends Equatable {
   final int currentRowIndex;
   final int currentDaebakIndex;
   final int currentSobakIndex;
+  final Sound currentSound;
 
   const MetronomeState({
     required this.selectedJangdan,
@@ -17,6 +18,7 @@ class MetronomeState extends Equatable {
     this.currentRowIndex = 0,
     this.currentDaebakIndex = 0,
     this.currentSobakIndex = 0,
+    required this.currentSound,
   });
 
   MetronomeState copyWith({
@@ -27,6 +29,7 @@ class MetronomeState extends Equatable {
     int? currentRowIndex,
     int? currentDaebakIndex,
     int? currentSobakIndex,
+    Sound? currentSound,
   }) {
     return MetronomeState(
       selectedJangdan: selectedJangdan ?? this.selectedJangdan,
@@ -36,6 +39,7 @@ class MetronomeState extends Equatable {
       currentRowIndex: currentRowIndex ?? this.currentRowIndex,
       currentDaebakIndex: currentDaebakIndex ?? this.currentDaebakIndex,
       currentSobakIndex: currentSobakIndex ?? this.currentSobakIndex,
+      currentSound: currentSound ?? this.currentSound,
     );
   }
 
@@ -48,5 +52,6 @@ class MetronomeState extends Equatable {
         currentRowIndex,
         currentDaebakIndex,
         currentSobakIndex,
+        currentSound,
       ];
 }

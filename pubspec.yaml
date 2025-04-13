@@ -39,6 +39,7 @@ dependencies:
   freezed_annotation: ^3.0.0
   equatable: ^2.0.7
   flutter_svg: ^2.0.17
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
@@ -70,9 +71,9 @@ flutter:
     - assets/images/
     - assets/images/logos/
     - assets/images/banner/
-    - assets/sounds/beep_weak.mp3
-    - assets/sounds/beep_medium.mp3
-    - assets/sounds/beep_strong.mp3
+    - assets/sounds/clave_weak.mp3
+    - assets/sounds/clave_medium.mp3
+    - assets/sounds/clave_strong.mp3
     - assets/sounds/buk_weak.mp3
     - assets/sounds/buk_medium.mp3
     - assets/sounds/buk_strong.mp3

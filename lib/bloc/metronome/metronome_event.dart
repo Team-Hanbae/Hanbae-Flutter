@@ -45,3 +45,11 @@ class ToggleAccent extends MetronomeEvent {
 }
 
 class ToggleSobak extends MetronomeEvent {}
+
+class ChangeSound extends MetronomeEvent {
+  final Sound sound;
+  const ChangeSound(this.sound);
+
+  @override
+  List<Object?> get props => [sound];
+}

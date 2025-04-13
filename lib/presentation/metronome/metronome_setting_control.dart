@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/model/sound.dart';
 
 class MetronomeSettingControl extends StatelessWidget {
   const MetronomeSettingControl({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final currentSound = context.select((MetronomeBloc bloc) => bloc.state.currentSound);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -20,15 +23,23 @@ class MetronomeSettingControl extends StatelessWidget {
           icon: Icon(Icons.offline_bolt_outlined, size: 32),
           onPressed: () {},
         ),
-        PopupMenuButton<String>(
-          icon: Icon(Icons.music_note, size: 28),
-          itemBuilder:
-              (context) => const [
-                PopupMenuItem(value: 'Beep', child: Text('Beep')),
-                PopupMenuItem(value: 'Click', child: Text('Click')),
-                PopupMenuItem(value: 'Woodblock', child: Text('Woodblock')),
-              ],
-          onSelected: (value) {},
+        PopupMenuButton<Sound>(
+          icon: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.music_note, size: 28),
+              SizedBox(width: 4),
+              Text(currentSound.label),
+            ],
+          ),
+          itemBuilder: (context) => const [
+            PopupMenuItem(value: Sound.jangu, child: Text('장구')),
+            PopupMenuItem(value: Sound.buk, child: Text('북')),
+            PopupMenuItem(value: Sound.clave, child: Text('나무')),
+          ],
+          onSelected: (value) {
+            context.read<MetronomeBloc>().add(ChangeSound(value));
+          },
         ),
       ],
     );

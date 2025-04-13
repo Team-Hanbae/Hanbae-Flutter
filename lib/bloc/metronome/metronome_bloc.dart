@@ -6,6 +6,8 @@ import 'dart:core'; // Add this import for Stopwatch
 import '../../model/jangdan.dart';
 import '../../data/basic_jangdan_data.dart';
 import '../../data/sound_manager.dart';
+import '../../model/sound.dart'; // Add this import for Sound
+import '../../data/sound_preferences.dart'; // Add import for SoundPreferences
 
 part 'metronome_event.dart';
 part 'metronome_state.dart';
@@ -30,8 +32,13 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentRowIndex: lastRowIndex,
           currentDaebakIndex: lastDaebakIndex,
           currentSobakIndex: lastSobakIndex,
+          currentSound: Sound.clave, // Initialize currentSound field
         );
       }()) {
+    SoundPreferences.load().then((loaded) { // Load stored sound
+      add(ChangeSound(loaded));
+    });
+
     on<SelectJangdan>((event, emit) {
       emit(
         state.copyWith(selectedJangdan: event.jangdan, bpm: event.jangdan.bpm),
@@ -79,7 +86,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       final accent = jangdan.accents[row][daebak][sobak];
       if (state.isSobakOn || sobak == 0) {
         if (accent != Accent.none) {
-          _soundManager.play('sounds/beep_${accent.name}.mp3');
+          _soundManager.play('sounds/${state.currentSound.name}_${accent.name}.mp3'); // Update sound playback
         }
         print('🔊 $row $daebak $sobak ${accent.name}');
       }
@@ -102,6 +109,11 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     on<ChangeBpm>((event, emit) {
       final newBpm = (state.bpm + event.delta).clamp(10, 300);
       emit(state.copyWith(bpm: newBpm));
+    });
+
+    on<ChangeSound>((event, emit) { // Add new event handler
+      SoundPreferences.save(event.sound); // Save selected sound to preferences
+      emit(state.copyWith(currentSound: event.sound));
     });
 
     on<ToggleAccent>((event, emit) {
