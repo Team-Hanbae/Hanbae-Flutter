@@ -53,6 +53,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   freezed: ^3.0.3
   build_runner: ^2.4.15
+  flutter_launcher_icons: ^0.13.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -69,6 +70,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/icon/
     - assets/images/logos/
     - assets/images/banner/
     - assets/sounds/clave_weak.mp3
@@ -128,4 +130,8 @@ flutter:
           weight: 800
         - asset: assets/fonts/Pretendard-Black.ttf
           weight: 900
-          
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/images/icon/AppIcon.png"
