@@ -37,7 +37,8 @@ class HanbaeBoard extends StatelessWidget {
                           .take(rowIndex)
                           .fold<int>(0, (sum, row) => sum + row.length) + daebakIndex;
 
-                        return Expanded(
+                        return Flexible(
+                          flex: daebak.length,
                           child: BakbarSet(
                             daebak: daebak,
                             rowIndex: rowIndex,
