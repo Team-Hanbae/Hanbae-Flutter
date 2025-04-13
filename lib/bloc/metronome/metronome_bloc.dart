@@ -15,7 +15,9 @@ part 'metronome_state.dart';
 class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
   final Stopwatch _stopwatch = Stopwatch(); // Add Stopwatch field
   Timer? _tickTimer; // Add private Timer field
+  Timer? _tapResetTimer; // Add private Timer field for tap reset
   final _soundManager = SoundManager();
+  final List<DateTime> _tapHistory = []; // Add private list to hold tap timestamps
 
   MetronomeBloc()
     : super(() {
@@ -33,6 +35,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentDaebakIndex: lastDaebakIndex,
           currentSobakIndex: lastSobakIndex,
           currentSound: Sound.clave, // Initialize currentSound field
+          isTapping: false, // Set initial value for isTapping
         );
       }()) {
     SoundPreferences.load().then((loaded) { // Load stored sound
@@ -116,6 +119,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
 
     on<ChangeBpm>((event, emit) {
+      add(const StopTapping());
       final newBpm = (state.bpm + event.delta).clamp(10, 300);
       emit(state.copyWith(bpm: newBpm));
     });
@@ -125,7 +129,47 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       emit(state.copyWith(currentSound: event.sound));
     });
 
+    on<TapTempo>((event, emit) { // Handle TapTempo event
+      emit(state.copyWith(isTapping: true)); // Immediately reflect tapping status
+      final now = DateTime.now();
+
+      if (_tapHistory.isNotEmpty &&
+          now.difference(_tapHistory.last).inMilliseconds > 6000) {
+        _tapHistory.clear(); // Reset if taps are too far apart
+      }
+
+      _tapHistory.add(now);
+
+      if (_tapHistory.length >= 2) {
+        final intervals = <int>[];
+        for (int i = 1; i < _tapHistory.length; i++) {
+          intervals.add(_tapHistory[i].difference(_tapHistory[i - 1]).inMilliseconds);
+        }
+        final averageMs = intervals.reduce((a, b) => a + b) / intervals.length;
+        final bpm = (60000 / averageMs).round().clamp(10, 300);
+
+        emit(state.copyWith(
+          bpm: bpm,
+          isTapping: true, // Update to set isTapping to true
+        ));
+      }
+
+      if (_tapHistory.length > 5) {
+        _tapHistory.removeAt(0); // Keep last 5 taps
+      }
+
+      _tapResetTimer?.cancel();
+      _tapResetTimer = Timer(const Duration(seconds: 6), () {
+        add(const StopTapping());
+      });
+    });
+
+    on<StopTapping>((event, emit) {
+      emit(state.copyWith(isTapping: false));
+    });
+
     on<ToggleAccent>((event, emit) {
+      add(const StopTapping());
       final oldJangdan = state.selectedJangdan;
 
       // Deep copy of accents

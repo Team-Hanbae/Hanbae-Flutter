@@ -57,3 +57,11 @@ class ChangeSound extends MetronomeEvent {
 class ResetMetronome extends MetronomeEvent {
   const ResetMetronome();
 }
+
+class TapTempo extends MetronomeEvent {
+  const TapTempo();
+}
+
+class StopTapping extends MetronomeEvent {
+  const StopTapping();
+}
