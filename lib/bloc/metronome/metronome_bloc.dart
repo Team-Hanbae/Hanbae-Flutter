@@ -119,6 +119,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
 
     on<ChangeBpm>((event, emit) {
+      add(const StopTapping());
       final newBpm = (state.bpm + event.delta).clamp(10, 300);
       emit(state.copyWith(bpm: newBpm));
     });
@@ -168,6 +169,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
 
     on<ToggleAccent>((event, emit) {
+      add(const StopTapping());
       final oldJangdan = state.selectedJangdan;
 
       // Deep copy of accents
