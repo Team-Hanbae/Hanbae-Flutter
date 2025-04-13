@@ -9,6 +9,8 @@ class MetronomeControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTapping = context.select((MetronomeBloc bloc) => bloc.state.isTapping);
+
     return Expanded(
       child: Container(
         margin: const EdgeInsets.all(16.0),
@@ -24,11 +26,34 @@ class MetronomeControl extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  '빠르기(BPM)',
-                  style: AppTextStyles.calloutR.copyWith(
-                    color: AppColors.textTertiary,
-                    // backgroundColor: Colors.yellow,
+                SizedBox(
+                  height: 32,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child:
+                        isTapping
+                            ? Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.backgroundDefault,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 5,
+                                horizontal: 16,
+                              ),
+                              child: Text(
+                                "원하는 빠르기로 계속 탭해주세요",
+                                style: AppTextStyles.bodySb.copyWith(
+                                  color: AppColors.textDefault,
+                                ),
+                              ),
+                            )
+                            : Text(
+                              '빠르기(BPM)',
+                              style: AppTextStyles.calloutR.copyWith(
+                                color: AppColors.textTertiary,
+                              ),
+                            ),
                   ),
                 ),
 
@@ -67,16 +92,34 @@ class MetronomeControl extends StatelessWidget {
                           width: 136,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              state.bpm.toString(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 64,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.textButtonSecondary,
-                                letterSpacing: -0.5
-                              ),
-                            ),
+                            child:
+                                state.isTapping
+                                    ? Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColors.backgroundDefault,
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Text(
+                                        state.bpm.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 64,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.textBPMSearch,
+                                          letterSpacing: -0.5,
+                                        ),
+                                      ),
+                                    )
+                                    : Text(
+                                      state.bpm.toString(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 64,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.textButtonSecondary,
+                                        letterSpacing: -0.5,
+                                      ),
+                                    ),
                           ),
                         );
                       },
@@ -143,15 +186,21 @@ class MetronomeControl extends StatelessWidget {
                         },
                         style: ElevatedButton.styleFrom(
                           fixedSize: const Size(120, 80),
-                          backgroundColor: AppColors.buttonPrimary,
+                          backgroundColor: isTapping
+                              ? AppColors.buttonActive
+                              : AppColors.buttonPrimary,
                         ),
                         child: Text(
-                          "빠르기\n찾기",
+                          isTapping ? "탭" : "빠르기\n찾기",
                           textAlign: TextAlign.center,
-                          style: AppTextStyles.bodyR.copyWith(
-                            color: AppColors.textButtonPrimary,
-                            height: 1.12
-                          ),
+                          style: isTapping
+                              ? AppTextStyles.title1R.copyWith(
+                                  color: AppColors.textButtonEmphasis,
+                                )
+                              : AppTextStyles.bodyR.copyWith(
+                                  color: AppColors.textButtonPrimary,
+                                  height: 1.12,
+                                ),
                         ),
                       ),
                     ],

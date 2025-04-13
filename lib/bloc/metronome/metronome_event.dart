@@ -61,3 +61,7 @@ class ResetMetronome extends MetronomeEvent {
 class TapTempo extends MetronomeEvent {
   const TapTempo();
 }
+
+class StopTapping extends MetronomeEvent {
+  const StopTapping();
+}

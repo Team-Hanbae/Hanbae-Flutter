@@ -15,6 +15,7 @@ part 'metronome_state.dart';
 class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
   final Stopwatch _stopwatch = Stopwatch(); // Add Stopwatch field
   Timer? _tickTimer; // Add private Timer field
+  Timer? _tapResetTimer; // Add private Timer field for tap reset
   final _soundManager = SoundManager();
   final List<DateTime> _tapHistory = []; // Add private list to hold tap timestamps
 
@@ -34,6 +35,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentDaebakIndex: lastDaebakIndex,
           currentSobakIndex: lastSobakIndex,
           currentSound: Sound.clave, // Initialize currentSound field
+          isTapping: false, // Set initial value for isTapping
         );
       }()) {
     SoundPreferences.load().then((loaded) { // Load stored sound
@@ -127,6 +129,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
 
     on<TapTempo>((event, emit) { // Handle TapTempo event
+      emit(state.copyWith(isTapping: true)); // Immediately reflect tapping status
       final now = DateTime.now();
 
       if (_tapHistory.isNotEmpty &&
@@ -144,12 +147,24 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         final averageMs = intervals.reduce((a, b) => a + b) / intervals.length;
         final bpm = (60000 / averageMs).round().clamp(10, 300);
 
-        emit(state.copyWith(bpm: bpm));
+        emit(state.copyWith(
+          bpm: bpm,
+          isTapping: true, // Update to set isTapping to true
+        ));
       }
 
       if (_tapHistory.length > 5) {
         _tapHistory.removeAt(0); // Keep last 5 taps
       }
+
+      _tapResetTimer?.cancel();
+      _tapResetTimer = Timer(const Duration(seconds: 6), () {
+        add(const StopTapping());
+      });
+    });
+
+    on<StopTapping>((event, emit) {
+      emit(state.copyWith(isTapping: false));
     });
 
     on<ToggleAccent>((event, emit) {
