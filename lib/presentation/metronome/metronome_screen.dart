@@ -21,6 +21,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 화면 반짝임 기능
     return BlocListener<MetronomeBloc, MetronomeState>(
       listener: (context, state) {
         if (state.isFlashOn &&
@@ -36,6 +37,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
       },
       child: Stack(
         children: [
+          // 메트로놈 스크린
           Scaffold(
             appBar: AppBar(
               toolbarHeight: 44.0,
@@ -75,6 +77,8 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
               ],
             ),
           ),
+
+          // 화면반짝임 기능 컬러박스
           Positioned.fill(
             child: IgnorePointer(
               ignoring: !_showFlashOverlay,
