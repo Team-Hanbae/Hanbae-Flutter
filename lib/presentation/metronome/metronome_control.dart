@@ -260,4 +260,3 @@ class _MetronomeControlState extends State<MetronomeControl> {
     );
   }
 }
-
