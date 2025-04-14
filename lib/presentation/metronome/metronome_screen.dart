@@ -37,48 +37,53 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
         }
       },
       child: Stack(
-    children: [
-      Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 44.0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(
-              context,
-            ); // This will pop the current screen off the navigation stack
-          },
-          icon: Icon(Icons.chevron_left),
-        ),
-        title: Text(
-          widget.jangdan.name,
-          style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.read<MetronomeBloc>().add(const ResetMetronome());
+        children: [
+          PopScope(
+            canPop: true,
+            onPopInvokedWithResult: (bool didPop, result) async {
+              if (didPop == true) {
+                context.read<MetronomeBloc>().add(Stop());
+              }
             },
-            icon: Icon(Icons.replay),
-          ),
-        ],
-      ),
-      body: Column(
-              children: [
-                BlocBuilder<MetronomeBloc, MetronomeState>(
-                  builder: (context, state) => HanbaeBoard(),
+            child: Scaffold(
+              appBar: AppBar(
+                toolbarHeight: 44.0,
+                leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.chevron_left),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: MetronomeOptions(),
+                title: Text(
+                  widget.jangdan.name,
+                  style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary),
                 ),
-                BlocBuilder<MetronomeBloc, MetronomeState>(
-                  builder: (context, state) => MetronomeControl(),
-                ),
-              ],
+                centerTitle: true,
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      context.read<MetronomeBloc>().add(const ResetMetronome());
+                    },
+                    icon: Icon(Icons.replay),
+                  ),
+                ],
+              ),
+              body: Column(
+                children: [
+                  BlocBuilder<MetronomeBloc, MetronomeState>(
+                    builder: (context, state) => HanbaeBoard(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: MetronomeOptions(),
+                  ),
+                  BlocBuilder<MetronomeBloc, MetronomeState>(
+                    builder: (context, state) => MetronomeControl(),
+                  ),
+                ],
+              ),
             ),
           ),
-
           // 화면반짝임 기능 컬러박스
           Positioned.fill(
             child: IgnorePointer(
