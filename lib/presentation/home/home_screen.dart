@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
 // import 'package:hanbae/data/custom_jangdan_data.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
@@ -31,9 +32,19 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.asset("assets/images/banner/SurveyBanner.png"),
+              GestureDetector(
+                onTap: () async {
+                  final Uri url = Uri.parse(
+                    'https://docs.google.com/forms/d/e/1FAIpQLScgR9DR0iP_u-xpJfccKK_FF9x4rhEgCwNlsFkYFWe37xuXGg/viewform?usp=sharing',
+                  );
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset("assets/images/banner/SurveyBanner.png"),
+                ),
               ),
 
               const SizedBox(height: 24),
