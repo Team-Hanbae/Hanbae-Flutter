@@ -75,3 +75,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+hanbae-release-key.jks
+key.properties
