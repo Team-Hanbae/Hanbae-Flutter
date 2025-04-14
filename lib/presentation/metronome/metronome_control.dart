@@ -3,9 +3,17 @@ import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc package
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart'; // Import the MetronomeBloc
+import 'dart:async'; // Import the async package for Timer
 
-class MetronomeControl extends StatelessWidget {
+class MetronomeControl extends StatefulWidget {
   const MetronomeControl({super.key});
+
+  @override
+  _MetronomeControlState createState() => _MetronomeControlState();
+}
+
+class _MetronomeControlState extends State<MetronomeControl> {
+  Timer? _bpmChangeTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -66,22 +74,35 @@ class MetronomeControl extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Minus Button
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: const BoxDecoration(
-                        color: AppColors.buttonBpmControlDefault,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.remove,
-                          size: 32,
-                          color: AppColors.textButtonSecondary,
+                    GestureDetector(
+                      onLongPressStart: (_) {
+                        _bpmChangeTimer = Timer.periodic(
+                          const Duration(milliseconds: 100),
+                          (_) {
+                            final bpm = context.read<MetronomeBloc>().state.bpm;
+                            final gap = ((bpm - 1) ~/ 10 * 10) - bpm;
+                            context.read<MetronomeBloc>().add(ChangeBpm(gap));
+                          },
+                        );
+                      },
+                      onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
+                      child: Container(
+                        width: 56,
+                        height: 56,
+                        decoration: const BoxDecoration(
+                          color: AppColors.buttonBpmControlDefault,
+                          shape: BoxShape.circle,
                         ),
-                        onPressed: () {
-                          context.read<MetronomeBloc>().add(ChangeBpm(-1));
-                        },
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.remove,
+                            size: 32,
+                            color: AppColors.textButtonSecondary,
+                          ),
+                          onPressed: () {
+                            context.read<MetronomeBloc>().add(ChangeBpm(-1));
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -130,22 +151,35 @@ class MetronomeControl extends StatelessWidget {
                     const SizedBox(width: 12),
 
                     // Plus Button
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: const BoxDecoration(
-                        color: AppColors.buttonBpmControlDefault,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.add,
-                          size: 32,
-                          color: AppColors.textButtonSecondary,
+                    GestureDetector(
+                      onLongPressStart: (_) {
+                        _bpmChangeTimer = Timer.periodic(
+                          const Duration(milliseconds: 100),
+                          (_) {
+                            final bpm = context.read<MetronomeBloc>().state.bpm;
+                            final gap = ((bpm + 10) ~/ 10 * 10) - bpm;
+                            context.read<MetronomeBloc>().add(ChangeBpm(gap));
+                          },
+                        );
+                      },
+                      onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
+                      child: Container(
+                        width: 56,
+                        height: 56,
+                        decoration: const BoxDecoration(
+                          color: AppColors.buttonBpmControlDefault,
+                          shape: BoxShape.circle,
                         ),
-                        onPressed: () {
-                          context.read<MetronomeBloc>().add(ChangeBpm(1));
-                        },
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.add,
+                            size: 32,
+                            color: AppColors.textButtonSecondary,
+                          ),
+                          onPressed: () {
+                            context.read<MetronomeBloc>().add(ChangeBpm(1));
+                          },
+                        ),
                       ),
                     ),
                   ],
@@ -226,3 +260,4 @@ class MetronomeControl extends StatelessWidget {
     );
   }
 }
+
