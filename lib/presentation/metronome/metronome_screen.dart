@@ -68,19 +68,30 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                   ),
                 ],
               ),
-              body: Column(
-                children: [
-                  BlocBuilder<MetronomeBloc, MetronomeState>(
-                    builder: (context, state) => HanbaeBoard(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: MetronomeOptions(),
-                  ),
-                  BlocBuilder<MetronomeBloc, MetronomeState>(
-                    builder: (context, state) => MetronomeControl(),
-                  ),
-                ],
+              body: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          children: [
+                            BlocBuilder<MetronomeBloc, MetronomeState>(
+                              builder: (context, state) => HanbaeBoard(),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: MetronomeOptions(),
+                            ),
+                            BlocBuilder<MetronomeBloc, MetronomeState>(
+                              builder: (context, state) => MetronomeControl(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
