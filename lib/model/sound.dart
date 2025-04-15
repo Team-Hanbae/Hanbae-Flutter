@@ -1,5 +1,5 @@
 enum Sound {
-  jangu,
+  janggu,
   buk,
   clave,
 }
@@ -7,7 +7,7 @@ enum Sound {
 extension SoundLabel on Sound {
   String get label {
     switch (this) {
-      case Sound.jangu:
+      case Sound.janggu:
         return '장구';
       case Sound.buk:
         return '북';

@@ -152,7 +152,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
               },
               itemBuilder: (ctx) => const [
                 PopupMenuItem(
-                  value: Sound.jangu,
+                  value: Sound.janggu,
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Text('장구', style: AppTextStyles.bodyR),
                 ),
