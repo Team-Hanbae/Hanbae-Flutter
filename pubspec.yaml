@@ -80,9 +80,9 @@ flutter:
     - assets/sounds/buk_weak.mp3
     - assets/sounds/buk_medium.mp3
     - assets/sounds/buk_strong.mp3
-    - assets/sounds/jangu_weak.mp3
-    - assets/sounds/jangu_medium.mp3
-    - assets/sounds/jangu_strong.mp3
+    - assets/sounds/janggu_weak.mp3
+    - assets/sounds/janggu_medium.mp3
+    - assets/sounds/janggu_strong.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
