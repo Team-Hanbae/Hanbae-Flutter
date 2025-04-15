@@ -1,4 +1,4 @@
-package com.example.hanbae
+package krabs.hanbae
 
 import io.flutter.embedding.android.FlutterActivity
 
