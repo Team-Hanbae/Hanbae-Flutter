@@ -105,7 +105,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 2),
 
                     // BPM Text
                     // Bloc 상태를 사용하여 BPM 값을 업데이트
@@ -126,7 +126,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                                         state.bpm.toString(),
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
-                                          fontSize: 64,
+                                          fontSize: 58,
                                           fontWeight: FontWeight.w500,
                                           color: AppColors.textBPMSearch,
                                           letterSpacing: -0.5,
@@ -137,7 +137,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                                       state.bpm.toString(),
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
-                                        fontSize: 64,
+                                        fontSize: 58,
                                         fontWeight: FontWeight.w500,
                                         color: AppColors.textButtonSecondary,
                                         letterSpacing: -0.5,
@@ -148,7 +148,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       },
                     ),
 
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 2),
 
                     // Plus Button
                     GestureDetector(
