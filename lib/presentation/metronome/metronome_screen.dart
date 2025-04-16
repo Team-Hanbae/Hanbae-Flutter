@@ -45,6 +45,8 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                 context.read<MetronomeBloc>().add(Stop());
               }
             },
+
+            // 메트로놈 스크린 시작
             child: Scaffold(
               appBar: AppBar(
                 toolbarHeight: 44.0,
