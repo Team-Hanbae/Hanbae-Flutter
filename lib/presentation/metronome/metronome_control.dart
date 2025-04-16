@@ -87,8 +87,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       },
                       onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
                       child: Container(
-                        width: 56,
-                        height: 56,
+                        width: 50,
+                        height: 50,
                         decoration: const BoxDecoration(
                           color: AppColors.buttonBpmControlDefault,
                           shape: BoxShape.circle,
@@ -164,8 +164,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       },
                       onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
                       child: Container(
-                        width: 56,
-                        height: 56,
+                        width: 50,
+                        height: 50,
                         decoration: const BoxDecoration(
                           color: AppColors.buttonBpmControlDefault,
                           shape: BoxShape.circle,
