@@ -32,7 +32,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
               child: Container(
                 height: 50,
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundCard,
+                  color: AppColors.buttonToggleOff,
                   borderRadius: BorderRadius.circular(12),
                   border: isOn
                       ? Border.all(
@@ -72,7 +72,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
               child: Container(
                 height: 50,
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundCard,
+                  color: AppColors.buttonToggleOff,
                   borderRadius: BorderRadius.circular(12),
                   border: isOn
                       ? Border.all(
@@ -107,7 +107,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
           child: Container(
             height: 50,
             decoration: BoxDecoration(
-              color: AppColors.backgroundCard,
+              color: AppColors.buttonToggleOff,
               borderRadius: BorderRadius.circular(12),
               border: _isSoundMenuOpen
                   ? Border.all(color: AppColors.buttonToggleOn, width: 1)
