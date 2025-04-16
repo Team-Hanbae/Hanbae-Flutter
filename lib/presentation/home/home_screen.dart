@@ -35,7 +35,7 @@ class HomeScreen extends StatelessWidget {
               GestureDetector(
                 onTap: () async {
                   final Uri url = Uri.parse(
-                    'https://docs.google.com/forms/d/e/1FAIpQLScgR9DR0iP_u-xpJfccKK_FF9x4rhEgCwNlsFkYFWe37xuXGg/viewform?usp=sharing',
+                    'https://forms.gle/aB7Rks3KDA8NP9yM7',
                   );
                   if (await canLaunchUrl(url)) {
                     await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Image.asset("assets/images/banner/SurveyBanner.png"),
+                  child: Image.asset("assets/images/banner/TestBanner.png"),
                 ),
               ),
 
