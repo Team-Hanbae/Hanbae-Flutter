@@ -204,7 +204,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(0, 80),
+                                minimumSize: const Size(0, 72),
                                 backgroundColor: isPlaying
                                     ? AppColors.buttonPlaystop
                                     : AppColors.buttonPlaystart,
@@ -212,7 +212,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                               child: Text(
                                 isPlaying ? "멈춤" : "시작",
                                 style: TextStyle(
-                                  fontSize: 34,
+                                  fontSize: 32,
                                   fontWeight: FontWeight.w500,
                                   color: isPlaying
                                       ? AppColors.textButtonPrimary
@@ -223,13 +223,16 @@ class _MetronomeControlState extends State<MetronomeControl> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 16),
+
+                      const SizedBox(width: 12),
+
+                      // 빠르기 찾기 버튼
                       ElevatedButton(
                         onPressed: () {
                           context.read<MetronomeBloc>().add(const TapTempo());
                         },
                         style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(120, 80),
+                          fixedSize: const Size(120, 72),
                           backgroundColor:
                               isTapping
                                   ? AppColors.buttonActive
