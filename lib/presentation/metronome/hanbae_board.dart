@@ -20,7 +20,7 @@ class HanbaeBoard extends StatelessWidget {
         children: [
           SizedBox(
             height:
-                (jangdan.jangdanType.sobakSegmentCount != null) ? 24.0 : 36.0,
+                (jangdan.jangdanType.sobakSegmentCount != null) ? 16.0 : 28.0,
           ),
           ...jangdan.accents.asMap().entries.map((rowEntry) {
             final rowIndex = rowEntry.key;
@@ -53,14 +53,14 @@ class HanbaeBoard extends StatelessWidget {
           }),
           SizedBox(
             height:
-                (jangdan.jangdanType.sobakSegmentCount != null) ? 12.0 : 36.0,
+                (jangdan.jangdanType.sobakSegmentCount != null) ? 4.0 : 28.0,
           ),
           if (jangdan.jangdanType.sobakSegmentCount != null) ...[
             SobakSegment(
               sobakSegmentCount: jangdan.jangdanType.sobakSegmentCount!,
               activedSobak: context.select((MetronomeBloc bloc) => bloc.state.currentSobakIndex),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 14.0),
           ],
         ],
       ),
@@ -325,7 +325,7 @@ class Bakbar extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: AppColors.textDefault,
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

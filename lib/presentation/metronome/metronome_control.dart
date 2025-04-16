@@ -87,8 +87,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       },
                       onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
                       child: Container(
-                        width: 56,
-                        height: 56,
+                        width: 50,
+                        height: 50,
                         decoration: const BoxDecoration(
                           color: AppColors.buttonBpmControlDefault,
                           shape: BoxShape.circle,
@@ -105,7 +105,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 2),
 
                     // BPM Text
                     // Bloc 상태를 사용하여 BPM 값을 업데이트
@@ -126,7 +126,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                                         state.bpm.toString(),
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
-                                          fontSize: 64,
+                                          fontSize: 58,
                                           fontWeight: FontWeight.w500,
                                           color: AppColors.textBPMSearch,
                                           letterSpacing: -0.5,
@@ -137,7 +137,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                                       state.bpm.toString(),
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
-                                        fontSize: 64,
+                                        fontSize: 58,
                                         fontWeight: FontWeight.w500,
                                         color: AppColors.textButtonSecondary,
                                         letterSpacing: -0.5,
@@ -148,7 +148,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       },
                     ),
 
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 2),
 
                     // Plus Button
                     GestureDetector(
@@ -164,8 +164,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       },
                       onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
                       child: Container(
-                        width: 56,
-                        height: 56,
+                        width: 50,
+                        height: 50,
                         decoration: const BoxDecoration(
                           color: AppColors.buttonBpmControlDefault,
                           shape: BoxShape.circle,
@@ -204,7 +204,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(0, 80),
+                                minimumSize: const Size(0, 72),
                                 backgroundColor: isPlaying
                                     ? AppColors.buttonPlaystop
                                     : AppColors.buttonPlaystart,
@@ -212,7 +212,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                               child: Text(
                                 isPlaying ? "멈춤" : "시작",
                                 style: TextStyle(
-                                  fontSize: 34,
+                                  fontSize: 32,
                                   fontWeight: FontWeight.w500,
                                   color: isPlaying
                                       ? AppColors.textButtonPrimary
@@ -223,13 +223,16 @@ class _MetronomeControlState extends State<MetronomeControl> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 16),
+
+                      const SizedBox(width: 12),
+
+                      // 빠르기 찾기 버튼
                       ElevatedButton(
                         onPressed: () {
                           context.read<MetronomeBloc>().add(const TapTempo());
                         },
                         style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(120, 80),
+                          fixedSize: const Size(120, 72),
                           backgroundColor:
                               isTapping
                                   ? AppColors.buttonActive

@@ -66,7 +66,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle headlineSb = TextStyle(
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
     fontFamily: "Pretendard",
     height: 1.29,
@@ -74,7 +74,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle bodyR = TextStyle(
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: FontWeight.w400,
     fontFamily: "Pretendard",
     height: 1.29,
@@ -82,7 +82,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle bodySb = TextStyle(
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
     fontFamily: "Pretendard",
     height: 1.29,
@@ -90,7 +90,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle calloutR = TextStyle(
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: FontWeight.w400,
     fontFamily: "Pretendard",
     height: 1.31,
@@ -98,7 +98,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle calloutSb = TextStyle(
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: FontWeight.w600,
     fontFamily: "Pretendard",
     height: 1.31,
@@ -106,7 +106,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle subheadlineR = TextStyle(
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: FontWeight.w400,
     fontFamily: "Pretendard",
     height: 1.33,
@@ -114,7 +114,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle subheadlineSb = TextStyle(
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: FontWeight.w600,
     fontFamily: "Pretendard",
     height: 1.33,
@@ -122,7 +122,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle footnoteR = TextStyle(
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: FontWeight.w400,
     fontFamily: "Pretendard",
     height: 1.38,
@@ -130,7 +130,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle footnoteSb = TextStyle(
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: FontWeight.w600,
     fontFamily: "Pretendard",
     height: 1.38,
@@ -138,7 +138,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle caption1R = TextStyle(
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: FontWeight.w400,
     fontFamily: "Pretendard",
     height: 1.33,
@@ -160,7 +160,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle caption2Sb = TextStyle(
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: FontWeight.w600,
     fontFamily: "Pretendard",
     height: 1.18,
