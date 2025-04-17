@@ -3,8 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/presentation/home/home_screen.dart';
 import 'package:hanbae/theme/colors.dart';
+import 'package:hanbae/data/sound_manager.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SoundManager.preloadAllSounds();
+
   runApp(
     MultiBlocProvider(
       providers: [BlocProvider(create: (_) => MetronomeBloc())],

@@ -16,7 +16,6 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
   final Stopwatch _stopwatch = Stopwatch(); // Add Stopwatch field
   Timer? _tickTimer; // Add private Timer field
   Timer? _tapResetTimer; // Add private Timer field for tap reset
-  final _soundManager = SoundManager();
   final List<DateTime> _tapHistory = []; // Add private list to hold tap timestamps
 
   MetronomeBloc()
@@ -99,7 +98,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       final accent = jangdan.accents[row][daebak][sobak];
       if (state.isSobakOn || sobak == 0) {
         if (accent != Accent.none) {
-          _soundManager.play('sounds/${state.currentSound.name}_${accent.name}.mp3'); // Update sound playback
+          SoundManager.play(state.currentSound, accent); // Update sound playback
         }
       }
 
