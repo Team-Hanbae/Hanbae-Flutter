@@ -99,7 +99,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       final accent = jangdan.accents[row][daebak][sobak];
       if (state.isSobakOn || sobak == 0) {
         if (accent != Accent.none) {
-          _soundManager.play('sounds/${state.currentSound.name}_${accent.name}.mp3'); // Update sound playback
+          _soundManager.play(state.currentSound, accent); // Update sound playback
         }
       }
 
