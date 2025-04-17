@@ -13,4 +13,13 @@ class SoundManager {
       print('Error playing sound: $e');
     }
   }
+
+  static Future<void> preload(Sound sound, Accent accent) async {
+    final fileName = '${sound.name}_${accent.name}';
+    try {
+      await _channel.invokeMethod('preload', {'name': fileName});
+    } catch (e) {
+      print('Error preloading sound: $e');
+    }
+  }
 }

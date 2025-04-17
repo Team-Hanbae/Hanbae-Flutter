@@ -34,6 +34,15 @@ class MainActivity : FlutterActivity() {
                         result.error("INVALID_ARGUMENT", "Missing sound name", null)
                     }
                 }
+                "preload" -> {
+                    val name = call.argument<String>("name")
+                    if (name != null) {
+                        loadSound(name)
+                        result.success(null)
+                    } else {
+                        result.error("INVALID_ARGUMENT", "Missing sound name", null)
+                    }
+                }
                 else -> result.notImplemented()
             }
         }
