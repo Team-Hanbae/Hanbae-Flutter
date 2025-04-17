@@ -22,4 +22,16 @@ class SoundManager {
       print('Error preloading sound: $e');
     }
   }
+
+  static Future<void> preloadAllSounds() async {
+    final futures = <Future<void>>[];
+  
+    for (final sound in Sound.values) {
+      for (final accent in Accent.values) {
+        futures.add(preload(sound, accent));
+      }
+    }
+  
+    await Future.wait(futures);
+  }
 }
