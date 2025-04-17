@@ -1,12 +1,16 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:hanbae/model/sound.dart';
 
 class SoundManager {
-  final AudioPlayer _player = AudioPlayer()..setPlayerMode(PlayerMode.lowLatency);
+  static const MethodChannel _channel = MethodChannel('krabs.hanbae/sound');
 
-  Future<void> play(Sound sound, Accent accent) async {
-    await _player.stop(); // Ensure previous sound is stopped
-    await _player.play(AssetSource('sounds/${sound.name}_${accent.name}.mp3'));
+  static Future<void> play(Sound sound, Accent accent) async {
+    final fileName = '${sound.name}_${accent.name}';
+    try {
+      await _channel.invokeMethod('play', {'name': fileName});
+    } catch (e) {
+      print('Error playing sound: $e');
+    }
   }
 }
