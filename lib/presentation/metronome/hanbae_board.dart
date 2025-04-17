@@ -281,7 +281,7 @@ class Bakbar extends StatelessWidget {
         decoration: BoxDecoration(
           color: !isPlaying ? AppColors.frame : isActive ? Color(0x80FFA91F) : AppColors.frame,
           border: const Border(
-            left: BorderSide(color: AppColors.bakBarBorder, width: 1),
+            left: BorderSide(color: AppColors.bakBarLine, width: 1),
           ),
         ),
         child: Stack(
