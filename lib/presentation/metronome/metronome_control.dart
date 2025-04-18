@@ -21,8 +21,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
       (MetronomeBloc bloc) => bloc.state.isTapping,
     );
 
-    return Expanded(
-      child: Container(
+    return Container(
         margin: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: AppColors.backgroundCard,
@@ -185,6 +184,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                   ],
                 ),
 
+                const SizedBox(height: 8),
+
                 // Start and Detect Tempo buttons
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -259,7 +260,6 @@ class _MetronomeControlState extends State<MetronomeControl> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
