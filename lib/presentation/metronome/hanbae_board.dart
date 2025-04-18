@@ -14,55 +14,58 @@ class HanbaeBoard extends StatelessWidget {
       (MetronomeBloc bloc) => bloc.state.selectedJangdan,
     );
 
-    return SizedBox(
-      height: 372,
-      child: Column(
-        children: [
-          SizedBox(
-            height:
-                (jangdan.jangdanType.sobakSegmentCount != null) ? 16.0 : 28.0,
-          ),
-          ...jangdan.accents.asMap().entries.map((rowEntry) {
-            final rowIndex = rowEntry.key;
-            final row = rowEntry.value;
-            return Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  children:
-                      row.asMap().entries.map((colEntry) {
-                        final daebakIndex = colEntry.key;
-                        final daebak = colEntry.value;
-                        final bakNumber = jangdan.accents
-                          .take(rowIndex)
-                          .fold<int>(0, (sum, row) => sum + row.length) + daebakIndex;
-
-                        return Flexible(
-                          flex: daebak.length,
-                          child: BakbarSet(
-                            daebak: daebak,
-                            rowIndex: rowIndex,
-                            daebakIndex: daebakIndex,
-                            bakNumber: bakNumber + 1,
-                          ),
-                        );
-                      }).toList(),
-                ),
-              ),
-            );
-          }),
-          SizedBox(
-            height:
-                (jangdan.jangdanType.sobakSegmentCount != null) ? 4.0 : 28.0,
-          ),
-          if (jangdan.jangdanType.sobakSegmentCount != null) ...[
-            SobakSegment(
-              sobakSegmentCount: jangdan.jangdanType.sobakSegmentCount!,
-              activedSobak: context.select((MetronomeBloc bloc) => bloc.state.currentSobakIndex),
+    return Expanded(
+      // height: 372,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: 320),
+        child: Column(
+          children: [
+            SizedBox(
+              height:
+                  (jangdan.jangdanType.sobakSegmentCount != null) ? 16.0 : 28.0,
             ),
-            SizedBox(height: 14.0),
+            ...jangdan.accents.asMap().entries.map((rowEntry) {
+              final rowIndex = rowEntry.key;
+              final row = rowEntry.value;
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children:
+                        row.asMap().entries.map((colEntry) {
+                          final daebakIndex = colEntry.key;
+                          final daebak = colEntry.value;
+                          final bakNumber = jangdan.accents
+                            .take(rowIndex)
+                            .fold<int>(0, (sum, row) => sum + row.length) + daebakIndex;
+        
+                          return Flexible(
+                            flex: daebak.length,
+                            child: BakbarSet(
+                              daebak: daebak,
+                              rowIndex: rowIndex,
+                              daebakIndex: daebakIndex,
+                              bakNumber: bakNumber + 1,
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ),
+              );
+            }),
+            SizedBox(
+              height:
+                  (jangdan.jangdanType.sobakSegmentCount != null) ? 4.0 : 28.0,
+            ),
+            if (jangdan.jangdanType.sobakSegmentCount != null) ...[
+              SobakSegment(
+                sobakSegmentCount: jangdan.jangdanType.sobakSegmentCount!,
+                activedSobak: context.select((MetronomeBloc bloc) => bloc.state.currentSobakIndex),
+              ),
+              SizedBox(height: 14.0),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
