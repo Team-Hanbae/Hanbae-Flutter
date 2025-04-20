@@ -18,6 +18,7 @@ void main() async {
   Hive.registerAdapter(JangdanAdapter());
   Hive.registerAdapter(AccentAdapter());
   Hive.registerAdapter(JangdanTypeAdapter());
+  await Hive.openBox<Jangdan>('customJangdanBox');
 
   await SoundManager.preloadAllSounds();
 

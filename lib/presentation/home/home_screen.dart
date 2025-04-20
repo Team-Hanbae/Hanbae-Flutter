@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/data/custom_jangdan_data.dart';
+import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_list_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
@@ -63,11 +64,19 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomJangdanListScreen(),
+                              ),
+                            );
+                          },
                           style: TextButton.styleFrom(
                             minimumSize: Size(40, 40),
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: EdgeInsets.zero,),
+                            padding: EdgeInsets.zero,
+                          ),
                           child: Text(
                             "더보기",
                             style: AppTextStyles.calloutR.copyWith(
