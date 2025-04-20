@@ -1,15 +1,32 @@
+import 'package:hive/hive.dart';
+
+part 'jangdan_type.g.dart';
+
+@HiveType(typeId: 2)
 enum JangdanType {
+  @HiveField(0)
   jinyang,
+  @HiveField(1)
   jungmori,
+  @HiveField(2)
   jungjungmori,
+  @HiveField(3)
   jajinmori,
+  @HiveField(4)
   gutgeori,
+  @HiveField(5)
   hwimori,
+  @HiveField(6)
   dongsalpuri,
+  @HiveField(7)
   eonmori,
+  @HiveField(8)
   eotjungmori,
+  @HiveField(9)
   semachi,
+  @HiveField(10)
   ginyeombul,
+  @HiveField(11)
   banyeombul,
 }
 
