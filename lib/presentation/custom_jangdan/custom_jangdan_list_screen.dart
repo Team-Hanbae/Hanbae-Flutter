@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hanbae/model/jangdan_type.dart';
+import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
+import 'package:intl/intl.dart';
 import '../../bloc/jangdan/jangdan_bloc.dart';
 
 class CustomJangdanListScreen extends StatelessWidget {
@@ -25,7 +28,7 @@ class CustomJangdanListScreen extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.add),
                   onPressed: () {
-                    print('+ 버튼 클릭됨');
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomJangdanCreateScreen()));
                   },
                 ),
                 TextButton(
@@ -50,17 +53,17 @@ class CustomJangdanListScreen extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           } else if (state is JangdanLoaded) {
             final jangdans = state.jangdans;
-            if (jangdans.isEmpty) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 32),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Container(
+            return Padding(
+              padding: const EdgeInsets.only(top: 32),
+              child: ListView.builder(
+                itemCount: jangdans.isEmpty ? 1 : jangdans.length,
+                itemBuilder: (context, index) {
+                if (jangdans.isEmpty) {
+                  return ListTile(
+                    title: Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
+                        horizontal: 22,
+                        vertical: 20,
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.backgroundCard,
@@ -89,7 +92,6 @@ class CustomJangdanListScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(width: 12),
                           Icon(
                             Icons.chevron_right,
                             color: AppColors.textTertiary,
@@ -97,24 +99,66 @@ class CustomJangdanListScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
-                ],
-              );
-            }
-            return ListView.builder(
-              itemCount: jangdans.length,
-              itemBuilder: (context, index) {
+                  );
+                }
+
                 final jangdan = jangdans[index];
                 return ListTile(
-                  title: Text(
-                    jangdan.name,
-                    style: TextStyle(color: Colors.white),
+                  title: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 22,
+                      vertical: 20,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.backgroundCard,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  jangdan.jangdanType.name,
+                                  style: AppTextStyles.subheadlineR.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  jangdan.name,
+                                  style: AppTextStyles.title3R.copyWith(
+                                    color: AppColors.textDefault,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              DateFormat(
+                                'yyyy.MM.dd.',
+                              ).format(jangdan.createdAt),
+                              style: AppTextStyles.subheadlineR.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   onTap: () {
-                    print('${jangdan.name} tapped');
+                    context.read<JangdanBloc>().add(
+                      DeleteJangdan(jangdan.name),
+                    );
                   },
                 );
               },
+              ),
             );
           } else if (state is JangdanError) {
             return Center(
