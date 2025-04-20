@@ -4,14 +4,31 @@ import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/presentation/home/home_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/data/sound_manager.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hanbae/model/jangdan.dart';
+import 'package:hanbae/model/accent.dart';
+import 'package:hanbae/model/jangdan_type.dart';
+import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
+import 'package:hanbae/data/jangdan_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(JangdanAdapter());
+  Hive.registerAdapter(AccentAdapter());
+  Hive.registerAdapter(JangdanTypeAdapter());
+
   await SoundManager.preloadAllSounds();
+
+  final jangdanRepository = JangdanRepository();
 
   runApp(
     MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => MetronomeBloc())],
+      providers: [
+        BlocProvider(create: (_) => MetronomeBloc()),
+        BlocProvider(create: (_) => JangdanBloc(jangdanRepository)),
+      ],
       child: Hanbae(),
     ),
   );
