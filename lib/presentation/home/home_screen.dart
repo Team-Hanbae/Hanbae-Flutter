@@ -270,6 +270,9 @@ class HomeScreen extends StatelessWidget {
                                           color: AppColors.textDefault,
                                         ),
                                       ),
+
+                                      const SizedBox(height: 4,),
+
                                       Text(
                                         jangdan.bakInformation,
                                         style: AppTextStyles.subheadlineR.copyWith(

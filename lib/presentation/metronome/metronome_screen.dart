@@ -54,7 +54,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: Icon(Icons.chevron_left),
+                  icon: Icon(Icons.chevron_left, color: AppColors.textDefault,),
                 ),
                 title: Text(
                   widget.jangdan.name,
@@ -66,7 +66,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                     onPressed: () {
                       context.read<MetronomeBloc>().add(const ResetMetronome());
                     },
-                    icon: Icon(Icons.replay),
+                    icon: Icon(Icons.replay, color: AppColors.textDefault,),
                   ),
                 ],
               ),
