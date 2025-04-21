@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
-// import 'package:hanbae/data/custom_jangdan_data.dart';
+import 'package:hanbae/model/jangdan.dart';
+import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_list_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
@@ -15,6 +17,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<JangdanBloc>().state;
+    final customJangdanList =
+        state is JangdanLoaded ? state.jangdans : <Jangdan>[];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundDefault,
@@ -49,133 +55,202 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // Column(
-              //   children: [
-              //     Padding(
-              //       padding: const EdgeInsets.symmetric(horizontal: 4),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //         children: [
-              //           Text(
-              //             "내가 저장한 장단",
-              //             style: AppTextStyles.title2B.copyWith(
-              //               color: AppColors.textDefault,
-              //             ),
-              //           ),
-              //           TextButton(
-              //             onPressed: () {},
-              //             style: TextButton.styleFrom(
-              //               minimumSize: Size(40, 40),
-              //               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              //               padding: EdgeInsets.zero,),
-              //             child: Text(
-              //               "더보기",
-              //               style: AppTextStyles.calloutR.copyWith(
-              //                 color: AppColors.textTertiary,
-              //               ),
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "내가 저장한 장단",
+                          style: AppTextStyles.title2B.copyWith(
+                            color: AppColors.textDefault,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomJangdanListScreen(),
+                              ),
+                            );
+                          },
+                          style: TextButton.styleFrom(
+                            minimumSize: Size(40, 40),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: EdgeInsets.zero,
+                          ),
+                          child: Text(
+                            "더보기",
+                            style: AppTextStyles.calloutR.copyWith(
+                              color: AppColors.textTertiary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
-              //     const SizedBox(height: 8),
+                  const SizedBox(height: 8),
 
-              //     SizedBox(
-              //       height: 84,
-              //       child:
-              //           customJangdanList.isEmpty
-              //               ? Container(
-              //                 width: double.infinity,
-              //                 decoration: BoxDecoration(
-              //                   color: AppColors.backgroundSheet,
-              //                   borderRadius: BorderRadius.all(
-              //                     Radius.circular(16),
-              //                   ),
-              //                 ),
-              //                 child: Center(
-              //                   child: Text(
-              //                     "저장한 장단이 없어요",
-              //                     style: TextStyle(
-              //                       fontSize: 16,
-              //                       color: AppColors.textQuaternary,
-              //                     ),
-              //                   ),
-              //                 ),
-              //               )
-              //               : ListView.separated(
-              //                 scrollDirection: Axis.horizontal,
-              //                 itemCount:
-              //                     customJangdanList.length >= 2
-              //                         ? customJangdanList.length + 1
-              //                         : customJangdanList.length,
-              //                 separatorBuilder:
-              //                     (context, index) => SizedBox(width: 8),
-              //                 itemBuilder: (context, index) {
-              //                   if (customJangdanList.length >= 2 &&
-              //                       index == customJangdanList.length) {
-              //                     // 리스트 아이템이 2개 이상일 때 '더보기' 나타남
-              //                     return Container(
-              //                       width: 156,
-              //                       height: 84,
-              //                       decoration: BoxDecoration(
-              //                         color: AppColors.backgroundSheet,
-              //                         borderRadius: BorderRadius.all(
-              //                           Radius.circular(16),
-              //                         ),
-              //                       ),
-              //                       child: Center(
-              //                         child: Text(
-              //                           "더보기",
-              //                           style: TextStyle(
-              //                             fontSize: 17,
-              //                             color: AppColors.textTertiary,
-              //                           ),
-              //                         ),
-              //                       ),
-              //                     );
-              //                   } else {
-              //                     final item = customJangdanList[index];
-              //                     return Container(
-              //                       width: 156,
-              //                       height: 84,
-              //                       decoration: BoxDecoration(
-              //                         color: AppColors.backgroundSheet,
-              //                         borderRadius: BorderRadius.all(
-              //                           Radius.circular(16),
-              //                         ),
-              //                       ),
-              //                       child: Center(
-              //                         child: Column(
-              //                           mainAxisAlignment:
-              //                               MainAxisAlignment.center,
-              //                           children: [
-              //                             Text(
-              //                               item.title,
-              //                               style: TextStyle(
-              //                                 fontSize: 17,
-              //                                 color: AppColors.textDefault,
-              //                               ),
-              //                             ),
-              //                             Text(
-              //                               item.janganType,
-              //                               style: TextStyle(
-              //                                 fontSize: 15,
-              //                                 color: AppColors.textTertiary,
-              //                               ),
-              //                             ),
-              //                           ],
-              //                         ),
-              //                       ),
-              //                     );
-              //                   }
-              //                 },
-              //               ),
-              //     ),
-              //   ],
-              // ), //내가 저장한 장단 끝
+                  SizedBox(
+                    height: 84,
+                    child:
+                        customJangdanList.isEmpty
+                            ? Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: AppColors.backgroundSheet,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(16),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "저장한 장단이 없어요",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: AppColors.textQuaternary,
+                                  ),
+                                ),
+                              ),
+                            )
+                            : ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount:
+                                  customJangdanList.length >= 2
+                                      ? customJangdanList.length + 1
+                                      : customJangdanList.length,
+                              separatorBuilder:
+                                  (context, index) => SizedBox(width: 8),
+                              itemBuilder: (context, index) {
+                                if (customJangdanList.length >= 2 &&
+                                    index == customJangdanList.length) {
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) =>
+                                                  CustomJangdanListScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 156,
+                                      height: 84,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.backgroundSheet,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(16),
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "더보기",
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                            color: AppColors.textTertiary,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  final item = customJangdanList[index];
+                                  return InkWell(
+                                    onTap: () {
+                                      context.read<MetronomeBloc>().add(
+                                        SelectJangdan(item),
+                                      );
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => MetronomeScreen(
+                                                jangdan: item,
+                                                appBarMode: AppBarMode.custom,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 156,
+                                      height: 84,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                      ),
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.backgroundSheet,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(16),
+                                        ),
+                                      ),
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Positioned.fill(
+                                            child: OverflowBox(
+                                              maxWidth: double.infinity,
+                                              maxHeight: double.infinity,
+                                              child: Transform.translate(
+                                                offset: Offset(0, 110),
+                                                child: Container(
+                                                  width: 300,
+                                                  height: 300,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    gradient: RadialGradient(
+                                                      radius: 1.0,
+                                                      center: Alignment.center,
+                                                      colors: [
+                                                        AppColors.bakBarActiveTop,
+                                                        AppColors.backgroundCard.withAlpha(0),
+                                                      ],
+                                                      stops: [0, 0.5],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                item.name,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 17,
+                                                  color: AppColors.textDefault,
+                                                ),
+                                              ),
+                                              Text(
+                                                item.jangdanType.label,
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: AppColors.textTertiary,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                  ),
+                ],
+              ), //내가 저장한 장단 끝
 
-              // SizedBox(height: 32),
+              SizedBox(height: 32),
 
               Column(
                 children: [
@@ -206,14 +281,19 @@ class HomeScreen extends StatelessWidget {
                     separatorBuilder: (context, index) => SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       final jangdan = JangdanType.values[index];
-                      final selectedJangdan = basicJangdanData[jangdan.name]!;
+                      final selectedJangdan = basicJangdanData[jangdan.label]!;
                       return InkWell(
                         onTap: () {
-                          context.read<MetronomeBloc>().add(SelectJangdan(selectedJangdan));
+                          context.read<MetronomeBloc>().add(
+                            SelectJangdan(selectedJangdan),
+                          );
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MetronomeScreen(jangdan: basicJangdanData[jangdan.name]!),
+                              builder:
+                                  (context) => MetronomeScreen(
+                                    jangdan: basicJangdanData[jangdan.label]!,
+                                  ),
                             ),
                           );
                         },
@@ -265,7 +345,7 @@ class HomeScreen extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        jangdan.name,
+                                        jangdan.label,
                                         style: AppTextStyles.title3Sb.copyWith(
                                           color: AppColors.textDefault,
                                         ),
@@ -275,9 +355,10 @@ class HomeScreen extends StatelessWidget {
 
                                       Text(
                                         jangdan.bakInformation,
-                                        style: AppTextStyles.subheadlineR.copyWith(
-                                          color: AppColors.textQuaternary,
-                                        ),
+                                        style: AppTextStyles.subheadlineR
+                                            .copyWith(
+                                              color: AppColors.textQuaternary,
+                                            ),
                                       ),
                                     ],
                                   ),

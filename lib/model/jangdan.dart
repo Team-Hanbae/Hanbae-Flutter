@@ -1,12 +1,21 @@
+import 'package:hive/hive.dart';
 import 'package:equatable/equatable.dart';
 import 'accent.dart';
 import 'jangdan_type.dart'; // Assuming this is where JangdanType is defined
 
+part 'jangdan.g.dart';
+
+@HiveType(typeId: 0)
 class Jangdan extends Equatable {
+  @HiveField(0)
   final String name;
+  @HiveField(1)
   final JangdanType jangdanType;
-  final String createdAt;
+  @HiveField(2)
+  final DateTime createdAt;
+  @HiveField(3)
   final int bpm;
+  @HiveField(4)
   final List<List<List<Accent>>> accents;
 
   const Jangdan({
@@ -20,7 +29,7 @@ class Jangdan extends Equatable {
   Jangdan copyWith({
     String? name,
     JangdanType? jangdanType,
-    String? createdAt,
+    DateTime? createdAt,
     int? bpm,
     List<List<List<Accent>>>? accents,
   }) {

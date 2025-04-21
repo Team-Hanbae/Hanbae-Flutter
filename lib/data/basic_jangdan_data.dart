@@ -2,10 +2,10 @@ import '../model/accent.dart';
 import '../model/jangdan.dart';
 import '../model/jangdan_type.dart';
 
-const List<Jangdan> basicJangdanList = [
+List<Jangdan> basicJangdanList = [
   Jangdan(
     name: "진양",
-    createdAt: "2024.03.08",
+    createdAt: DateTime.now(),
     bpm: 30,
     jangdanType: JangdanType.jinyang,
     accents: [
@@ -45,7 +45,7 @@ const List<Jangdan> basicJangdanList = [
   ),
   Jangdan(
     name: "중모리",
-    createdAt: "2024.01.01",
+    createdAt: DateTime.now(),
     jangdanType: JangdanType.jungmori,
     bpm: 90,
     accents: [
@@ -69,7 +69,7 @@ const List<Jangdan> basicJangdanList = [
   ),
   Jangdan(
     name: "중중모리",
-    createdAt: "2024.01.01",
+    createdAt: DateTime.now(),
     jangdanType: JangdanType.jungjungmori,
     bpm: 50,
     accents: [
@@ -83,7 +83,7 @@ const List<Jangdan> basicJangdanList = [
   ),
   Jangdan(
     name: "자진모리",
-    createdAt: "2024.01.01",
+    createdAt: DateTime.now(),
     jangdanType: JangdanType.jajinmori,
     bpm: 100,
     accents: [
@@ -97,7 +97,7 @@ const List<Jangdan> basicJangdanList = [
   ),
   Jangdan(
     name: "굿거리",
-    createdAt: "2024.01.01",
+    createdAt: DateTime.now(),
     jangdanType: JangdanType.gutgeori,
     bpm: 50,
     accents: [
@@ -111,7 +111,7 @@ const List<Jangdan> basicJangdanList = [
   ),
   Jangdan(
     name: "동살풀이",
-    createdAt: "2024.01.01",
+    createdAt: DateTime.now(),
     jangdanType: JangdanType.dongsalpuri,
     bpm: 125,
     accents: [
@@ -125,7 +125,7 @@ const List<Jangdan> basicJangdanList = [
   ),
   Jangdan(
     name: "휘모리",
-    createdAt: "2024.01.01",
+    createdAt: DateTime.now(),
     jangdanType: JangdanType.hwimori,
     bpm: 100,
     accents: [
@@ -139,7 +139,7 @@ const List<Jangdan> basicJangdanList = [
   ),
   Jangdan(
     name: "엇모리",
-    createdAt: "2024.01.01",
+    createdAt: DateTime.now(),
     jangdanType: JangdanType.eonmori,
     bpm: 95,
     accents: [
@@ -153,7 +153,7 @@ const List<Jangdan> basicJangdanList = [
   ),
   Jangdan(
     name: "세마치",
-    createdAt: "2024.01.01",
+    createdAt: DateTime.now(),
     jangdanType: JangdanType.semachi,
     bpm: 90,
     accents: [
@@ -166,7 +166,7 @@ const List<Jangdan> basicJangdanList = [
   ),
   Jangdan(
     name: "엇중모리",
-    createdAt: "2024.01.01",
+    createdAt: DateTime.now(),
     jangdanType: JangdanType.eotjungmori,
     bpm: 78,
     accents: [
@@ -182,7 +182,7 @@ const List<Jangdan> basicJangdanList = [
   ),
   Jangdan(
     name: "긴염불",
-    createdAt: "2024.01.01",
+    createdAt: DateTime.now(),
     jangdanType: JangdanType.ginyeombul,
     bpm: 25,
     accents: [
@@ -200,7 +200,7 @@ const List<Jangdan> basicJangdanList = [
   ),
   Jangdan(
     name: "반염불",
-    createdAt: "2024.01.01",
+    createdAt: DateTime.now(),
     jangdanType: JangdanType.banyeombul,
     bpm: 65,
     accents: [
