@@ -17,13 +17,14 @@ class JangdanBloc extends Bloc<JangdanEvent, JangdanState> {
   }
 
   void _onLoad(LoadJangdan event, Emitter<JangdanState> emit) {
-    final jangdans = repository.getAll();
+    final jangdans =
+        repository.getAll()..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     emit(JangdanLoaded(jangdans));
   }
 
   Future<void> _onAdd(AddJangdan event, Emitter<JangdanState> emit) async {
     try {
-      await repository.add(event.jangdan);
+      await repository.add(event.jangdan..copyWith(createdAt: DateTime.now()));
       add(LoadJangdan());
     } catch (e) {
       emit(JangdanError(e.toString()));
@@ -36,7 +37,7 @@ class JangdanBloc extends Bloc<JangdanEvent, JangdanState> {
   }
 
   Future<void> _onUpdate(UpdateJangdan event, Emitter<JangdanState> emit) async {
-    await repository.update(event.key, event.jangdan);
+    await repository.update(event.key, event.jangdan..copyWith(createdAt: DateTime.now()));
     add(LoadJangdan());
   }
 }
