@@ -123,42 +123,44 @@ class CustomJangdanListScreen extends StatelessWidget {
                       color: AppColors.backgroundCard,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  jangdan.jangdanType.label,
-                                  style: AppTextStyles.subheadlineR.copyWith(
-                                    color: AppColors.textSecondary,
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.7),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    jangdan.jangdanType.label,
+                                    style: AppTextStyles.subheadlineR.copyWith(
+                                      color: AppColors.textSecondary,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  jangdan.name,
-                                  style: AppTextStyles.title3R.copyWith(
-                                    color: AppColors.textDefault,
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    jangdan.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTextStyles.title3R.copyWith(
+                                      color: AppColors.textDefault,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             Text(
-                              DateFormat(
-                                'yyyy.MM.dd.',
-                              ).format(jangdan.createdAt),
+                              DateFormat('yyyy.MM.dd.').format(jangdan.createdAt),
                               style: AppTextStyles.subheadlineR.copyWith(
                                 color: AppColors.textSecondary,
                               ),
                             ),
                           ],
-                        ),
-                      ],
+                        );
+                      },
                     ),
                   ),
                   onTap: () {

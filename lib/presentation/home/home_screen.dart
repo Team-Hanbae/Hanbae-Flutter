@@ -167,7 +167,10 @@ class HomeScreen extends StatelessWidget {
                                   child: Container(
                                     width: 156,
                                     height: 84,
-                                    decoration: BoxDecoration(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                      ),
+                                      decoration: BoxDecoration(
                                       color: AppColors.backgroundSheet,
                                       borderRadius: BorderRadius.all(Radius.circular(16)),
                                     ),
@@ -177,6 +180,8 @@ class HomeScreen extends StatelessWidget {
                                         children: [
                                           Text(
                                             item.name,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               fontSize: 17,
                                               color: AppColors.textDefault,

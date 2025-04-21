@@ -95,7 +95,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
             },
           ),
           PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert),
+            icon: Icon(Icons.pending_outlined),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             color: AppColors.backgroundPopupMenu,
             itemBuilder: (context) => [
@@ -120,7 +120,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
               switch (value) {
                 case 'update':
                   final updatedJangdan = context.read<MetronomeBloc>().state.selectedJangdan;
-                  context.read<JangdanBloc>().add(AddJangdan(updatedJangdan));
+                  context.read<JangdanBloc>().add(UpdateJangdan(updatedJangdan.name, updatedJangdan));
                   break;
                 case 'save':
                   final current = context.read<MetronomeBloc>().state.selectedJangdan;
