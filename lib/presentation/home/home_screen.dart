@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
+import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_list_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
@@ -17,7 +18,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<JangdanBloc>().state;
-    final customJangdanList = state is JangdanLoaded ? state.jangdans : [];
+    final customJangdanList = state is JangdanLoaded ? state.jangdans : <Jangdan>[];
 
     return Scaffold(
       appBar: AppBar(
@@ -121,51 +122,75 @@ class HomeScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               if (customJangdanList.length >= 2 &&
                                   index == customJangdanList.length) {
-                                return Container(
-                                  width: 156,
-                                  height: 84,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.backgroundSheet,
-                                    borderRadius: BorderRadius.all(Radius.circular(16)),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "더보기",
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        color: AppColors.textTertiary,
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CustomJangdanListScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 156,
+                                    height: 84,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.backgroundSheet,
+                                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "더보기",
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: AppColors.textTertiary,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 );
                               } else {
                                 final item = customJangdanList[index];
-                                return Container(
-                                  width: 156,
-                                  height: 84,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.backgroundSheet,
-                                    borderRadius: BorderRadius.all(Radius.circular(16)),
-                                  ),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          item.title,
-                                          style: TextStyle(
-                                            fontSize: 17,
-                                            color: AppColors.textDefault,
-                                          ),
+                                return InkWell(
+                                  onTap: () {
+                                    context.read<MetronomeBloc>().add(SelectJangdan(item));
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MetronomeScreen(
+                                          jangdan: item,
+                                          appBarMode: AppBarMode.custom,
                                         ),
-                                        Text(
-                                          item.janganType,
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            color: AppColors.textTertiary,
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 156,
+                                    height: 84,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.backgroundSheet,
+                                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                                    ),
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            item.name,
+                                            style: TextStyle(
+                                              fontSize: 17,
+                                              color: AppColors.textDefault,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                          Text(
+                                            item.jangdanType.label,
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: AppColors.textTertiary,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );
@@ -207,14 +232,14 @@ class HomeScreen extends StatelessWidget {
                     separatorBuilder: (context, index) => SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       final jangdan = JangdanType.values[index];
-                      final selectedJangdan = basicJangdanData[jangdan.name]!;
+                      final selectedJangdan = basicJangdanData[jangdan.label]!;
                       return InkWell(
                         onTap: () {
                           context.read<MetronomeBloc>().add(SelectJangdan(selectedJangdan));
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MetronomeScreen(jangdan: basicJangdanData[jangdan.name]!),
+                              builder: (context) => MetronomeScreen(jangdan: basicJangdanData[jangdan.label]!),
                             ),
                           );
                         },
@@ -265,7 +290,7 @@ class HomeScreen extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        jangdan.name,
+                                        jangdan.label,
                                         style: AppTextStyles.title3Sb.copyWith(
                                           color: AppColors.textDefault,
                                         ),

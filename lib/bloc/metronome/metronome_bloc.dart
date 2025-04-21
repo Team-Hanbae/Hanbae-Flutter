@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hanbae/model/accent.dart';
+import 'package:hive/hive.dart';
 import 'dart:async'; // Add this import for Timer
 import 'dart:core'; // Add this import for Stopwatch
 import '../../model/jangdan.dart';
@@ -48,9 +49,10 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       );
     });
 
-    on<ResetMetronome>((event, emit) {
+    on<ResetMetronome>((event, emit) async {
       final jangdan = state.selectedJangdan;
-      final original = basicJangdanData[jangdan.name] ?? jangdan;
+      final box = await Hive.openBox<Jangdan>('customJangdanBox');
+      final original = basicJangdanData[jangdan.name] ?? box.get(jangdan.name) ?? jangdan;
       emit(state.copyWith(
         selectedJangdan: original,
         bpm: original.bpm,

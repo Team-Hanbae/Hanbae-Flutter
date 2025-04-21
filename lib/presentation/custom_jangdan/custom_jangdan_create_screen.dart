@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
+import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 
 class CustomJangdanCreateScreen extends StatelessWidget {
   const CustomJangdanCreateScreen({super.key});
@@ -34,29 +38,45 @@ class CustomJangdanCreateScreen extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   final jangdan = JangdanType.values[index];
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                    decoration: BoxDecoration(
-                      color: AppColors.backgroundSheet,
-                      borderRadius: BorderRadius.vertical(
-                        top: index == 0 ? Radius.circular(16) : Radius.zero,
-                        bottom: index == JangdanType.values.length - 1 ? Radius.circular(16) : Radius.zero,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          jangdan.name,
-                          style: AppTextStyles.title3R.copyWith(
-                            color: AppColors.textDefault,
+                  
+                  return GestureDetector(
+                    onTap: () {
+                      final jangdanInstance = basicJangdanData[jangdan.label]!;
+                      context.read<MetronomeBloc>().add(SelectJangdan(jangdanInstance));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => MetronomeScreen(
+                            jangdan: jangdanInstance,
+                            appBarMode: AppBarMode.create,
                           ),
                         ),
-                        Icon(
-                          Icons.chevron_right_rounded,
-                          color: AppColors.textTertiary,
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                      decoration: BoxDecoration(
+                        color: AppColors.backgroundSheet,
+                        borderRadius: BorderRadius.vertical(
+                          top: index == 0 ? Radius.circular(16) : Radius.zero,
+                          bottom: index == JangdanType.values.length - 1 ? Radius.circular(16) : Radius.zero,
                         ),
-                      ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            jangdan.label,
+                            style: AppTextStyles.title3R.copyWith(
+                              color: AppColors.textDefault,
+                            ),
+                          ),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            color: AppColors.textTertiary,
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

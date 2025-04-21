@@ -31,7 +31,7 @@ enum JangdanType {
 }
 
 extension JangdanTypeExtension on JangdanType {
-  String get name {
+  String get label {
     switch (this) {
       case JangdanType.jinyang: return "진양";
       case JangdanType.jungmori: return "중모리";

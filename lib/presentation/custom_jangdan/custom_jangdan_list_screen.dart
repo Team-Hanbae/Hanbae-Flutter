@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
 import 'package:intl/intl.dart';
 import '../../bloc/jangdan/jangdan_bloc.dart';
+import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 
 class CustomJangdanListScreen extends StatelessWidget {
   CustomJangdanListScreen({super.key});
@@ -59,44 +61,52 @@ class CustomJangdanListScreen extends StatelessWidget {
                 itemCount: jangdans.isEmpty ? 1 : jangdans.length,
                 itemBuilder: (context, index) {
                 if (jangdans.isEmpty) {
-                  return ListTile(
-                    title: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 22,
-                        vertical: 20,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.backgroundCard,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                '아직 저장한 장단이 없어요',
-                                style: AppTextStyles.subheadlineR.copyWith(
-                                  color: AppColors.textTertiary,
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => CustomJangdanCreateScreen()),
+                      );
+                    },
+                    child: ListTile(
+                      title: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 22,
+                          vertical: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundCard,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  '아직 저장한 장단이 없어요',
+                                  style: AppTextStyles.subheadlineR.copyWith(
+                                    color: AppColors.textTertiary,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                '장단 만들러 가기',
-                                style: AppTextStyles.title3R.copyWith(
-                                  color: AppColors.textSecondary,
+                                SizedBox(height: 8),
+                                Text(
+                                  '장단 만들러 가기',
+                                  style: AppTextStyles.title3R.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Icon(
-                            Icons.chevron_right,
-                            color: AppColors.textTertiary,
-                          ),
-                        ],
+                              ],
+                            ),
+                            Icon(
+                              Icons.chevron_right,
+                              color: AppColors.textTertiary,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -124,7 +134,7 @@ class CustomJangdanListScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  jangdan.jangdanType.name,
+                                  jangdan.jangdanType.label,
                                   style: AppTextStyles.subheadlineR.copyWith(
                                     color: AppColors.textSecondary,
                                   ),
@@ -152,8 +162,15 @@ class CustomJangdanListScreen extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
-                    context.read<JangdanBloc>().add(
-                      DeleteJangdan(jangdan.name),
+                    context.read<MetronomeBloc>().add(SelectJangdan(jangdan));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MetronomeScreen(
+                          jangdan: jangdan,
+                          appBarMode: AppBarMode.custom,
+                        ),
+                      ),
                     );
                   },
                 );
