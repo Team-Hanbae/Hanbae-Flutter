@@ -15,7 +15,7 @@ class HanbaeBoard extends StatelessWidget {
     );
 
     return SizedBox(
-      height: 372,
+      height: 350,
       child: Column(
         children: [
           SizedBox(
@@ -33,9 +33,11 @@ class HanbaeBoard extends StatelessWidget {
                       row.asMap().entries.map((colEntry) {
                         final daebakIndex = colEntry.key;
                         final daebak = colEntry.value;
-                        final bakNumber = jangdan.accents
-                          .take(rowIndex)
-                          .fold<int>(0, (sum, row) => sum + row.length) + daebakIndex;
+                        final bakNumber =
+                            jangdan.accents
+                                .take(rowIndex)
+                                .fold<int>(0, (sum, row) => sum + row.length) +
+                            daebakIndex;
 
                         return Flexible(
                           flex: daebak.length,
@@ -58,7 +60,9 @@ class HanbaeBoard extends StatelessWidget {
           if (jangdan.jangdanType.sobakSegmentCount != null) ...[
             SobakSegment(
               sobakSegmentCount: jangdan.jangdanType.sobakSegmentCount!,
-              activedSobak: context.select((MetronomeBloc bloc) => bloc.state.currentSobakIndex),
+              activedSobak: context.select(
+                (MetronomeBloc bloc) => bloc.state.currentSobakIndex,
+              ),
             ),
             SizedBox(height: 14.0),
           ],

@@ -315,7 +315,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: Icon(Icons.chevron_left),
+                  icon: Icon(Icons.chevron_left, color: AppColors.textDefault,),
                 ),
                 title: Text(
                   appBarTitle,
