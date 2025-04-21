@@ -30,13 +30,14 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
   bool _showFlashOverlay = false;
 
   String get appBarTitle {
+    final selected = context.watch<MetronomeBloc>().state.selectedJangdan;
     switch (widget.appBarMode) {
       case AppBarMode.builtin:
-        return widget.jangdan.name;
+        return selected.name;
       case AppBarMode.custom:
-        return '${widget.jangdan.jangdanType.label} | ${widget.jangdan.name}';
+        return '${selected.jangdanType.label} | ${selected.name}';
       case AppBarMode.create:
-        return '${widget.jangdan.jangdanType.label} 장단 만들기';
+        return '${selected.jangdanType.label} 장단 만들기';
     }
   }
 
@@ -183,7 +184,9 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                   
                   if (result != null && result.trim().isNotEmpty && result.trim() != current.name) {
                     final updated = current.copyWith(name: result.trim());
-                    context.read<JangdanBloc>().add(UpdateJangdan(current.name, updated));
+                    context.read<JangdanBloc>().add(AddJangdan(updated));
+                    context.read<MetronomeBloc>().add(SelectJangdan(updated));
+                    context.read<JangdanBloc>().add(DeleteJangdan(current.name));
                   }
                   break;
                 case 'delete':
@@ -245,7 +248,10 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                 Navigator.pop(context);
               }
             },
-            child: Text('저장'),
+            child: Text(
+              '저장',
+              style: AppTextStyles.bodyR.copyWith(color: AppColors.textDefault),
+            ),
           ),
         ];
     }
@@ -255,19 +261,42 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
   Widget build(BuildContext context) {
 
     // 화면 반짝임 기능
-    return BlocListener<MetronomeBloc, MetronomeState>(
-      listener: (context, state) {
-        if (state.isFlashOn &&
-            state.isPlaying &&
-            state.currentRowIndex == 0 &&
-            state.currentDaebakIndex == 0 &&
-            state.currentSobakIndex == 0) {
-          setState(() => _showFlashOverlay = true);
-          Future.delayed(const Duration(milliseconds: 100), () {
-            setState(() => _showFlashOverlay = false);
-          });
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<MetronomeBloc, MetronomeState>(
+          listener: (context, state) {
+            if (state.isFlashOn &&
+                state.isPlaying &&
+                state.currentRowIndex == 0 &&
+                state.currentDaebakIndex == 0 &&
+                state.currentSobakIndex == 0) {
+              setState(() => _showFlashOverlay = true);
+              Future.delayed(const Duration(milliseconds: 100), () {
+                setState(() => _showFlashOverlay = false);
+              });
+            }
+          },
+        ),
+        BlocListener<JangdanBloc, JangdanState>(
+          listener: (context, state) {
+            if (state is JangdanError) {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: Text('저장 실패'),
+                  content: Text('이미 등록된 장단 이름입니다.\n다른 이름으로 다시 시도해주세요.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('확인'),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+        ),
+      ],
       child: Stack(
         children: [
           PopScope(

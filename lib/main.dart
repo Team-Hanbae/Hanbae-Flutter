@@ -28,7 +28,7 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => MetronomeBloc()),
-        BlocProvider(create: (_) => JangdanBloc(jangdanRepository)),
+        BlocProvider(create: (_) => JangdanBloc(jangdanRepository)..add(LoadJangdan())),
       ],
       child: Hanbae(),
     ),
