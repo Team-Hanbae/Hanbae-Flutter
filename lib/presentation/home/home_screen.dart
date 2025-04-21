@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
-import 'package:hanbae/data/custom_jangdan_data.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_list_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
@@ -16,6 +16,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<JangdanBloc>().state;
+    final customJangdanList = state is JangdanLoaded ? state.jangdans : [];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundDefault,
@@ -92,94 +95,83 @@ class HomeScreen extends StatelessWidget {
 
                   SizedBox(
                     height: 84,
-                    child:
-                        customJangdanList.isEmpty
-                            ? Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: AppColors.backgroundSheet,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(16),
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "저장한 장단이 없어요",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColors.textQuaternary,
-                                  ),
-                                ),
-                              ),
-                            )
-                            : ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemCount:
-                                  customJangdanList.length >= 2
-                                      ? customJangdanList.length + 1
-                                      : customJangdanList.length,
-                              separatorBuilder:
-                                  (context, index) => SizedBox(width: 8),
-                              itemBuilder: (context, index) {
-                                if (customJangdanList.length >= 2 &&
-                                    index == customJangdanList.length) {
-                                  // 리스트 아이템이 2개 이상일 때 '더보기' 나타남
-                                  return Container(
-                                    width: 156,
-                                    height: 84,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.backgroundSheet,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(16),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        "더보기",
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          color: AppColors.textTertiary,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  final item = customJangdanList[index];
-                                  return Container(
-                                    width: 156,
-                                    height: 84,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.backgroundSheet,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(16),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            item.title,
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              color: AppColors.textDefault,
-                                            ),
-                                          ),
-                                          Text(
-                                            item.janganType,
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: AppColors.textTertiary,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
+                    child: customJangdanList.isEmpty
+                        ? Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: AppColors.backgroundSheet,
+                              borderRadius: BorderRadius.all(Radius.circular(16)),
                             ),
+                            child: Center(
+                              child: Text(
+                                "저장한 장단이 없어요",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: AppColors.textQuaternary,
+                                ),
+                              ),
+                            ),
+                          )
+                        : ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: customJangdanList.length >= 2
+                                ? customJangdanList.length + 1
+                                : customJangdanList.length,
+                            separatorBuilder: (context, index) => SizedBox(width: 8),
+                            itemBuilder: (context, index) {
+                              if (customJangdanList.length >= 2 &&
+                                  index == customJangdanList.length) {
+                                return Container(
+                                  width: 156,
+                                  height: 84,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.backgroundSheet,
+                                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      "더보기",
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        color: AppColors.textTertiary,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                final item = customJangdanList[index];
+                                return Container(
+                                  width: 156,
+                                  height: 84,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.backgroundSheet,
+                                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                                  ),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          item.title,
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                            color: AppColors.textDefault,
+                                          ),
+                                        ),
+                                        Text(
+                                          item.janganType,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: AppColors.textTertiary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
                   ),
                 ],
               ), //내가 저장한 장단 끝
@@ -270,8 +262,7 @@ class HomeScreen extends StatelessWidget {
                                   const SizedBox(width: 20),
 
                                   Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         jangdan.name,
