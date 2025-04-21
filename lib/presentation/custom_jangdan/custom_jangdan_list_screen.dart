@@ -33,17 +33,22 @@ class CustomJangdanListScreen extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CustomJangdanCreateScreen()));
                   },
                 ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size(40, 40),
-                  ),
-                  onPressed: () {
-                    print('TextButton 클릭됨!');
-                  },
-                  child: Text('편집'),
-                ),
+                // TextButton(
+                //   style: TextButton.styleFrom(
+                //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                //     padding: EdgeInsets.zero,
+                //     minimumSize: Size(40, 40),
+                //   ),
+                //   onPressed: () {
+                //     print('TextButton 클릭됨!');
+                //   },
+                //   child: Text(
+                //     '편집',
+                //     style: AppTextStyles.bodyR.copyWith(
+                //       color: AppColors.textDefault,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -113,68 +118,103 @@ class CustomJangdanListScreen extends StatelessWidget {
                 }
 
                 final jangdan = jangdans[index];
-                return ListTile(
-                  title: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 22,
-                      vertical: 20,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.backgroundCard,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.7),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    jangdan.jangdanType.label,
-                                    style: AppTextStyles.subheadlineR.copyWith(
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    jangdan.name,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyles.title3R.copyWith(
-                                      color: AppColors.textDefault,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              DateFormat('yyyy.MM.dd.').format(jangdan.createdAt),
-                              style: AppTextStyles.subheadlineR.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
+                return Dismissible(
+                  key: ValueKey(jangdan.name),
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: EdgeInsets.all(12),
+                      child: Icon(Icons.delete, color: Colors.white, size: 24),
                     ),
                   ),
-                  onTap: () {
-                    context.read<MetronomeBloc>().add(SelectJangdan(jangdan));
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => MetronomeScreen(
-                          jangdan: jangdan,
-                          appBarMode: AppBarMode.custom,
-                        ),
+                  confirmDismiss: (direction) async {
+                    return await showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('삭제 확인'),
+                        content: Text('정말 이 장단을 삭제할까요?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: Text('취소'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: Text('삭제'),
+                          ),
+                        ],
                       ),
                     );
                   },
+                  onDismissed: (_) {
+                    context.read<JangdanBloc>().add(DeleteJangdan(jangdan.name));
+                  },
+                  child: ListTile(
+                    title: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
+                      decoration: BoxDecoration(
+                        color: AppColors.backgroundCard,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.7),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      jangdan.jangdanType.label,
+                                      style: AppTextStyles.subheadlineR.copyWith(
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      jangdan.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTextStyles.title3R.copyWith(
+                                        color: AppColors.textDefault,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                DateFormat('yyyy.MM.dd.').format(jangdan.createdAt),
+                                style: AppTextStyles.subheadlineR.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    onTap: () {
+                      context.read<MetronomeBloc>().add(SelectJangdan(jangdan));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => MetronomeScreen(
+                            jangdan: jangdan,
+                            appBarMode: AppBarMode.custom,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
               ),
