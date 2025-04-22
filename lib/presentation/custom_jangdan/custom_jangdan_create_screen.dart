@@ -40,45 +40,51 @@ class CustomJangdanCreateScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final jangdan = JangdanType.values[index];
                   
-                  return GestureDetector(
-                    onTap: () {
-                      final jangdanInstance = basicJangdanData[jangdan.label]!;
-                      context.read<MetronomeBloc>().add(SelectJangdan(jangdanInstance));
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => MetronomeScreen(
-                            jangdan: jangdanInstance,
-                            appBarMode: AppBarMode.create,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                      decoration: BoxDecoration(
-                        color: AppColors.backgroundSheet,
-                        borderRadius: BorderRadius.vertical(
-                          top: index == 0 ? Radius.circular(16) : Radius.zero,
-                          bottom: index == JangdanType.values.length - 1 ? Radius.circular(16) : Radius.zero,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            jangdan.label,
-                            style: AppTextStyles.title3R.copyWith(
-                              color: AppColors.textDefault,
+                  return Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          final jangdanInstance = basicJangdanData[jangdan.label]!;
+                          context.read<MetronomeBloc>().add(SelectJangdan(jangdanInstance));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => MetronomeScreen(
+                                jangdan: jangdanInstance,
+                                appBarMode: AppBarMode.create,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                          decoration: BoxDecoration(
+                            color: AppColors.backgroundSheet,
+                            borderRadius: BorderRadius.vertical(
+                              top: index == 0 ? Radius.circular(16) : Radius.zero,
+                              bottom: index == JangdanType.values.length - 1 ? Radius.circular(16) : Radius.zero,
                             ),
                           ),
-                          Icon(
-                            Icons.chevron_right_rounded,
-                            color: AppColors.textTertiary,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                jangdan.label,
+                                style: AppTextStyles.title3R.copyWith(
+                                  color: AppColors.textDefault,
+                                ),
+                              ),
+                              Icon(
+                                Icons.chevron_right_rounded,
+                                color: AppColors.textTertiary,
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      if (index == JangdanType.values.length - 1)
+                        const SizedBox(height: 32),
+                    ],
                   );
                 },
               ),

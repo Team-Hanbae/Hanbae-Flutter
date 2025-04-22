@@ -17,12 +17,12 @@ class CustomJangdanListScreen extends StatelessWidget {
     context.read<JangdanBloc>().add(LoadJangdan());
 
     return Scaffold(
-      backgroundColor: Color(0xFF000000),
+      backgroundColor: AppColors.backgroundDefault,
       appBar: AppBar(
         toolbarHeight: 44.0,
-        title: Text('내가 저장한 장단', style: TextStyle(fontSize: 17)),
+        title: Text('내가 저장한 장단', style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary)),
         centerTitle: true,
-        backgroundColor: Color(0xFF1F1F1F),
+        backgroundColor: AppColors.backgroundNavigationbar,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 8),
@@ -46,7 +46,7 @@ class CustomJangdanListScreen extends StatelessWidget {
           } else if (state is JangdanLoaded) {
             final jangdans = state.jangdans;
             return Padding(
-              padding: const EdgeInsets.only(top: 32),
+              padding: const EdgeInsets.only(top: 28),
               child: ListView.builder(
                 itemCount: jangdans.isEmpty ? 1 : jangdans.length,
                 itemBuilder: (context, index) {
@@ -104,104 +104,115 @@ class CustomJangdanListScreen extends StatelessWidget {
                 }
 
                 final jangdan = jangdans[index];
-                return Dismissible(
-                  key: ValueKey(jangdan.name),
-                  direction: DismissDirection.endToStart,
-                  background: Container(
-                    alignment: Alignment.centerRight,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      padding: EdgeInsets.all(12),
-                      child: Icon(Icons.delete, color: Colors.white, size: 24),
-                    ),
-                  ),
-                  confirmDismiss: (direction) async {
-                    return await showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('삭제 확인'),
-                        content: Text('정말 이 장단을 삭제할까요?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: Text('취소'),
+                return Column(
+                  children: [
+                    Dismissible(
+                      key: ValueKey(jangdan.name),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
                           ),
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(true),
-                            child: Text('삭제'),
-                          ),
-                        ],
+                          padding: EdgeInsets.all(12),
+                          child: Icon(Icons.delete, color: Colors.white, size: 24),
+                        ),
                       ),
-                    );
-                  },
-                  onDismissed: (_) {
-                    context.read<JangdanBloc>().add(DeleteJangdan(jangdan.name));
-                  },
-                  child: ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                    title: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
-                      decoration: BoxDecoration(
-                        color: AppColors.backgroundCard,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ConstrainedBox(
-                                constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.7),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      jangdan.jangdanType.label,
-                                      style: AppTextStyles.subheadlineR.copyWith(
-                                        color: AppColors.textSecondary,
-                                      ),
+                      confirmDismiss: (direction) async {
+                        return await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            backgroundColor: AppColors.backgroundCard,
+                            shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      12,
                                     ),
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      jangdan.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: AppTextStyles.title3R.copyWith(
-                                        color: AppColors.textDefault,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                            title: Text('삭제 확인', style: TextStyle(color: AppColors.textDefault),),
+                            content: Text('정말 이 장단을 삭제할까요?', style: TextStyle(color: AppColors.textSecondary),),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: Text('취소', style: TextStyle(color: AppColors.textSecondary),)
                               ),
-                              Text(
-                                DateFormat('yyyy.MM.dd.').format(jangdan.createdAt),
-                                style: AppTextStyles.subheadlineR.copyWith(
-                                  color: AppColors.textSecondary,
-                                ),
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(true),
+                                child: Text('삭제', style: TextStyle(color: Colors.orangeAccent),),
                               ),
                             ],
+                          ),
+                        );
+                      },
+                      onDismissed: (_) {
+                        context.read<JangdanBloc>().add(DeleteJangdan(jangdan.name));
+                      },
+                      child: ListTile(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        title: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
+                          decoration: BoxDecoration(
+                            color: AppColors.backgroundCard,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.7),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          jangdan.jangdanType.label,
+                                          style: AppTextStyles.subheadlineR.copyWith(
+                                            color: AppColors.textSecondary,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        Text(
+                                          jangdan.name,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: AppTextStyles.title3R.copyWith(
+                                            color: AppColors.textDefault,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(
+                                    DateFormat('yyyy.MM.dd.').format(jangdan.createdAt),
+                                    style: AppTextStyles.subheadlineR.copyWith(
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        onTap: () {
+                          context.read<MetronomeBloc>().add(SelectJangdan(jangdan));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => MetronomeScreen(
+                                jangdan: jangdan,
+                                appBarMode: AppBarMode.custom,
+                              ),
+                            ),
                           );
                         },
                       ),
                     ),
-                    onTap: () {
-                      context.read<MetronomeBloc>().add(SelectJangdan(jangdan));
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => MetronomeScreen(
-                            jangdan: jangdan,
-                            appBarMode: AppBarMode.custom,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                    if (index == jangdans.length - 1) const SizedBox(height: 32), // Add space after the last item
+                  ],
                 );
               },
               ),
