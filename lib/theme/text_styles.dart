@@ -18,7 +18,7 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle title1R = TextStyle(
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: FontWeight.w400,
     fontFamily: "Pretendard",
     height: 1.21,
@@ -33,16 +33,8 @@ abstract class AppTextStyles {
     letterSpacing: -0.11,
   );
 
-  static const TextStyle title3R = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.w400,
-    fontFamily: "Pretendard",
-    height: 1.25,
-    letterSpacing: -0.08,
-  );
-
   static const TextStyle title2R = TextStyle(
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: FontWeight.w400,
     fontFamily: "Pretendard",
     height: 1.27,
@@ -50,15 +42,23 @@ abstract class AppTextStyles {
   );
 
   static const TextStyle title2B = TextStyle(
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: FontWeight.w700,
     fontFamily: "Pretendard",
     height: 1.27,
     letterSpacing: -0.09,
   );
 
+  static const TextStyle title3R = TextStyle(
+    fontSize: 19,
+    fontWeight: FontWeight.w400,
+    fontFamily: "Pretendard",
+    height: 1.25,
+    letterSpacing: -0.08,
+  );
+
   static const TextStyle title3Sb = TextStyle(
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: FontWeight.w600,
     fontFamily: "Pretendard",
     height: 1.25,
