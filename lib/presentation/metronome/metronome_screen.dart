@@ -66,7 +66,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         12,
                       ),
                     ),
-                    title: Text('장단 이름 저장', style: TextStyle(color: AppColors.textDefault),),
+                    title: Text('나만의 장단 저장', style: TextStyle(color: AppColors.textDefault),),
                     content: TextField(
                       controller: controller,
                       maxLength: 10,
@@ -286,7 +286,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         12,
                       ),
                     ),
-                    title: Text('장단 이름 저장', style: TextStyle(color: AppColors.textDefault)),
+                    title: Text('나만의 장단 저장', style: TextStyle(color: AppColors.textDefault)),
                     content: TextField(
                       controller: controller,
                       maxLength: 10,
