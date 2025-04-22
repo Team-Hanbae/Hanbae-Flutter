@@ -70,6 +70,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                     content: TextField(
                       controller: controller,
                       maxLength: 10,
+                      autofocus: true,
                       decoration: InputDecoration(hintText: '장단 이름을 입력하세요'),
                     ),
                     actions: [
@@ -158,6 +159,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         content: TextField(
                           controller: controller,
                           maxLength: 10,
+                          autofocus: true,
                           decoration: InputDecoration(hintText: '장단 이름을 입력하세요'),
                         ),
                         actions: [
@@ -198,6 +200,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         content: TextField(
                           controller: controller,
                           maxLength: 10,
+                          autofocus: true,
                           decoration: InputDecoration(
                             hintText: '새 장단 이름을 입력하세요',
                           ),
@@ -271,6 +274,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                     content: TextField(
                       controller: controller,
                       maxLength: 10,
+                      autofocus: true,
                       decoration: InputDecoration(hintText: '장단 이름을 입력하세요'),
                     ),
                     actions: [
