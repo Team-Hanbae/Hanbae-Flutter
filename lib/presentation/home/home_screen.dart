@@ -100,20 +100,23 @@ class HomeScreen extends StatelessWidget {
                   height: 84,
                   child:
                       customJangdanList.isEmpty
-                          ? Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: AppColors.backgroundSheet,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(16),
+                          ? Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: AppColors.backgroundSheet,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(16),
+                                ),
                               ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "저장한 장단이 없어요",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: AppColors.textQuaternary,
+                              child: Center(
+                                child: Text(
+                                  "저장한 장단이 없어요",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: AppColors.textQuaternary,
+                                  ),
                                 ),
                               ),
                             ),
