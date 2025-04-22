@@ -17,12 +17,12 @@ class CustomJangdanListScreen extends StatelessWidget {
     context.read<JangdanBloc>().add(LoadJangdan());
 
     return Scaffold(
-      backgroundColor: Color(0xFF000000),
+      backgroundColor: AppColors.backgroundDefault,
       appBar: AppBar(
         toolbarHeight: 44.0,
-        title: Text('내가 저장한 장단', style: TextStyle(fontSize: 17)),
+        title: Text('내가 저장한 장단', style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary)),
         centerTitle: true,
-        backgroundColor: Color(0xFF1F1F1F),
+        backgroundColor: AppColors.backgroundNavigationbar,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 8),
@@ -46,7 +46,7 @@ class CustomJangdanListScreen extends StatelessWidget {
           } else if (state is JangdanLoaded) {
             final jangdans = state.jangdans;
             return Padding(
-              padding: const EdgeInsets.only(top: 32),
+              padding: const EdgeInsets.only(top: 28),
               child: ListView.builder(
                 itemCount: jangdans.isEmpty ? 1 : jangdans.length,
                 itemBuilder: (context, index) {
@@ -125,16 +125,22 @@ class CustomJangdanListScreen extends StatelessWidget {
                         return await showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text('삭제 확인'),
-                            content: Text('정말 이 장단을 삭제할까요?'),
+                            backgroundColor: AppColors.backgroundCard,
+                            shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      12,
+                                    ),
+                                  ),
+                            title: Text('삭제 확인', style: TextStyle(color: AppColors.textDefault),),
+                            content: Text('정말 이 장단을 삭제할까요?', style: TextStyle(color: AppColors.textSecondary),),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(false),
-                                child: Text('취소'),
+                                child: Text('취소', style: TextStyle(color: AppColors.textSecondary),)
                               ),
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(true),
-                                child: Text('삭제'),
+                                child: Text('삭제', style: TextStyle(color: Colors.orangeAccent),),
                               ),
                             ],
                           ),
