@@ -28,6 +28,7 @@ class MetronomeScreen extends StatefulWidget {
 
 class _MetronomeScreenState extends State<MetronomeScreen> {
   bool _showFlashOverlay = false;
+  bool _awaitingSave = false;
 
   String get appBarTitle {
     final selected = context.watch<MetronomeBloc>().state.selectedJangdan;
@@ -71,7 +72,8 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         child: Text('취소'),
                       ),
                       TextButton(
-                        onPressed: () => Navigator.pop(context, controller.text),
+                        onPressed:
+                            () => Navigator.pop(context, controller.text),
                         child: Text('저장'),
                       ),
                     ],
@@ -80,8 +82,11 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
               );
 
               if (result != null && result.trim().isNotEmpty) {
-                final selectedJangdan = context.read<MetronomeBloc>().state.selectedJangdan;
-                final updatedJangdan = selectedJangdan.copyWith(name: result.trim());
+                final selectedJangdan =
+                    context.read<MetronomeBloc>().state.selectedJangdan;
+                final updatedJangdan = selectedJangdan.copyWith(
+                  name: result.trim(),
+                );
                 context.read<JangdanBloc>().add(AddJangdan(updatedJangdan));
               }
             },
@@ -97,66 +102,75 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
           ),
           PopupMenuButton<String>(
             icon: Icon(Icons.pending_outlined),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             color: AppColors.backgroundPopupMenu,
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'update',
-                child: Text('장단 저장하기', style: AppTextStyles.bodyR),
-              ),
-              PopupMenuItem(
-                value: 'save',
-                child: Text('장단 내보내기', style: AppTextStyles.bodyR),
-              ),
-              PopupMenuItem(
-                value: 'rename',
-                child: Text('장단 이름 변경하기', style: AppTextStyles.bodyR),
-              ),
-              PopupMenuItem(
-                value: 'delete',
-                child: Text('장단 삭제하기', style: AppTextStyles.bodyR),
-              ),
-            ],
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    value: 'update',
+                    child: Text('장단 저장하기', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: 'save',
+                    child: Text('장단 내보내기', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: 'rename',
+                    child: Text('장단 이름 변경하기', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Text('장단 삭제하기', style: AppTextStyles.bodyR),
+                  ),
+                ],
             onSelected: (value) async {
               switch (value) {
                 case 'update':
-                  final updatedJangdan = context.read<MetronomeBloc>().state.selectedJangdan;
-                  context.read<JangdanBloc>().add(UpdateJangdan(updatedJangdan.name, updatedJangdan));
+                  final updatedJangdan =
+                      context.read<MetronomeBloc>().state.selectedJangdan;
+                  context.read<JangdanBloc>().add(
+                    UpdateJangdan(updatedJangdan.name, updatedJangdan),
+                  );
                   break;
                 case 'save':
-                  final current = context.read<MetronomeBloc>().state.selectedJangdan;
+                  final current =
+                      context.read<MetronomeBloc>().state.selectedJangdan;
                   final controller = TextEditingController(text: '');
                   final result = await showDialog<String>(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
                         title: Text('장단 이름 저장'),
-                          content: TextField(
-                            controller: controller,
-                            maxLength: 13,
-                            decoration: InputDecoration(hintText: '장단 이름을 입력하세요'),
-                          ),
+                        content: TextField(
+                          controller: controller,
+                          maxLength: 13,
+                          decoration: InputDecoration(hintText: '장단 이름을 입력하세요'),
+                        ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
                             child: Text('취소'),
                           ),
                           TextButton(
-                            onPressed: () => Navigator.pop(context, controller.text),
+                            onPressed:
+                                () => Navigator.pop(context, controller.text),
                             child: Text('저장'),
                           ),
                         ],
                       );
                     },
                   );
-                  
+
                   if (result != null && result.trim().isNotEmpty) {
                     final duplicated = current.copyWith(name: result.trim());
                     context.read<JangdanBloc>().add(AddJangdan(duplicated));
                   }
                   break;
                 case 'rename':
-                  final current = context.read<MetronomeBloc>().state.selectedJangdan;
+                  final current =
+                      context.read<MetronomeBloc>().state.selectedJangdan;
                   final controller = TextEditingController(text: current.name);
                   final result = await showDialog<String>(
                     context: context,
@@ -166,7 +180,9 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         content: TextField(
                           controller: controller,
                           maxLength: 13,
-                          decoration: InputDecoration(hintText: '새 장단 이름을 입력하세요'),
+                          decoration: InputDecoration(
+                            hintText: '새 장단 이름을 입력하세요',
+                          ),
                         ),
                         actions: [
                           TextButton(
@@ -174,24 +190,32 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                             child: Text('취소'),
                           ),
                           TextButton(
-                            onPressed: () => Navigator.pop(context, controller.text),
+                            onPressed:
+                                () => Navigator.pop(context, controller.text),
                             child: Text('변경'),
                           ),
                         ],
                       );
                     },
                   );
-                  
-                  if (result != null && result.trim().isNotEmpty && result.trim() != current.name) {
+
+                  if (result != null &&
+                      result.trim().isNotEmpty &&
+                      result.trim() != current.name) {
                     final updated = current.copyWith(name: result.trim());
                     context.read<JangdanBloc>().add(AddJangdan(updated));
                     context.read<MetronomeBloc>().add(SelectJangdan(updated));
-                    context.read<JangdanBloc>().add(DeleteJangdan(current.name));
+                    context.read<JangdanBloc>().add(
+                      DeleteJangdan(current.name),
+                    );
                   }
                   break;
                 case 'delete':
-                  final selectedJangdan = context.read<MetronomeBloc>().state.selectedJangdan;
-                  context.read<JangdanBloc>().add(DeleteJangdan(selectedJangdan.name));
+                  final selectedJangdan =
+                      context.read<MetronomeBloc>().state.selectedJangdan;
+                  context.read<JangdanBloc>().add(
+                    DeleteJangdan(selectedJangdan.name),
+                  );
                   Navigator.pop(context);
                   break;
               }
@@ -231,7 +255,8 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         child: Text('취소'),
                       ),
                       TextButton(
-                        onPressed: () => Navigator.pop(context, controller.text),
+                        onPressed:
+                            () => Navigator.pop(context, controller.text),
                         child: Text('저장'),
                       ),
                     ],
@@ -240,11 +265,15 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
               );
 
               if (result != null && result.trim().isNotEmpty) {
-                final selectedJangdan = context.read<MetronomeBloc>().state.selectedJangdan;
-                final updatedJangdan = selectedJangdan.copyWith(name: result.trim());
+                final selectedJangdan =
+                    context.read<MetronomeBloc>().state.selectedJangdan;
+                final updatedJangdan = selectedJangdan.copyWith(
+                  name: result.trim(),
+                );
+                setState(() {
+                  _awaitingSave = true;
+                });
                 context.read<JangdanBloc>().add(AddJangdan(updatedJangdan));
-                Navigator.pop(context);
-                Navigator.pop(context);
               }
             },
             child: Text(
@@ -258,7 +287,6 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     // 화면 반짝임 기능
     return MultiBlocListener(
       listeners: [
@@ -279,19 +307,30 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
         BlocListener<JangdanBloc, JangdanState>(
           listener: (context, state) {
             if (state is JangdanError) {
+              setState(() {
+                _awaitingSave = false;
+              });
               showDialog(
                 context: context,
-                builder: (_) => AlertDialog(
-                  title: Text('저장 실패'),
-                  content: Text('이미 등록된 장단 이름입니다.\n다른 이름으로 다시 시도해주세요.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text('확인'),
+                builder:
+                    (_) => AlertDialog(
+                      title: Text('저장 실패'),
+                      content: Text('이미 등록된 장단 이름입니다.\n다른 이름으로 다시 시도해주세요.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('확인'),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
               );
+              context.read<JangdanBloc>().add(LoadJangdan());
+            } else if (state is JangdanLoaded && _awaitingSave) {
+              setState(() {
+                _awaitingSave = false;
+              });
+              Navigator.pop(context);
+              Navigator.pop(context);
             }
           },
         ),
@@ -314,11 +353,13 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: Icon(Icons.chevron_left, color: AppColors.textDefault,),
+                  icon: Icon(Icons.chevron_left, color: AppColors.textDefault),
                 ),
                 title: Text(
                   appBarTitle,
-                  style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.bodyR.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 centerTitle: true,
                 actions: appBarActions,
@@ -327,7 +368,9 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                 builder: (context, constraints) {
                   return SingleChildScrollView(
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
                       child: IntrinsicHeight(
                         child: Column(
                           children: [
@@ -335,7 +378,9 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                               builder: (context, state) => HanbaeBoard(),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                              ),
                               child: MetronomeOptions(),
                             ),
                             BlocBuilder<MetronomeBloc, MetronomeState>(
@@ -356,9 +401,10 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
               ignoring: !_showFlashOverlay,
               child: AnimatedOpacity(
                 opacity: _showFlashOverlay ? 1.0 : 0.0,
-                duration: _showFlashOverlay
-                    ? Duration.zero
-                    : const Duration(milliseconds: 300),
+                duration:
+                    _showFlashOverlay
+                        ? Duration.zero
+                        : const Duration(milliseconds: 300),
                 curve: Curves.linear,
                 child: Container(color: AppColors.blink),
               ),
