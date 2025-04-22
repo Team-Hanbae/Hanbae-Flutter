@@ -114,7 +114,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                   ),
                   PopupMenuItem(
                     value: 'save',
-                    child: Text('장단 내보내기', style: AppTextStyles.bodyR),
+                    child: Text('다른 이름으로 저장', style: AppTextStyles.bodyR),
                   ),
                   PopupMenuItem(
                     value: 'rename',
