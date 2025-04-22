@@ -19,6 +19,7 @@ class CustomJangdanListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFF000000),
       appBar: AppBar(
+        toolbarHeight: 44.0,
         title: Text('내가 저장한 장단', style: TextStyle(fontSize: 17)),
         centerTitle: true,
         backgroundColor: Color(0xFF1F1F1F),
@@ -33,22 +34,6 @@ class CustomJangdanListScreen extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CustomJangdanCreateScreen()));
                   },
                 ),
-                // TextButton(
-                //   style: TextButton.styleFrom(
-                //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                //     padding: EdgeInsets.zero,
-                //     minimumSize: Size(40, 40),
-                //   ),
-                //   onPressed: () {
-                //     print('TextButton 클릭됨!');
-                //   },
-                //   child: Text(
-                //     '편집',
-                //     style: AppTextStyles.bodyR.copyWith(
-                //       color: AppColors.textDefault,
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -74,6 +59,7 @@ class CustomJangdanListScreen extends StatelessWidget {
                       );
                     },
                     child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
                       title: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 22,
@@ -156,6 +142,7 @@ class CustomJangdanListScreen extends StatelessWidget {
                     context.read<JangdanBloc>().add(DeleteJangdan(jangdan.name));
                   },
                   child: ListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
                     title: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
                       decoration: BoxDecoration(
