@@ -122,7 +122,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     on<ChangeBpm>((event, emit) {
       add(const StopTapping());
       final newBpm = (state.bpm + event.delta).clamp(10, 300);
-      emit(state.copyWith(bpm: newBpm));
+      emit(state.copyWith(selectedJangdan: state.selectedJangdan.copyWith(bpm: newBpm), bpm: newBpm));
     });
 
     on<ChangeSound>((event, emit) { // Add new event handler
