@@ -14,6 +14,7 @@ class CustomJangdanCreateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 44.0,
         title: Text('내가 저장한 장단', style: TextStyle(fontSize: 17)),
         centerTitle: true,
         backgroundColor: Color(0xFF1F1F1F),
