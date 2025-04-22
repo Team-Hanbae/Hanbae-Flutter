@@ -59,6 +59,7 @@ class CustomJangdanListScreen extends StatelessWidget {
                       );
                     },
                     child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
                       title: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 22,
@@ -141,6 +142,7 @@ class CustomJangdanListScreen extends StatelessWidget {
                     context.read<JangdanBloc>().add(DeleteJangdan(jangdan.name));
                   },
                   child: ListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
                     title: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
                       decoration: BoxDecoration(
