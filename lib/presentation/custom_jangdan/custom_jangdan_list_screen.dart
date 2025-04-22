@@ -33,22 +33,6 @@ class CustomJangdanListScreen extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CustomJangdanCreateScreen()));
                   },
                 ),
-                // TextButton(
-                //   style: TextButton.styleFrom(
-                //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                //     padding: EdgeInsets.zero,
-                //     minimumSize: Size(40, 40),
-                //   ),
-                //   onPressed: () {
-                //     print('TextButton 클릭됨!');
-                //   },
-                //   child: Text(
-                //     '편집',
-                //     style: AppTextStyles.bodyR.copyWith(
-                //       color: AppColors.textDefault,
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
