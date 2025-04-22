@@ -34,11 +34,11 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              GestureDetector(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: GestureDetector(
                 onTap: () async {
                   final Uri url = Uri.parse(
                     'https://forms.gle/aB7Rks3KDA8NP9yM7',
@@ -52,207 +52,214 @@ class HomeScreen extends StatelessWidget {
                   child: Image.asset("assets/images/banner/TestBanner.png"),
                 ),
               ),
+            ),
 
-              const SizedBox(height: 24),
+            const SizedBox(height: 24),
 
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "내가 저장한 장단",
-                          style: AppTextStyles.title2B.copyWith(
-                            color: AppColors.textDefault,
-                          ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "내가 저장한 장단",
+                        style: AppTextStyles.title2B.copyWith(
+                          color: AppColors.textDefault,
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CustomJangdanListScreen(),
-                              ),
-                            );
-                          },
-                          style: TextButton.styleFrom(
-                            minimumSize: Size(40, 40),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: EdgeInsets.zero,
-                          ),
-                          child: Text(
-                            "더보기",
-                            style: AppTextStyles.calloutR.copyWith(
-                              color: AppColors.textTertiary,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CustomJangdanListScreen(),
                             ),
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          minimumSize: Size(40, 40),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          padding: EdgeInsets.zero,
+                        ),
+                        child: Text(
+                          "더보기",
+                          style: AppTextStyles.calloutR.copyWith(
+                            color: AppColors.textTertiary,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                ),
 
-                  const SizedBox(height: 8),
+                const SizedBox(height: 8),
 
-                  SizedBox(
-                    height: 84,
-                    child:
-                        customJangdanList.isEmpty
-                            ? Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: AppColors.backgroundSheet,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(16),
+                SizedBox(
+                  height: 84,
+                  child:
+                      customJangdanList.isEmpty
+                          ? Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: AppColors.backgroundSheet,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(16),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "저장한 장단이 없어요",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: AppColors.textQuaternary,
                                 ),
                               ),
-                              child: Center(
-                                child: Text(
-                                  "저장한 장단이 없어요",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColors.textQuaternary,
-                                  ),
-                                ),
-                              ),
-                            )
-                            : ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemCount:
-                                  customJangdanList.length >= 2
-                                      ? customJangdanList.length + 1
-                                      : customJangdanList.length,
-                              separatorBuilder:
-                                  (context, index) => SizedBox(width: 8),
-                              itemBuilder: (context, index) {
-                                if (customJangdanList.length >= 2 &&
-                                    index == customJangdanList.length) {
-                                  return InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) =>
-                                                  CustomJangdanListScreen(),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      width: 156,
-                                      height: 84,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.backgroundSheet,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(16),
-                                        ),
+                            ),
+                          )
+                          : ListView.separated(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            scrollDirection: Axis.horizontal,
+                            itemCount:
+                                customJangdanList.length >= 2
+                                    ? customJangdanList.length + 1
+                                    : customJangdanList.length,
+                            separatorBuilder:
+                                (context, index) => SizedBox(width: 8),
+                            itemBuilder: (context, index) {
+                              if (customJangdanList.length >= 2 &&
+                                  index == customJangdanList.length) {
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) =>
+                                                CustomJangdanListScreen(),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          "더보기",
-                                          style: TextStyle(
-                                            fontSize: 17,
-                                            color: AppColors.textTertiary,
-                                          ),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 156,
+                                    height: 84,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.backgroundSheet,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(16),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "더보기",
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: AppColors.textTertiary,
                                         ),
                                       ),
                                     ),
-                                  );
-                                } else {
-                                  final item = customJangdanList[index];
-                                  return InkWell(
-                                    onTap: () {
-                                      context.read<MetronomeBloc>().add(
-                                        SelectJangdan(item),
-                                      );
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => MetronomeScreen(
-                                                jangdan: item,
-                                                appBarMode: AppBarMode.custom,
-                                              ),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      width: 156,
-                                      height: 84,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 16,
+                                  ),
+                                );
+                              } else {
+                                final item = customJangdanList[index];
+                                return InkWell(
+                                  onTap: () {
+                                    context.read<MetronomeBloc>().add(
+                                      SelectJangdan(item),
+                                    );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => MetronomeScreen(
+                                              jangdan: item,
+                                              appBarMode: AppBarMode.custom,
+                                            ),
                                       ),
-                                      clipBehavior: Clip.hardEdge,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.backgroundSheet,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(16),
-                                        ),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 156,
+                                    height: 84,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                    ),
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.backgroundSheet,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(16),
                                       ),
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          Positioned.fill(
-                                            child: OverflowBox(
-                                              maxWidth: double.infinity,
-                                              maxHeight: double.infinity,
-                                              child: Transform.translate(
-                                                offset: Offset(0, 110),
-                                                child: Container(
-                                                  width: 300,
-                                                  height: 300,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    gradient: RadialGradient(
-                                                      radius: 1.0,
-                                                      center: Alignment.center,
-                                                      colors: [
-                                                        AppColors.bakBarActiveTop,
-                                                        AppColors.backgroundCard.withAlpha(0),
-                                                      ],
-                                                      stops: [0, 0.5],
-                                                    ),
+                                    ),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Positioned.fill(
+                                          child: OverflowBox(
+                                            maxWidth: double.infinity,
+                                            maxHeight: double.infinity,
+                                            child: Transform.translate(
+                                              offset: Offset(0, 110),
+                                              child: Container(
+                                                width: 300,
+                                                height: 300,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  gradient: RadialGradient(
+                                                    radius: 1.0,
+                                                    center: Alignment.center,
+                                                    colors: [
+                                                      AppColors.bakBarActiveTop,
+                                                      AppColors.backgroundCard
+                                                          .withAlpha(0),
+                                                    ],
+                                                    stops: [0, 0.5],
                                                   ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                item.name,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: 17,
-                                                  color: AppColors.textDefault,
-                                                ),
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              item.name,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                color: AppColors.textDefault,
                                               ),
-                                              Text(
-                                                item.jangdanType.label,
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: AppColors.textTertiary,
-                                                ),
+                                            ),
+                                            Text(
+                                              item.jangdanType.label,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: AppColors.textTertiary,
                                               ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  );
-                                }
-                              },
-                            ),
-                  ),
-                ],
-              ), //내가 저장한 장단 끝
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                ),
+              ],
+            ),
 
-              SizedBox(height: 32),
+            //내가 저장한 장단 끝
+            const SizedBox(height: 32),
 
-              Column(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -351,7 +358,7 @@ class HomeScreen extends StatelessWidget {
                                         ),
                                       ),
 
-                                      const SizedBox(height: 4,),
+                                      const SizedBox(height: 4),
 
                                       Text(
                                         jangdan.bakInformation,
@@ -377,10 +384,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
 
-              const SizedBox(height: 80),
-            ],
-          ),
+            const SizedBox(height: 80),
+          ],
         ),
       ),
     );
