@@ -54,7 +54,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
           IconButton(
             icon: Icon(Icons.download),
             onPressed: () async {
-              final controller = TextEditingController(text: widget.jangdan.name);
+              final controller = TextEditingController(text: '');
               final result = await showDialog<String>(
                 context: context,
                 builder: (context) {
@@ -125,7 +125,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                   break;
                 case 'save':
                   final current = context.read<MetronomeBloc>().state.selectedJangdan;
-                  final controller = TextEditingController(text: current.name);
+                  final controller = TextEditingController(text: '');
                   final result = await showDialog<String>(
                     context: context,
                     builder: (context) {
@@ -213,8 +213,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
               minimumSize: Size(40, 40),
             ),
             onPressed: () async {
-              String newName = widget.jangdan.name;
-              final controller = TextEditingController(text: newName);
+              final controller = TextEditingController(text: '');
 
               final result = await showDialog<String>(
                 context: context,
