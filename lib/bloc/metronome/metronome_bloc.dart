@@ -4,6 +4,7 @@ import 'package:hanbae/model/accent.dart';
 import 'package:hive/hive.dart';
 import 'dart:async'; // Add this import for Timer
 import 'dart:core'; // Add this import for Stopwatch
+import 'package:wakelock_plus/wakelock_plus.dart';
 import '../../model/jangdan.dart';
 import '../../data/basic_jangdan_data.dart';
 import '../../data/sound_manager.dart';
@@ -76,6 +77,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       );
 
       _startPreciseTicker();
+      WakelockPlus.enable();
     });
 
     on<Tick>((event, emit) async {
@@ -116,6 +118,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
     on<Stop>((event, emit) {
       _stopPreciseTicker(); // Call to stop precise ticker
+      WakelockPlus.disable();
       emit(state.copyWith(isPlaying: false));
     });
 
