@@ -27,6 +27,13 @@ class MainActivity : FlutterActivity() {
             .setMaxStreams(10)
             .build()
 
+        soundPool.setOnLoadCompleteListener { pool, sampleId, status ->
+            if (status == 0) { // Load success
+                pool.play(sampleId, 0f, 0f, 1, 0, 1f)
+                Log.d("SoundManager", "Silent sound played for initialization.")
+            }
+        }
+
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "play" -> {
