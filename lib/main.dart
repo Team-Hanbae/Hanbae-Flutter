@@ -10,9 +10,27 @@ import 'package:hanbae/model/accent.dart';
 import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/jangdan_repository.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  WidgetsBinding.instance.deferFirstFrame();
+
+  final fontLoader = FontLoader('Pretendard');
+  fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-Black.ttf'));
+  fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-Bold.ttf'));
+  fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-ExtraBold.ttf'));
+  fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-ExtraLight.ttf'));
+  fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-Light.ttf'));
+  fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-Medium.ttf'));
+  fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-Regular.ttf'));
+  fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-SemiBold.ttf'));
+  fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-Thin.ttf'));
+  await fontLoader.load();
+
+  WidgetsBinding.instance.allowFirstFrame();
+
   await Hive.initFlutter();
 
   Hive.registerAdapter(JangdanAdapter());
