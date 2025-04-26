@@ -2,23 +2,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:hive/hive.dart';
-import 'dart:async'; // Add this import for Timer
-import 'dart:core'; // Add this import for Stopwatch
+import 'dart:async';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import '../../model/jangdan.dart';
 import '../../data/basic_jangdan_data.dart';
 import '../../data/sound_manager.dart';
-import '../../model/sound.dart'; // Add this import for Sound
-import '../../data/sound_preferences.dart'; // Add import for SoundPreferences
+import '../../model/sound.dart';
+import '../../data/sound_preferences.dart';
 
 part 'metronome_event.dart';
 part 'metronome_state.dart';
 
 class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
-  final Stopwatch _stopwatch = Stopwatch(); // Add Stopwatch field
-  Timer? _tickTimer; // Add private Timer field
-  Timer? _tapResetTimer; // Add private Timer field for tap reset
-  final List<DateTime> _tapHistory = []; // Add private list to hold tap timestamps
+  Timer? _tickTimer;
+  Timer? _tapResetTimer;
+  final List<DateTime> _tapHistory = [];
+  double _averageSobakPerDaebak = 1.0;
+  final Box<Jangdan> _jangdanBox = Hive.box<Jangdan>('customJangdanBox');
 
   MetronomeBloc()
     : super(() {
@@ -36,11 +36,11 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentRowIndex: lastRowIndex,
           currentDaebakIndex: lastDaebakIndex,
           currentSobakIndex: lastSobakIndex,
-          currentSound: Sound.clave, // Initialize currentSound field
-          isTapping: false, // Set initial value for isTapping
+          currentSound: Sound.clave,
+          isTapping: false,
         );
       }()) {
-    SoundPreferences.load().then((loaded) { // Load stored sound
+    SoundPreferences.load().then((loaded) {
       add(ChangeSound(loaded));
     });
 
@@ -52,8 +52,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
     on<ResetMetronome>((event, emit) async {
       final jangdan = state.selectedJangdan;
-      final box = await Hive.openBox<Jangdan>('customJangdanBox');
-      final original = basicJangdanData[jangdan.name] ?? box.get(jangdan.name) ?? jangdan;
+      final original = basicJangdanData[jangdan.name] ?? _jangdanBox.get(jangdan.name) ?? jangdan;
       emit(state.copyWith(
         selectedJangdan: original,
         bpm: original.bpm,
@@ -67,6 +66,11 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       final lastSobakIndex =
           jangdan.accents[lastRowIndex][lastDaebakIndex].length - 1;
 
+      final totalDaebak = jangdan.accents.expand((row) => row).length;
+      final totalSobak = jangdan.accents.expand((row) => row).expand((daebak) => daebak).length;
+      final averageSobakPerDaebak = totalSobak / totalDaebak;
+
+      _averageSobakPerDaebak = averageSobakPerDaebak;
       emit(
         state.copyWith(
           isPlaying: true,
@@ -102,7 +106,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       final accent = jangdan.accents[row][daebak][sobak];
       if (state.isSobakOn || sobak == 0) {
         if (accent != Accent.none) {
-          SoundManager.play(state.currentSound, accent); // Update sound playback
+          SoundManager.play(state.currentSound, accent);
         }
       }
 
@@ -117,7 +121,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
 
     on<Stop>((event, emit) {
-      _stopPreciseTicker(); // Call to stop precise ticker
+      _stopPreciseTicker();
       WakelockPlus.disable();
       emit(state.copyWith(isPlaying: false));
     });
@@ -128,18 +132,18 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       emit(state.copyWith(selectedJangdan: state.selectedJangdan.copyWith(bpm: newBpm), bpm: newBpm));
     });
 
-    on<ChangeSound>((event, emit) { // Add new event handler
-      SoundPreferences.save(event.sound); // Save selected sound to preferences
+    on<ChangeSound>((event, emit) {
+      SoundPreferences.save(event.sound);
       emit(state.copyWith(currentSound: event.sound));
     });
 
-    on<TapTempo>((event, emit) { // Handle TapTempo event
-      emit(state.copyWith(isTapping: true)); // Immediately reflect tapping status
+    on<TapTempo>((event, emit) {
+      emit(state.copyWith(isTapping: true));
       final now = DateTime.now();
 
       if (_tapHistory.isNotEmpty &&
           now.difference(_tapHistory.last).inMilliseconds > 6000) {
-        _tapHistory.clear(); // Reset if taps are too far apart
+        _tapHistory.clear();
       }
 
       _tapHistory.add(now);
@@ -154,12 +158,12 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
         emit(state.copyWith(
           bpm: bpm,
-          isTapping: true, // Update to set isTapping to true
+          isTapping: true,
         ));
       }
 
       if (_tapHistory.length > 5) {
-        _tapHistory.removeAt(0); // Keep last 5 taps
+        _tapHistory.removeAt(0);
       }
 
       _tapResetTimer?.cancel();
@@ -176,7 +180,6 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       add(const StopTapping());
       final oldJangdan = state.selectedJangdan;
 
-      // Deep copy of accents
       final updatedAccents =
           oldJangdan.accents
               .map((row) => row.map((bar) => List<Accent>.from(bar)).toList())
@@ -196,53 +199,30 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       emit(state.copyWith(isSobakOn: !state.isSobakOn));
     });
 
-    on<ToggleFlash>((event, emit) { // Add ToggleFlash event handler
+    on<ToggleFlash>((event, emit) {
       emit(state.copyWith(isFlashOn: !state.isFlashOn));
     });
   }
 
   void _startPreciseTicker() {
-    _stopwatch.start();
+    void tickLoop() {
+      final bpm = state.bpm;
+      final interval = Duration(
+        milliseconds: (60000 / (bpm * _averageSobakPerDaebak)).round(),
+      );
 
-    add(Tick());
-
-    void scheduleTick() {
-      DateTime lastPlayTime = DateTime.now();
-
-      void tickLoop() {
-        final jangdan = state.selectedJangdan;
-        final totalDaebak = jangdan.accents.expand((row) => row).length;
-        final totalSobak = jangdan.accents
-            .expand((row) => row)
-            .expand((daebak) => daebak)
-            .length;
-        final averageSobakPerDaebak = totalSobak / totalDaebak;
-
-        final interval = Duration(
-          milliseconds: (60000 / (state.bpm * averageSobakPerDaebak)).round(),
-        );
-
-        final now = DateTime.now();
-        final nextPlayTime = lastPlayTime.add(interval);
-        final delay = nextPlayTime.difference(now);
-
-        _tickTimer = Timer(delay.isNegative ? Duration.zero : delay, () {
-          lastPlayTime = DateTime.now();
-          add(Tick());
-          tickLoop();
-        });
-      }
-
-      tickLoop();
+      _tickTimer = Timer(interval, () {
+        add(Tick());
+        tickLoop();
+      });
     }
 
-    scheduleTick();
+    add(Tick());
+    tickLoop();
   }
 
   void _stopPreciseTicker() {
     _tickTimer?.cancel();
     _tickTimer = null;
-    _stopwatch.stop();
-    _stopwatch.reset();
   }
 }
