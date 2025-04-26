@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/model/sound.dart';
 import 'package:hanbae/presentation/home/home_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/data/sound_manager.dart';
@@ -21,6 +22,7 @@ void main() async {
   await Hive.openBox<Jangdan>('customJangdanBox');
 
   await SoundManager.preloadAllSounds();
+  await SoundManager.play(Sound.clave, Accent.none);
 
   final jangdanRepository = JangdanRepository();
 
