@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
               child: GestureDetector(
                 onTap: () async {
                   final Uri url = Uri.parse(
-                    'https://forms.gle/Rj6mV745SfhDZXv67',
+                    'https://forms.gle/2MPJ5eSMwhj3QmLP6',
                   );
                   if (await canLaunchUrl(url)) {
                     await launchUrl(url, mode: LaunchMode.externalApplication);
