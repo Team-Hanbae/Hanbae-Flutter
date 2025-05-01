@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
           child: SizedBox(
             width: 44,
             height: 44,
-            child: Image.asset("assets/images/SurveyBanner.png"),
+            child: Image.asset("assets/images/AppLogo.png"),
           ),
         ),
       ),
@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
               child: GestureDetector(
                 onTap: () async {
                   final Uri url = Uri.parse(
-                    'https://forms.gle/pZi8sNrcFJsuapuE7',
+                    'https://forms.gle/aB7Rks3KDA8NP9yM7',
                   );
                   if (await canLaunchUrl(url)) {
                     await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Image.asset("assets/images/banner/TestBanner.png"),
+                  child: Image.asset("assets/images/banner/SurveyBanner.png"),
                 ),
               ),
             ),
