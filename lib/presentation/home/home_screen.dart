@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
               child: GestureDetector(
                 onTap: () async {
                   final Uri url = Uri.parse(
-                    'https://forms.gle/aB7Rks3KDA8NP9yM7',
+                    'https://forms.gle/2MPJ5eSMwhj3QmLP6',
                   );
                   if (await canLaunchUrl(url)) {
                     await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Image.asset("assets/images/banner/TestBanner.png"),
+                  child: Image.asset("assets/images/banner/SurveyBanner.png"),
                 ),
               ),
             ),
