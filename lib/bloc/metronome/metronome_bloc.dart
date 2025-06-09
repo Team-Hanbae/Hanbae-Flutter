@@ -52,11 +52,11 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
     on<ResetMetronome>((event, emit) async {
       final jangdan = state.selectedJangdan;
-      final original = basicJangdanData[jangdan.name] ?? _jangdanBox.get(jangdan.name) ?? jangdan;
-      emit(state.copyWith(
-        selectedJangdan: original,
-        bpm: original.bpm,
-      ));
+      final original =
+          basicJangdanData[jangdan.name] ??
+          _jangdanBox.get(jangdan.name) ??
+          jangdan;
+      emit(state.copyWith(selectedJangdan: original, bpm: original.bpm));
     });
 
     on<Play>((event, emit) {
@@ -67,7 +67,11 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           jangdan.accents[lastRowIndex][lastDaebakIndex].length - 1;
 
       final totalDaebak = jangdan.accents.expand((row) => row).length;
-      final totalSobak = jangdan.accents.expand((row) => row).expand((daebak) => daebak).length;
+      final totalSobak =
+          jangdan.accents
+              .expand((row) => row)
+              .expand((daebak) => daebak)
+              .length;
       final averageSobakPerDaebak = totalSobak / totalDaebak;
 
       _averageSobakPerDaebak = averageSobakPerDaebak;
@@ -110,7 +114,6 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         }
       }
 
-
       emit(
         state.copyWith(
           currentRowIndex: row,
@@ -129,7 +132,12 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     on<ChangeBpm>((event, emit) {
       add(const StopTapping());
       final newBpm = (state.bpm + event.delta).clamp(10, 300);
-      emit(state.copyWith(selectedJangdan: state.selectedJangdan.copyWith(bpm: newBpm), bpm: newBpm));
+      emit(
+        state.copyWith(
+          selectedJangdan: state.selectedJangdan.copyWith(bpm: newBpm),
+          bpm: newBpm,
+        ),
+      );
     });
 
     on<ChangeSound>((event, emit) {
@@ -151,15 +159,14 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       if (_tapHistory.length >= 2) {
         final intervals = <int>[];
         for (int i = 1; i < _tapHistory.length; i++) {
-          intervals.add(_tapHistory[i].difference(_tapHistory[i - 1]).inMilliseconds);
+          intervals.add(
+            _tapHistory[i].difference(_tapHistory[i - 1]).inMilliseconds,
+          );
         }
         final averageMs = intervals.reduce((a, b) => a + b) / intervals.length;
         final bpm = (60000 / averageMs).round().clamp(10, 300);
 
-        emit(state.copyWith(
-          bpm: bpm,
-          isTapping: true,
-        ));
+        emit(state.copyWith(bpm: bpm, isTapping: true));
       }
 
       if (_tapHistory.length > 5) {
@@ -189,7 +196,8 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           updatedAccents[event.rowIndex][event.daebakIndex][event.sobakIndex];
       final next = Accent.values[(current.index + 1) % Accent.values.length];
 
-      updatedAccents[event.rowIndex][event.daebakIndex][event.sobakIndex] = next;
+      updatedAccents[event.rowIndex][event.daebakIndex][event.sobakIndex] =
+          next;
 
       final updatedJangdan = oldJangdan.copyWith(accents: updatedAccents);
       emit(state.copyWith(selectedJangdan: updatedJangdan));
@@ -204,21 +212,33 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
   }
 
-  void _startPreciseTicker() {
-    void tickLoop() {
-      final bpm = state.bpm;
-      final interval = Duration(
-        milliseconds: (60000 / (bpm * _averageSobakPerDaebak)).round(),
-      );
+  // void _startPreciseTicker() {
+  //   void tickLoop() {
+  //     final bpm = state.bpm;
+  //     final interval = Duration(
+  //       milliseconds: (60000 / (bpm * _averageSobakPerDaebak)).round(),
+  //     );
+  //
+  //     _tickTimer = Timer(interval, () {
+  //       add(Tick());
+  //       tickLoop();
+  //     });
+  //   }
+  //
+  //   add(Tick());
+  //   tickLoop();
+  // }
 
-      _tickTimer = Timer(interval, () {
-        add(Tick());
-        tickLoop();
-      });
-    }
+  /// 수정부분
+  void _startPreciseTicker() {
+    final bpm = state.bpm;
+    final interval = Duration(
+      milliseconds: (60000 / (bpm * _averageSobakPerDaebak)).round(),
+    );
 
     add(Tick());
-    tickLoop();
+
+    _tickTimer = Timer.periodic(interval, (_) => add(Tick()));
   }
 
   void _stopPreciseTicker() {
