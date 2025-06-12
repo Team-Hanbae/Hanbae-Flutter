@@ -77,11 +77,11 @@ class _MetronomeControlState extends State<MetronomeControl> {
                 onHorizontalDragUpdate: (direction) {
                   if (direction.delta.dx < 0) {
                     final bpm = context.read<MetronomeBloc>().state.bpm;
-                    final gap = ((bpm - 1) ~/ 5 * 5) - bpm;
+                    final gap = ((bpm - 1) ~/ 2 * 2) - bpm;
                     context.read<MetronomeBloc>().add(ChangeBpm(gap));
                   } else if (direction.delta.dx > 0) {
                     final bpm = context.read<MetronomeBloc>().state.bpm;
-                    final gap = ((bpm + 5) ~/ 5 * 5) - bpm;
+                    final gap = ((bpm + 2) ~/ 2 * 2) - bpm;
                     context.read<MetronomeBloc>().add(ChangeBpm(gap));
                   }
                 },

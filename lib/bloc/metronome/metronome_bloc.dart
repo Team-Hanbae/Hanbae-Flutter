@@ -212,33 +212,21 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
   }
 
-  // void _startPreciseTicker() {
-  //   void tickLoop() {
-  //     final bpm = state.bpm;
-  //     final interval = Duration(
-  //       milliseconds: (60000 / (bpm * _averageSobakPerDaebak)).round(),
-  //     );
-  //
-  //     _tickTimer = Timer(interval, () {
-  //       add(Tick());
-  //       tickLoop();
-  //     });
-  //   }
-  //
-  //   add(Tick());
-  //   tickLoop();
-  // }
-
-  /// 수정부분
   void _startPreciseTicker() {
-    final bpm = state.bpm;
-    final interval = Duration(
-      milliseconds: (60000 / (bpm * _averageSobakPerDaebak)).round(),
-    );
+    void tickLoop() {
+      final bpm = state.bpm;
+      final interval = Duration(
+        milliseconds: (60000 / (bpm * _averageSobakPerDaebak)).round(),
+      );
+
+      _tickTimer = Timer(interval, () {
+        add(Tick());
+        tickLoop();
+      });
+    }
 
     add(Tick());
-
-    _tickTimer = Timer.periodic(interval, (_) => add(Tick()));
+    tickLoop();
   }
 
   void _stopPreciseTicker() {
