@@ -73,119 +73,132 @@ class _MetronomeControlState extends State<MetronomeControl> {
               // const SizedBox(height: 8),
 
               // 플마버튼, BPM숫자 row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Minus Button
-                  GestureDetector(
-                    onLongPressStart: (_) {
-                      _bpmChangeTimer = Timer.periodic(
-                        const Duration(milliseconds: 100),
-                        (_) {
-                          final bpm = context.read<MetronomeBloc>().state.bpm;
-                          final gap = ((bpm - 1) ~/ 10 * 10) - bpm;
-                          context.read<MetronomeBloc>().add(ChangeBpm(gap));
-                        },
-                      );
-                    },
-                    onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        color: AppColors.buttonBpmControlDefault,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.remove,
-                          size: 32,
-                          color: AppColors.textButtonSecondary,
+              GestureDetector(
+                onHorizontalDragUpdate: (direction) {
+                  if (direction.delta.dx < 0) {
+                    final bpm = context.read<MetronomeBloc>().state.bpm;
+                    final gap = ((bpm - 1) ~/ 5 * 5) - bpm;
+                    context.read<MetronomeBloc>().add(ChangeBpm(gap));
+                  } else if (direction.delta.dx > 0) {
+                    final bpm = context.read<MetronomeBloc>().state.bpm;
+                    final gap = ((bpm + 5) ~/ 5 * 5) - bpm;
+                    context.read<MetronomeBloc>().add(ChangeBpm(gap));
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Minus Button
+                    GestureDetector(
+                      onLongPressStart: (_) {
+                        _bpmChangeTimer = Timer.periodic(
+                          const Duration(milliseconds: 100),
+                          (_) {
+                            final bpm = context.read<MetronomeBloc>().state.bpm;
+                            final gap = ((bpm - 1) ~/ 10 * 10) - bpm;
+                            context.read<MetronomeBloc>().add(ChangeBpm(gap));
+                          },
+                        );
+                      },
+                      onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          color: AppColors.buttonBpmControlDefault,
+                          shape: BoxShape.circle,
                         ),
-                        onPressed: () {
-                          context.read<MetronomeBloc>().add(ChangeBpm(-1));
-                        },
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.remove,
+                            size: 32,
+                            color: AppColors.textButtonSecondary,
+                          ),
+                          onPressed: () {
+                            context.read<MetronomeBloc>().add(ChangeBpm(-1));
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 2),
+                    const SizedBox(width: 2),
 
-                  // BPM Text
-                  // Bloc 상태를 사용하여 BPM 값을 업데이트
-                  BlocBuilder<MetronomeBloc, MetronomeState>(
-                    builder: (context, state) {
-                      return SizedBox(
-                        width: 136,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child:
-                              state.isTapping
-                                  ? Container(
-                                    decoration: BoxDecoration(
-                                      color: AppColors.backgroundDefault,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Text(
+                    // BPM Text
+                    // Bloc 상태를 사용하여 BPM 값을 업데이트
+                    BlocBuilder<MetronomeBloc, MetronomeState>(
+                      builder: (context, state) {
+                        return SizedBox(
+                          width: 136,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
+                                state.isTapping
+                                    ? Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColors.backgroundDefault,
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Text(
+                                        state.bpm.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 58,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.textBPMSearch,
+                                          letterSpacing: -0.5,
+                                        ),
+                                      ),
+                                    )
+                                    : Text(
                                       state.bpm.toString(),
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontSize: 58,
                                         fontWeight: FontWeight.w500,
-                                        color: AppColors.textBPMSearch,
+                                        color: AppColors.textButtonSecondary,
                                         letterSpacing: -0.5,
                                       ),
                                     ),
-                                  )
-                                  : Text(
-                                    state.bpm.toString(),
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 58,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.textButtonSecondary,
-                                      letterSpacing: -0.5,
-                                    ),
-                                  ),
-                        ),
-                      );
-                    },
-                  ),
+                          ),
+                        );
+                      },
+                    ),
 
-                  const SizedBox(width: 2),
+                    const SizedBox(width: 2),
 
-                  // Plus Button
-                  GestureDetector(
-                    onLongPressStart: (_) {
-                      _bpmChangeTimer = Timer.periodic(
-                        const Duration(milliseconds: 100),
-                        (_) {
-                          final bpm = context.read<MetronomeBloc>().state.bpm;
-                          final gap = ((bpm + 10) ~/ 10 * 10) - bpm;
-                          context.read<MetronomeBloc>().add(ChangeBpm(gap));
-                        },
-                      );
-                    },
-                    onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        color: AppColors.buttonBpmControlDefault,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.add,
-                          size: 32,
-                          color: AppColors.textButtonSecondary,
+                    // Plus Button
+                    GestureDetector(
+                      onLongPressStart: (_) {
+                        _bpmChangeTimer = Timer.periodic(
+                          const Duration(milliseconds: 100),
+                          (_) {
+                            final bpm = context.read<MetronomeBloc>().state.bpm;
+                            final gap = ((bpm + 10) ~/ 10 * 10) - bpm;
+                            context.read<MetronomeBloc>().add(ChangeBpm(gap));
+                          },
+                        );
+                      },
+                      onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          color: AppColors.buttonBpmControlDefault,
+                          shape: BoxShape.circle,
                         ),
-                        onPressed: () {
-                          context.read<MetronomeBloc>().add(ChangeBpm(1));
-                        },
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.add,
+                            size: 32,
+                            color: AppColors.textButtonSecondary,
+                          ),
+                          onPressed: () {
+                            context.read<MetronomeBloc>().add(ChangeBpm(1));
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
 
               const SizedBox(height: 8),
