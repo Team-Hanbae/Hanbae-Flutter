@@ -22,8 +22,8 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-
         // 소박 토글
         BlocBuilder<MetronomeBloc, MetronomeState>(
           builder: (context, state) {
@@ -31,17 +31,20 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
             return Expanded(
               child: Container(
                 height: 50,
+                margin: EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: isOn
-                      ? AppColors.backgroundCard
-                      : AppColors.buttonToggleOff,
+                  color:
+                      isOn
+                          ? AppColors.backgroundCard
+                          : AppColors.buttonToggleOff,
                   borderRadius: BorderRadius.circular(12),
-                  border: isOn
-                      ? Border.all(
-                          color: AppColors.buttonToggleOn,
-                          width: 1,
-                        )
-                      : null,
+                  border:
+                      isOn
+                          ? Border.all(
+                            color: AppColors.buttonToggleOn,
+                            width: 1,
+                          )
+                          : null,
                 ),
                 child: IconButton(
                   icon: SvgPicture.asset(
@@ -64,7 +67,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
           },
         ),
 
-        const SizedBox(width: 8,),
+        const SizedBox(width: 8),
 
         // 화면 반짝임 토글
         BlocBuilder<MetronomeBloc, MetronomeState>(
@@ -73,17 +76,20 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
             return Expanded(
               child: Container(
                 height: 50,
+                margin: EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: isOn
-                      ? AppColors.backgroundCard
-                      : AppColors.buttonToggleOff,
+                  color:
+                      isOn
+                          ? AppColors.backgroundCard
+                          : AppColors.buttonToggleOff,
                   borderRadius: BorderRadius.circular(12),
-                  border: isOn
-                      ? Border.all(
-                          color: AppColors.buttonToggleOn,
-                          width: 1,
-                        )
-                      : null,
+                  border:
+                      isOn
+                          ? Border.all(
+                            color: AppColors.buttonToggleOn,
+                            width: 1,
+                          )
+                          : null,
                 ),
                 child: IconButton(
                   icon: SvgPicture.asset(
@@ -104,26 +110,29 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
           },
         ),
 
-        const SizedBox(width: 8,),
+        const SizedBox(width: 8),
 
         // 소리 변경 토글
         Expanded(
           child: Container(
             height: 50,
+            margin: EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
-              color: _isSoundMenuOpen
+              color:
+                  _isSoundMenuOpen
                       ? AppColors.backgroundCard
                       : AppColors.buttonToggleOff,
               borderRadius: BorderRadius.circular(12),
-              border: _isSoundMenuOpen
-                  ? Border.all(color: AppColors.buttonToggleOn, width: 1)
-                  : null,
+              border:
+                  _isSoundMenuOpen
+                      ? Border.all(color: AppColors.buttonToggleOn, width: 1)
+                      : null,
             ),
             child: PopupMenuButton<Sound>(
               color: AppColors.backgroundPopupMenu,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-              ), 
+              ),
               icon: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -132,7 +141,9 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                     width: 32,
                     height: 32,
                     colorFilter: ColorFilter.mode(
-                      _isSoundMenuOpen ? AppColors.buttonToggleOn : AppColors.textSecondary,
+                      _isSoundMenuOpen
+                          ? AppColors.buttonToggleOn
+                          : AppColors.textSecondary,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -146,7 +157,8 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                           _isSoundMenuOpen
                               ? AppColors.buttonToggleOn
                               : AppColors.textSecondary,
-                    )),
+                    ),
+                  ),
                 ],
               ),
               onCanceled: () {
@@ -156,26 +168,43 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                 setState(() => _isSoundMenuOpen = false);
                 context.read<MetronomeBloc>().add(ChangeSound(value));
               },
-              itemBuilder: (ctx) => const [
-                PopupMenuItem(
-                  value: Sound.janggu,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('장구', style: AppTextStyles.bodyR),
-                ),
-                PopupMenuItem(
-                  value: Sound.buk,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('북', style: AppTextStyles.bodyR),
-                ),
-                PopupMenuItem(
-                  value: Sound.clave,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('나무', style: AppTextStyles.bodyR),
-                ),
-              ],
+              itemBuilder:
+                  (ctx) => const [
+                    PopupMenuItem(
+                      value: Sound.janggu,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text('장구', style: AppTextStyles.bodyR),
+                    ),
+                    PopupMenuItem(
+                      value: Sound.buk,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text('북', style: AppTextStyles.bodyR),
+                    ),
+                    PopupMenuItem(
+                      value: Sound.clave,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text('나무', style: AppTextStyles.bodyR),
+                    ),
+                  ],
               onOpened: () {
                 setState(() => _isSoundMenuOpen = true);
               },
+            ),
+          ),
+        ),
+        SizedBox(width: 12),
+        Container(
+          width: 60,
+          height: 36,
+          decoration: BoxDecoration(
+            color: AppColors.backgroundCard,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+          ),
+          child: Center(
+            child: Icon(
+              Icons.keyboard_arrow_down_rounded,
+              size: 36,
+              color: AppColors.textQuaternary,
             ),
           ),
         ),
