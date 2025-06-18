@@ -11,6 +11,7 @@ class MetronomeState extends Equatable {
   final int currentSobakIndex;
   final Sound currentSound;
   final bool isTapping;
+  final bool minimum;
 
   const MetronomeState({
     required this.selectedJangdan,
@@ -23,6 +24,7 @@ class MetronomeState extends Equatable {
     this.currentSobakIndex = 0,
     required this.currentSound,
     required this.isTapping,
+    required this.minimum,
   });
 
   MetronomeState copyWith({
@@ -36,6 +38,7 @@ class MetronomeState extends Equatable {
     int? currentSobakIndex,
     Sound? currentSound,
     bool? isTapping,
+    bool? minimum,
   }) {
     return MetronomeState(
       selectedJangdan: selectedJangdan ?? this.selectedJangdan,
@@ -48,20 +51,22 @@ class MetronomeState extends Equatable {
       currentSobakIndex: currentSobakIndex ?? this.currentSobakIndex,
       currentSound: currentSound ?? this.currentSound,
       isTapping: isTapping ?? this.isTapping,
+      minimum: minimum ?? this.minimum,
     );
   }
 
   @override
   List<Object?> get props => [
-        selectedJangdan,
-        isPlaying,
-        isSobakOn,
-        isFlashOn,
-        bpm,
-        currentRowIndex,
-        currentDaebakIndex,
-        currentSobakIndex,
-        currentSound,
-        isTapping,
-      ];
+    selectedJangdan,
+    isPlaying,
+    isSobakOn,
+    isFlashOn,
+    bpm,
+    currentRowIndex,
+    currentDaebakIndex,
+    currentSobakIndex,
+    currentSound,
+    isTapping,
+    minimum,
+  ];
 }

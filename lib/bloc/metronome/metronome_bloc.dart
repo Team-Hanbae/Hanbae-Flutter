@@ -38,6 +38,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentSobakIndex: lastSobakIndex,
           currentSound: Sound.clave,
           isTapping: false,
+          minimum: false,
         );
       }()) {
     SoundPreferences.load().then((loaded) {
@@ -209,6 +210,10 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
     on<ToggleFlash>((event, emit) {
       emit(state.copyWith(isFlashOn: !state.isFlashOn));
+    });
+
+    on<ToggleMinimum>((event, emit) {
+      emit(state.copyWith(minimum: !state.minimum));
     });
   }
 

@@ -147,7 +147,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                       BlendMode.srcIn,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 3),
                   Text(
                     context
                         .select((MetronomeBloc bloc) => bloc.state.currentSound)
@@ -192,19 +192,24 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
             ),
           ),
         ),
-        SizedBox(width: 12),
-        Container(
-          width: 60,
-          height: 36,
-          decoration: BoxDecoration(
-            color: AppColors.backgroundCard,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-          ),
-          child: Center(
-            child: Icon(
-              Icons.keyboard_arrow_down_rounded,
-              size: 36,
-              color: AppColors.textQuaternary,
+        SizedBox(width: 14),
+        InkWell(
+          onTap: () {
+            context.read<MetronomeBloc>().add(const ToggleMinimum());
+          },
+          child: Container(
+            width: 60,
+            height: 36,
+            decoration: BoxDecoration(
+              color: AppColors.backgroundCard,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            ),
+            child: Center(
+              child: Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: 36,
+                color: AppColors.textQuaternary,
+              ),
             ),
           ),
         ),
