@@ -469,7 +469,13 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                               child: MetronomeOptions(),
                             ),
                             BlocBuilder<MetronomeBloc, MetronomeState>(
-                              builder: (context, state) => MetronomeControl(),
+                              builder: (context, state) {
+                                double iconSize =
+                                    context.read<MetronomeBloc>().state.minimum
+                                        ? 16
+                                        : 32;
+                                return MetronomeControl(iconSize: iconSize);
+                              },
                             ),
                           ],
                         ),

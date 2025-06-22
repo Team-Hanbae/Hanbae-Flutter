@@ -14,8 +14,8 @@ class HanbaeBoard extends StatelessWidget {
       (MetronomeBloc bloc) => bloc.state.selectedJangdan,
     );
 
-    return SizedBox(
-      height: 350,
+    return Flexible(
+      // height: 350,
       child: Column(
         children: [
           SizedBox(
@@ -75,7 +75,11 @@ class HanbaeBoard extends StatelessWidget {
 class SobakSegment extends StatelessWidget {
   final int sobakSegmentCount;
   final int activedSobak;
-  const SobakSegment({super.key, required this.sobakSegmentCount, required this.activedSobak});
+  const SobakSegment({
+    super.key,
+    required this.sobakSegmentCount,
+    required this.activedSobak,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +270,7 @@ class Bakbar extends StatelessWidget {
         (state.currentRowIndex == rowIndex &&
             state.currentDaebakIndex == daebakIndex &&
             (state.selectedJangdan.jangdanType.sobakSegmentCount != null ||
-            (!state.isSobakOn || state.currentSobakIndex == sobakIndex)));
+                (!state.isSobakOn || state.currentSobakIndex == sobakIndex)));
     final isPlaying = context.select(
       (MetronomeBloc bloc) => bloc.state.isPlaying,
     );
@@ -283,7 +287,12 @@ class Bakbar extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: !isPlaying ? AppColors.frame : isActive ? Color(0x80FFA91F) : AppColors.frame,
+          color:
+              !isPlaying
+                  ? AppColors.frame
+                  : isActive
+                  ? Color(0x80FFA91F)
+                  : AppColors.frame,
           border: const Border(
             left: BorderSide(color: AppColors.bakBarLine, width: 1),
           ),

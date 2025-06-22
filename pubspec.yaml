@@ -45,6 +45,7 @@ dependencies:
   path_provider: ^2.0.14
   intl: ^0.18.1
   wakelock_plus: ^1.1.1
+  animated_size_and_fade: ^5.1.1
 
 dev_dependencies:
   flutter_test:

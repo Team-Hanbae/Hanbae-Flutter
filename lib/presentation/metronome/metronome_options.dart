@@ -204,12 +204,18 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
               color: AppColors.backgroundCard,
               borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
             ),
-            child: Center(
-              child: Icon(
-                Icons.keyboard_arrow_down_rounded,
-                size: 36,
-                color: AppColors.textQuaternary,
-              ),
+            child: BlocBuilder<MetronomeBloc, MetronomeState>(
+              builder: (context, state) {
+                return Center(
+                  child: Icon(
+                    context.read<MetronomeBloc>().state.minimum
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    size: 36,
+                    color: AppColors.textQuaternary,
+                  ),
+                );
+              },
             ),
           ),
         ),
