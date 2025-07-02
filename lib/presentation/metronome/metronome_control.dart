@@ -117,7 +117,7 @@ class AnimatedMetronomeLayout extends StatelessWidget {
     final double canvasHeight =
         minimum
             ? max(_minBpmHeight, _minActionsHeight)
-            : _mainBpmHeight + _mainActionsHeight + _spacing + 12;
+            : _mainBpmHeight + _mainActionsHeight + _spacing + 20;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
@@ -133,9 +133,9 @@ class AnimatedMetronomeLayout extends StatelessWidget {
             curve: Curves.easeInOut,
             width: minimum ? _minBpmWidth : _mainBpmWidth,
             height: minimum ? _minBpmHeight : _mainBpmHeight,
-            top: minimum ? (canvasHeight - _minBpmHeight) / 2 : 0,
+            top: minimum ? (canvasHeight - _minBpmHeight) / 2 + 8 : 8,
             left: minimum ? 0 : (canvasWidth - _mainBpmWidth) / 2,
-            child: _BpmControls(minimum: minimum),
+            child: _BpmControls(minimum: minimum, isTapping: isTapping),
           ),
           // 속도
           AnimatedPositioned(
@@ -161,7 +161,9 @@ class AnimatedMetronomeLayout extends StatelessWidget {
 
 class _BpmControls extends StatefulWidget {
   final bool minimum;
-  const _BpmControls({required this.minimum});
+  final bool isTapping;
+
+  const _BpmControls({required this.minimum, required this.isTapping});
 
   @override
   __BpmControlsState createState() => __BpmControlsState();
@@ -231,44 +233,57 @@ class __BpmControlsState extends State<_BpmControls> {
           ),
 
           // BPM Text
-          BlocBuilder<MetronomeBloc, MetronomeState>(
-            builder: (context, state) {
-              final textStyle =
-                  widget.minimum
-                      ? const TextStyle(
-                        fontSize: 44,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: -0.5,
-                      )
-                      : const TextStyle(
-                        fontSize: 58,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: -0.5,
-                      );
-
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 500),
-                width: state.minimum ? 90 : 110,
-                decoration: BoxDecoration(
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+            width: widget.minimum ? 90 : 120,
+            height: widget.minimum ? 60 : 74,
+            decoration: BoxDecoration(
+              color:
+                  widget.isTapping
+                      ? AppColors.backgroundDefault
+                      : Colors.transparent,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Center(
+              child: Text(
+                context.read<MetronomeBloc>().state.bpm.toString(),
+                // textAlign: TextAlign.center,
+                // style: textStyle.copyWith(
+                //   color:
+                //   widget.isTapping
+                //       ? AppColors.textBPMSearch
+                //       : AppColors.textButtonSecondary,
+                // ),
+                style: TextStyle(
                   color:
-                      state.isTapping
-                          ? AppColors.backgroundDefault
-                          : Colors.transparent,
-                  borderRadius: BorderRadius.circular(16),
+                      widget.isTapping
+                          ? AppColors.textBPMSearch
+                          : AppColors.textButtonSecondary,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: -0.5,
+                  fontSize: widget.minimum ? 44 : 58,
                 ),
-                child: Text(
-                  state.bpm.toString(),
-                  textAlign: TextAlign.center,
-                  style: textStyle.copyWith(
-                    color:
-                        state.isTapping
-                            ? AppColors.textBPMSearch
-                            : AppColors.textButtonSecondary,
-                  ),
-                ),
-              );
-            },
+              ),
+            ),
           ),
+          // BlocBuilder<MetronomeBloc, MetronomeState>(
+          //   builder: (context, state) {
+          //     final textStyle =
+          //         widget.minimum
+          //             ? const TextStyle(
+          //               fontSize: 44,
+          //               fontWeight: FontWeight.w500,
+          //               letterSpacing: -0.5,
+          //             )
+          //             : const TextStyle(
+          //               fontSize: 58,
+          //               fontWeight: FontWeight.w500,
+          //               letterSpacing: -0.5,
+          //             );
+          //
+          //     return ;
+          //   },
+          // ),
 
           // Plus Button
           GestureDetector(
