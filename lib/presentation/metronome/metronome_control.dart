@@ -1,12 +1,12 @@
-import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc package
-import 'package:hanbae/bloc/metronome/metronome_bloc.dart'; // Import the MetronomeBloc
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'dart:async';
+import 'dart:math';
 
-import 'package:hive/hive.dart'; // Import the async package for Timer
+import 'package:hive/hive.dart';
 
 class MetronomeControl extends StatefulWidget {
   final double iconSize;
@@ -17,35 +17,35 @@ class MetronomeControl extends StatefulWidget {
 }
 
 class _MetronomeControlState extends State<MetronomeControl> {
-  Timer? _bpmChangeTimer;
-
   @override
   Widget build(BuildContext context) {
-    final isTapping = context.select(
-      (MetronomeBloc bloc) => bloc.state.isTapping,
-    );
+    final metronomeState = context.watch<MetronomeBloc>().state;
+    final isTapping = metronomeState.isTapping;
+    final minimum = metronomeState.minimum;
 
     return Container(
       margin: const EdgeInsets.only(left: 16.0, right: 16, bottom: 16),
       decoration: BoxDecoration(
         color: AppColors.backgroundCard,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           bottomLeft: Radius.circular(16),
           bottomRight: Radius.circular(16),
         ),
       ),
-
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedContainer(
-                duration: Duration(milliseconds: 300),
-                height: context.read<MetronomeBloc>().state.minimum ? 0 : 32,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // '빠르기(BPM)' 텍스트 애니메이션
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              height: minimum ? 0 : 32,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 500),
+                opacity: minimum ? 0 : 1,
                 child: Align(
                   alignment: Alignment.center,
                   child:
@@ -74,415 +74,376 @@ class _MetronomeControlState extends State<MetronomeControl> {
                           ),
                 ),
               ),
-              // AnimatedSizeAndFade(
-              //   sizeDuration: Duration(seconds: 1),
-              //   fadeDuration: Duration(seconds: 2),
-              //   child:
-              //       context.read<MetronomeBloc>().state.minimum
-              //           ? minimumWidget(isTapping, ValueKey('minimum'))
-              //           : mainMetronomeControlWidget(
-              //             isTapping,
-              //             ValueKey('minimum'),
-              //           ),
-              // ),
-              AnimatedCrossFade(
-                duration: Duration(milliseconds: 300),
-                firstChild: minimumWidget(isTapping),
-                secondChild: mainMetronomeControlWidget(isTapping),
-                crossFadeState:
-                    context.read<MetronomeBloc>().state.minimum
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-              ),
-              // mainMetronomeControlWidget(isTapping),
-            ],
-          ),
+            ),
+            AnimatedMetronomeLayout(minimum: minimum, isTapping: isTapping),
+          ],
         ),
       ),
     );
   }
+}
 
-  /// minimum이 false일 때의 ui
-  Widget mainMetronomeControlWidget(isTapping) {
-    return Column(
-      children: [
-        // 플마버튼, BPM숫자 row
-        GestureDetector(
-          onHorizontalDragUpdate: (direction) {
-            if (direction.delta.dx < 0) {
-              final bpm = context.read<MetronomeBloc>().state.bpm;
-              final gap = ((bpm - 1) ~/ 2 * 2) - bpm;
-              context.read<MetronomeBloc>().add(ChangeBpm(gap));
-            } else if (direction.delta.dx > 0) {
-              final bpm = context.read<MetronomeBloc>().state.bpm;
-              final gap = ((bpm + 2) ~/ 2 * 2) - bpm;
-              context.read<MetronomeBloc>().add(ChangeBpm(gap));
-            }
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Minus Button
-              GestureDetector(
-                onLongPressStart: (_) {
-                  _bpmChangeTimer = Timer.periodic(
-                    const Duration(milliseconds: 100),
-                    (_) {
-                      final bpm = context.read<MetronomeBloc>().state.bpm;
-                      final gap = ((bpm - 1) ~/ 10 * 10) - bpm;
-                      context.read<MetronomeBloc>().add(ChangeBpm(gap));
-                    },
-                  );
-                },
-                onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: const BoxDecoration(
-                    color: AppColors.buttonBpmControlDefault,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.remove,
-                      size: 32,
-                      color: AppColors.textButtonSecondary,
-                    ),
-                    onPressed: () {
-                      context.read<MetronomeBloc>().add(ChangeBpm(-1));
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(width: 2),
+/// 레이아웃 전환 애니메이션을 담당하는 위젯
+class AnimatedMetronomeLayout extends StatelessWidget {
+  final bool minimum;
+  final bool isTapping;
 
-              // BPM Text
-              // Bloc 상태를 사용하여 BPM 값을 업데이트
-              BlocBuilder<MetronomeBloc, MetronomeState>(
-                builder: (context, state) {
-                  return SizedBox(
-                    width: 136,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child:
-                          state.isTapping
-                              ? Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.backgroundDefault,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Text(
-                                  state.bpm.toString(),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 58,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.textBPMSearch,
-                                    letterSpacing: -0.5,
-                                  ),
-                                ),
-                              )
-                              : Text(
-                                state.bpm.toString(),
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 58,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.textButtonSecondary,
-                                  letterSpacing: -0.5,
-                                ),
-                              ),
-                    ),
-                  );
-                },
-              ),
+  const AnimatedMetronomeLayout({
+    super.key,
+    required this.minimum,
+    required this.isTapping,
+  });
 
-              const SizedBox(width: 2),
+  // 위젯 크기 및 간격 상수 정의
+  static const double _mainBpmHeight = 74.0;
+  static const double _mainActionsHeight = 74.0;
+  static const double _mainBpmWidth = 240.0; // +,- 버튼 포함 너비
+  static const double _mainActionsWidth = 300.0; // 시작/탭 버튼 너비
 
-              // Plus Button
-              GestureDetector(
-                onLongPressStart: (_) {
-                  _bpmChangeTimer = Timer.periodic(
-                    const Duration(milliseconds: 100),
-                    (_) {
-                      final bpm = context.read<MetronomeBloc>().state.bpm;
-                      final gap = ((bpm + 10) ~/ 10 * 10) - bpm;
-                      context.read<MetronomeBloc>().add(ChangeBpm(gap));
-                    },
-                  );
-                },
-                onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: const BoxDecoration(
-                    color: AppColors.buttonBpmControlDefault,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.add,
-                      size: 32,
-                      color: AppColors.textButtonSecondary,
-                    ),
-                    onPressed: () {
-                      context.read<MetronomeBloc>().add(ChangeBpm(1));
-                    },
-                  ),
-                ),
-              ),
-            ],
+  static const double _minBpmHeight = 60.0;
+  static const double _minActionsHeight = 74.0;
+  static const double _minBpmWidth = 140.0;
+  static const double _minActionsWidth = 170.0;
+
+  static const double _spacing = 8.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final double canvasWidth =
+        minimum
+            ? _minBpmWidth + _minActionsWidth + _spacing
+            : max(_mainBpmWidth, _mainActionsWidth);
+
+    final double canvasHeight =
+        minimum
+            ? max(_minBpmHeight, _minActionsHeight)
+            : _mainBpmHeight + _mainActionsHeight + _spacing + 12;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+      width: canvasWidth,
+      height: canvasHeight,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // BPM
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+            width: minimum ? _minBpmWidth : _mainBpmWidth,
+            height: minimum ? _minBpmHeight : _mainBpmHeight,
+            top: minimum ? (canvasHeight - _minBpmHeight) / 2 : 0,
+            left: minimum ? 0 : (canvasWidth - _mainBpmWidth) / 2,
+            child: _BpmControls(minimum: minimum),
           ),
-        ),
+          // 속도
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+            width: minimum ? _minActionsWidth : _mainActionsWidth,
+            height: minimum ? _minActionsHeight : _mainActionsHeight,
+            top:
+                minimum
+                    ? (canvasHeight - _minActionsHeight) / 2
+                    : _mainBpmHeight + _spacing + 12,
+            left:
+                minimum
+                    ? _minBpmWidth + _spacing
+                    : (canvasWidth - _mainActionsWidth) / 2,
+            child: ActionButtons(minimum: minimum, isTapping: isTapping),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-        const SizedBox(height: 8),
+class _BpmControls extends StatefulWidget {
+  final bool minimum;
+  const _BpmControls({required this.minimum});
 
-        // Start and Detect Tempo buttons
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: BlocBuilder<MetronomeBloc, MetronomeState>(
-                  builder: (context, state) {
-                    final isPlaying = state.isPlaying;
-                    return ElevatedButton(
-                      onPressed: () {
-                        if (isPlaying) {
-                          context.read<MetronomeBloc>().add(Stop());
-                        } else {
-                          context.read<MetronomeBloc>().add(Play());
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(0, 74),
-                        backgroundColor:
-                            isPlaying
-                                ? AppColors.buttonPlaystop
-                                : AppColors.buttonPlaystart,
-                      ),
-                      child: Text(
-                        isPlaying ? "멈춤" : "시작",
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              isPlaying
-                                  ? AppColors.textButtonPrimary
-                                  : AppColors.textButtonEmphasis,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+  @override
+  __BpmControlsState createState() => __BpmControlsState();
+}
 
-              const SizedBox(width: 12),
+class __BpmControlsState extends State<_BpmControls> {
+  Timer? _bpmChangeTimer;
 
-              // 빠르기 찾기 버튼
-              ElevatedButton(
-                onPressed: () {
-                  context.read<MetronomeBloc>().add(const TapTempo());
+  @override
+  void dispose() {
+    _bpmChangeTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onHorizontalDragUpdate: (direction) {
+        if (direction.delta.dx < 0) {
+          final bpm = context.read<MetronomeBloc>().state.bpm;
+          final gap = ((bpm - 1) ~/ 2 * 2) - bpm;
+          context.read<MetronomeBloc>().add(ChangeBpm(gap));
+        } else if (direction.delta.dx > 0) {
+          final bpm = context.read<MetronomeBloc>().state.bpm;
+          final gap = ((bpm + 2) ~/ 2 * 2) - bpm;
+          context.read<MetronomeBloc>().add(ChangeBpm(gap));
+        }
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Minus Button
+          GestureDetector(
+            onTap: () => context.read<MetronomeBloc>().add(ChangeBpm(-1)),
+            onLongPressStart: (_) {
+              _bpmChangeTimer = Timer.periodic(
+                const Duration(milliseconds: 100),
+                (_) {
+                  final bpm = context.read<MetronomeBloc>().state.bpm;
+                  final gap = ((bpm - 1) ~/ 10 * 10) - bpm;
+                  context.read<MetronomeBloc>().add(ChangeBpm(gap));
                 },
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(120, 72),
-                  backgroundColor:
-                      isTapping
-                          ? AppColors.buttonActive
-                          : AppColors.buttonPrimary,
+              );
+            },
+            onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
+            child:
+                widget.minimum
+                    ? const Icon(
+                      Icons.remove,
+                      size: 24,
+                      color: AppColors.textButtonSecondary,
+                    )
+                    : Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: AppColors.buttonBpmControlDefault,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.remove,
+                        size: 32,
+                        color: AppColors.textButtonSecondary,
+                      ),
+                    ),
+          ),
+
+          // BPM Text
+          BlocBuilder<MetronomeBloc, MetronomeState>(
+            builder: (context, state) {
+              final textStyle =
+                  widget.minimum
+                      ? const TextStyle(
+                        fontSize: 44,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: -0.5,
+                      )
+                      : const TextStyle(
+                        fontSize: 58,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: -0.5,
+                      );
+
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                width: state.minimum ? 90 : 110,
+                decoration: BoxDecoration(
+                  color:
+                      state.isTapping
+                          ? AppColors.backgroundDefault
+                          : Colors.transparent,
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
-                  isTapping ? "탭" : "빠르기\n찾기",
+                  state.bpm.toString(),
                   textAlign: TextAlign.center,
-                  style:
-                      isTapping
-                          ? AppTextStyles.title1R.copyWith(
-                            color: AppColors.textButtonEmphasis,
-                          )
-                          : AppTextStyles.bodyR.copyWith(
-                            color: AppColors.textButtonPrimary,
-                            height: 1.12,
-                          ),
+                  style: textStyle.copyWith(
+                    color:
+                        state.isTapping
+                            ? AppColors.textBPMSearch
+                            : AppColors.textButtonSecondary,
+                  ),
                 ),
-              ),
-            ],
+              );
+            },
           ),
-        ),
-      ],
+
+          // Plus Button
+          GestureDetector(
+            onTap: () => context.read<MetronomeBloc>().add(ChangeBpm(1)),
+            onLongPressStart: (_) {
+              _bpmChangeTimer = Timer.periodic(
+                const Duration(milliseconds: 100),
+                (_) {
+                  final bpm = context.read<MetronomeBloc>().state.bpm;
+                  final gap = ((bpm + 10) ~/ 10 * 10) - bpm;
+                  context.read<MetronomeBloc>().add(ChangeBpm(gap));
+                },
+              );
+            },
+            onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
+            child:
+                widget.minimum
+                    ? const Icon(
+                      Icons.add,
+                      size: 24,
+                      color: AppColors.textButtonSecondary,
+                    )
+                    : Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: AppColors.buttonBpmControlDefault,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.add,
+                        size: 32,
+                        color: AppColors.textButtonSecondary,
+                      ),
+                    ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 액션 버튼
+class ActionButtons extends StatelessWidget {
+  final bool minimum;
+  final bool isTapping;
+
+  const ActionButtons({
+    super.key,
+    required this.minimum,
+    required this.isTapping,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (minimum) {
+      // Minimum 모드 (가로 배치)
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          buildPlayStopButton(context, isMinimum: true),
+          const SizedBox(width: 8),
+          _buildTapButton(context, isMinimum: true),
+        ],
+      );
+    } else {
+      // Main 모드 세로
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(child: buildPlayStopButton(context, isMinimum: false)),
+          const SizedBox(width: 12),
+          _buildTapButton(context, isMinimum: false),
+        ],
+      );
+    }
+  }
+
+  Widget buildPlayStopButton(BuildContext context, {required bool isMinimum}) {
+    return BlocBuilder<MetronomeBloc, MetronomeState>(
+      builder: (context, state) {
+        final isPlaying = state.isPlaying;
+        return ElevatedButton(
+          onPressed: () {
+            context.read<MetronomeBloc>().add(isPlaying ? Stop() : Play());
+          },
+          style: ElevatedButton.styleFrom(
+            minimumSize: isMinimum ? const Size(88, 74) : const Size(0, 74),
+            backgroundColor:
+                isPlaying
+                    ? AppColors.buttonPlaystop
+                    : AppColors.buttonPlaystart,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100),
+            ),
+          ),
+          child:
+              isMinimum
+                  ? Icon(
+                    isPlaying ? Icons.stop : Icons.play_arrow,
+                    size: 29,
+                    color: AppColors.backgroundDefault,
+                  )
+                  : Text(
+                    isPlaying ? "멈춤" : "시작",
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w500,
+                      color:
+                          isPlaying
+                              ? AppColors.textButtonPrimary
+                              : AppColors.textButtonEmphasis,
+                    ),
+                  ),
+        );
+      },
     );
   }
 
-  Widget minimumWidget(isTapping) {
-    return Column(
-      children: [
-        // 플마버튼, BPM숫자 row
-        GestureDetector(
-          onHorizontalDragUpdate: (direction) {
-            if (direction.delta.dx < 0) {
-              final bpm = context.read<MetronomeBloc>().state.bpm;
-              final gap = ((bpm - 1) ~/ 2 * 2) - bpm;
-              context.read<MetronomeBloc>().add(ChangeBpm(gap));
-            } else if (direction.delta.dx > 0) {
-              final bpm = context.read<MetronomeBloc>().state.bpm;
-              final gap = ((bpm + 2) ~/ 2 * 2) - bpm;
-              context.read<MetronomeBloc>().add(ChangeBpm(gap));
-            }
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Minus Button
-              GestureDetector(
-                onLongPressStart: (_) {
-                  _bpmChangeTimer = Timer.periodic(
-                    const Duration(milliseconds: 100),
-                    (_) {
-                      final bpm = context.read<MetronomeBloc>().state.bpm;
-                      final gap = ((bpm - 1) ~/ 10 * 10) - bpm;
-                      context.read<MetronomeBloc>().add(ChangeBpm(gap));
-                    },
-                  );
-                },
-                onTap: () {
-                  context.read<MetronomeBloc>().add(ChangeBpm(-1));
-                },
-                onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
-                child: Icon(
-                  Icons.remove,
-                  size: 16,
-                  color: AppColors.textButtonSecondary,
+  Widget _buildTapButton(BuildContext context, {required bool isMinimum}) {
+    return ElevatedButton(
+      onPressed: () {
+        context.read<MetronomeBloc>().add(const TapTempo());
+      },
+      style: ElevatedButton.styleFrom(
+        fixedSize: isMinimum ? const Size(74, 74) : const Size(110, 74),
+        backgroundColor:
+            isTapping ? AppColors.buttonActive : AppColors.buttonPrimary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+      ),
+      child: Text(
+        isMinimum
+            ? "탭"
+            : isTapping
+            ? "탭"
+            : "빠르기\n찾기",
+        textAlign: TextAlign.center,
+        style:
+            isTapping
+                ? AppTextStyles.title1R.copyWith(
+                  color: AppColors.textButtonEmphasis,
+                )
+                : AppTextStyles.bodyR.copyWith(
+                  color: AppColors.textButtonPrimary,
+                  height: 1.12,
                 ),
-              ),
-              const SizedBox(width: 2),
-
-              // BPM Text
-              // Bloc 상태를 사용하여 BPM 값을 업데이트
-              BlocBuilder<MetronomeBloc, MetronomeState>(
-                builder: (context, state) {
-                  return SizedBox(
-                    // width: 100,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child:
-                          state.isTapping
-                              ? Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.backgroundDefault,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Text(
-                                  state.bpm.toString(),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 44,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.textBPMSearch,
-                                    letterSpacing: -0.5,
-                                  ),
-                                ),
-                              )
-                              : Text(
-                                state.bpm.toString(),
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 44,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.textButtonSecondary,
-                                  letterSpacing: -0.5,
-                                ),
-                              ),
-                    ),
-                  );
-                },
-              ),
-
-              // const SizedBox(width: 2),
-
-              // Plus Button
-              GestureDetector(
-                onLongPressStart: (_) {
-                  _bpmChangeTimer = Timer.periodic(
-                    const Duration(milliseconds: 100),
-                    (_) {
-                      final bpm = context.read<MetronomeBloc>().state.bpm;
-                      final gap = ((bpm + 10) ~/ 10 * 10) - bpm;
-                      context.read<MetronomeBloc>().add(ChangeBpm(gap));
-                    },
-                  );
-                },
-                onTap: () {
-                  context.read<MetronomeBloc>().add(ChangeBpm(1));
-                },
-                onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
-                child: Icon(
-                  Icons.add,
-                  size: 16,
-                  color: AppColors.textButtonSecondary,
-                ),
-              ),
-              SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () {
-                  if (context.read<MetronomeBloc>().state.isPlaying) {
-                    context.read<MetronomeBloc>().add(Stop());
-                  } else {
-                    context.read<MetronomeBloc>().add(Play());
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(88, 74),
-                  backgroundColor:
-                      context.read<MetronomeBloc>().state.isPlaying
-                          ? AppColors.buttonPlaystop
-                          : AppColors.buttonPlaystart,
-                ),
-                child: Center(
-                  child:
-                      context.read<MetronomeBloc>().state.isPlaying
-                          ? Icon(
-                            Icons.stop,
-                            size: 29,
-                            color: AppColors.backgroundDefault,
-                          )
-                          : Icon(
-                            Icons.play_arrow,
-                            size: 29,
-                            color: AppColors.backgroundDefault,
-                          ),
-                ),
-              ),
-              SizedBox(width: 8),
-              // 빠르기 찾기 버튼
-              ElevatedButton(
-                onPressed: () {
-                  context.read<MetronomeBloc>().add(const TapTempo());
-                },
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(74, 74),
-                  backgroundColor:
-                      isTapping
-                          ? AppColors.buttonActive
-                          : AppColors.buttonPrimary,
-                ),
-                child: Text(
-                  "탭",
-                  textAlign: TextAlign.center,
-                  style:
-                      isTapping
-                          ? AppTextStyles.title1R.copyWith(
-                            color: AppColors.textButtonEmphasis,
-                          )
-                          : AppTextStyles.bodyR.copyWith(
-                            color: AppColors.textButtonPrimary,
-                            height: 1.12,
-                          ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+      ),
     );
+    // return InkWell(
+    //   onTap: () {
+    //     context.read<MetronomeBloc>().add(const TapTempo());
+    //   },
+    //   child: Container(
+    //     width: 100,
+    //     decoration: BoxDecoration(
+    //       color: isTapping ? AppColors.buttonActive : AppColors.buttonPrimary,
+    //     ),
+    //     child: Text(
+    //       isMinimum
+    //           ? "탭"
+    //           : isTapping
+    //           ? "탭"
+    //           : "빠르기\n찾기",
+    //       textAlign: TextAlign.center,
+    //       style:
+    //           isTapping
+    //               ? AppTextStyles.title1R.copyWith(
+    //                 color: AppColors.textButtonEmphasis,
+    //               )
+    //               : AppTextStyles.bodyR.copyWith(
+    //                 color: AppColors.textButtonPrimary,
+    //                 height: 1.12,
+    //               ),
+    //     ),
+    //   ),
+    // );
   }
 }
