@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hanbae/theme/colors.dart';
+import 'package:hanbae/utils/local_storage.dart';
 import 'package:lottie/lottie.dart';
 
 class CommonDialog {
@@ -24,6 +25,7 @@ class CommonDialog {
                     height: 44,
                     child: InkWell(
                       onTap: () {
+                        Storage().setFirstUserCheck();
                         Navigator.pop(context);
                       },
                       child: Icon(
@@ -78,27 +80,6 @@ class CommonDialog {
 
                       Lottie.asset('assets/lotties/fold.json'),
 
-                      // 중앙 아이콘
-                      // Center(
-                      //   child: Container(
-                      //     width: 80,
-                      //     height: 80,
-                      //     decoration: BoxDecoration(
-                      //       color: Colors.grey[700],
-                      //       borderRadius: BorderRadius.circular(12),
-                      //     ),
-                      //     child: Center(
-                      //       child: Container(
-                      //         width: 60,
-                      //         height: 60,
-                      //         decoration: BoxDecoration(
-                      //           color: Colors.orange,
-                      //           borderRadius: BorderRadius.circular(8),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                       const SizedBox(height: 24),
 
                       // 설명 텍스트
@@ -136,7 +117,8 @@ class CommonDialog {
                             ),
                           ),
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Storage().setFirstUserCheck();
+                            Navigator.pop(context);
                           },
                         ),
                       ),
