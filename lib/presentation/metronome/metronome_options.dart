@@ -193,30 +193,50 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
           ),
         ),
         SizedBox(width: 14),
-        InkWell(
-          onTap: () {
-            context.read<MetronomeBloc>().add(const ToggleMinimum());
-          },
-          child: Container(
-            width: 60,
-            height: 36,
-            decoration: BoxDecoration(
-              color: AppColors.backgroundCard,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-            ),
-            child: BlocBuilder<MetronomeBloc, MetronomeState>(
-              builder: (context, state) {
-                return Center(
-                  child: Icon(
-                    context.read<MetronomeBloc>().state.minimum
-                        ? Icons.keyboard_arrow_up_rounded
-                        : Icons.keyboard_arrow_down_rounded,
-                    size: 36,
-                    color: AppColors.textQuaternary,
+        SizedBox(
+          width: 60,
+          height: 66,
+          child: Stack(
+            children: [
+              Positioned(
+                bottom: 0,
+                child: InkWell(
+                  onTap: () {
+                    context.read<MetronomeBloc>().add(const ToggleMinimum());
+                  },
+                  child: Container(
+                    width: 60,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: AppColors.backgroundCard,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(12),
+                      ),
+                    ),
+                    child: BlocBuilder<MetronomeBloc, MetronomeState>(
+                      builder: (context, state) {
+                        return Center(
+                          child: Icon(
+                            context.read<MetronomeBloc>().state.minimum
+                                ? Icons.keyboard_arrow_up_rounded
+                                : Icons.keyboard_arrow_down_rounded,
+                            size: 36,
+                            color: AppColors.textQuaternary,
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                );
-              },
-            ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                child: SizedBox(
+                  width: 60,
+                  child: SvgPicture.asset('assets/images/icon/new_icon.svg'),
+                ),
+              ),
+            ],
           ),
         ),
       ],
