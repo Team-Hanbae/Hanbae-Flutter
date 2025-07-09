@@ -4,6 +4,7 @@ import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/theme/text_styles.dart';
+import 'package:hanbae/utils/local_storage.dart';
 import 'dart:ui'; // Ensure this import is present
 import '../../bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/model/sound.dart';
@@ -17,6 +18,17 @@ class MetronomeOptions extends StatefulWidget {
 
 class _MetronomeOptionsState extends State<MetronomeOptions> {
   bool _isSoundMenuOpen = false;
+  bool showNewMinimumIcon = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Storage().getFirstMinimumCheck().then((value) {
+      setState(() {
+        showNewMinimumIcon = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +214,10 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                 bottom: 0,
                 child: InkWell(
                   onTap: () {
+                    Storage().setFirstMinimumCheck();
                     context.read<MetronomeBloc>().add(const ToggleMinimum());
+                    showNewMinimumIcon = true;
+                    setState(() {});
                   },
                   child: Container(
                     width: 60,
@@ -229,13 +244,14 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                   ),
                 ),
               ),
-              Positioned(
-                top: 0,
-                child: SizedBox(
-                  width: 60,
-                  child: SvgPicture.asset('assets/images/icon/new_icon.svg'),
+              if (!showNewMinimumIcon)
+                Positioned(
+                  top: 0,
+                  child: SizedBox(
+                    width: 60,
+                    child: SvgPicture.asset('assets/images/icon/new_icon.svg'),
+                  ),
                 ),
-              ),
             ],
           ),
         ),
