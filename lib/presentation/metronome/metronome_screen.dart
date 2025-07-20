@@ -466,40 +466,45 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                 centerTitle: true,
                 actions: appBarActions,
               ),
-              body: LayoutBuilder(
-                builder: (context, constraints) {
-                  return SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: constraints.maxHeight,
-                      ),
-                      child: IntrinsicHeight(
-                        child: Column(
-                          children: [
-                            BlocBuilder<MetronomeBloc, MetronomeState>(
-                              builder: (context, state) => HanbaeBoard(),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
+              body: SafeArea(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: IntrinsicHeight(
+                          child: Column(
+                            children: [
+                              BlocBuilder<MetronomeBloc, MetronomeState>(
+                                builder: (context, state) => HanbaeBoard(),
                               ),
-                              child: MetronomeOptions(),
-                            ),
-                            BlocBuilder<MetronomeBloc, MetronomeState>(
-                              builder: (context, state) {
-                                double iconSize =
-                                    context.read<MetronomeBloc>().state.minimum
-                                        ? 16
-                                        : 32;
-                                return MetronomeControl(iconSize: iconSize);
-                              },
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                ),
+                                child: MetronomeOptions(),
+                              ),
+                              BlocBuilder<MetronomeBloc, MetronomeState>(
+                                builder: (context, state) {
+                                  double iconSize =
+                                      context
+                                              .read<MetronomeBloc>()
+                                              .state
+                                              .minimum
+                                          ? 16
+                                          : 32;
+                                  return MetronomeControl(iconSize: iconSize);
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),

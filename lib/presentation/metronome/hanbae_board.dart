@@ -183,7 +183,7 @@ class BakbarSet extends StatelessWidget {
                 .asMap()
                 .entries
                 .map(
-                  (entry) => Expanded(
+                  (entry) => Flexible(
                     child: Bakbar(
                       accent: entry.value,
                       bakNumber: bakNumber,
@@ -195,7 +195,7 @@ class BakbarSet extends StatelessWidget {
                 )
                 .toList()
             : [
-              Expanded(
+              Flexible(
                 child: Bakbar(
                   accent: daebak.first,
                   bakNumber: bakNumber,
