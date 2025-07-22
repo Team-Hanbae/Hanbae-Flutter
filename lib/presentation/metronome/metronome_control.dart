@@ -42,42 +42,55 @@ class _MetronomeControlState extends State<MetronomeControl> {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedContainer(
-                duration: Duration(milliseconds: 500),
-                height: minimum ? 0 : 32,
-                child: Align(
-                  alignment: Alignment.center,
-                  child:
-                      isTapping
-                          ? Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.backgroundDefault,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 5,
-                              horizontal: 16,
-                            ),
-                            child: Text(
-                              "원하는 빠르기로 계속 탭해주세요",
-                              style: AppTextStyles.bodySb.copyWith(
-                                color: AppColors.textDefault,
+          child: GestureDetector(
+            onHorizontalDragUpdate: (direction) {
+              if (direction.delta.dx < 0) {
+                final bpm = context.read<MetronomeBloc>().state.bpm;
+                final gap = ((bpm - 1) ~/ 2 * 2) - bpm;
+                context.read<MetronomeBloc>().add(ChangeBpm(gap));
+              } else if (direction.delta.dx > 0) {
+                final bpm = context.read<MetronomeBloc>().state.bpm;
+                final gap = ((bpm + 2) ~/ 2 * 2) - bpm;
+                context.read<MetronomeBloc>().add(ChangeBpm(gap));
+              }
+            },
+            child: Column(
+              children: [
+                AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  width: double.infinity,
+                  height: minimum ? 0 : 28,
+                  decoration: BoxDecoration(),
+                  child: Center(
+                    child:
+                        isTapping
+                            ? Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.backgroundDefault,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 5,
+                                horizontal: 16,
+                              ),
+                              child: Text(
+                                "원하는 빠르기로 계속 탭해주세요",
+                                style: AppTextStyles.bodySb.copyWith(
+                                  color: AppColors.textDefault,
+                                ),
+                              ),
+                            )
+                            : Text(
+                              '빠르기(BPM)',
+                              style: AppTextStyles.calloutR.copyWith(
+                                color: AppColors.textTertiary,
                               ),
                             ),
-                          )
-                          : Text(
-                            '빠르기(BPM)',
-                            style: AppTextStyles.calloutR.copyWith(
-                              color: AppColors.textTertiary,
-                            ),
-                          ),
+                  ),
                 ),
-              ),
-              testMetronomeControlWidget(isTapping, minimum, isPlaying),
-            ],
+                testMetronomeControlWidget(isTapping, minimum, isPlaying),
+              ],
+            ),
           ),
         ),
       ),
@@ -101,38 +114,23 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       HeroAnimation.child(
                         tag: '0',
                         key: ValueKey(0),
-                        child: GestureDetector(
-                          onHorizontalDragUpdate: (direction) {
-                            if (direction.delta.dx < 0) {
-                              final bpm =
-                                  context.read<MetronomeBloc>().state.bpm;
-                              final gap = ((bpm - 1) ~/ 2 * 2) - bpm;
-                              context.read<MetronomeBloc>().add(ChangeBpm(gap));
-                            } else if (direction.delta.dx > 0) {
-                              final bpm =
-                                  context.read<MetronomeBloc>().state.bpm;
-                              final gap = ((bpm + 2) ~/ 2 * 2) - bpm;
-                              context.read<MetronomeBloc>().add(ChangeBpm(gap));
-                            }
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Minus Button
-                              minusButton(),
-                              const SizedBox(width: 2),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Minus Button
+                            minusButton(),
+                            const SizedBox(width: 2),
 
-                              // BPM Text
-                              // Bloc 상태를 사용하여 BPM 값을 업데이트
-                              showBpmWidget(),
+                            // BPM Text
+                            // Bloc 상태를 사용하여 BPM 값을 업데이트
+                            showBpmWidget(),
 
-                              // const SizedBox(width: 2),
+                            // const SizedBox(width: 2),
 
-                              // Plus Button
-                              plusButton(),
-                              SizedBox(width: 16),
-                            ],
-                          ),
+                            // Plus Button
+                            plusButton(),
+                            SizedBox(width: 16),
+                          ],
                         ),
                       ),
                       SizedBox(width: 8),
@@ -158,33 +156,21 @@ class _MetronomeControlState extends State<MetronomeControl> {
                     HeroAnimation.child(
                       tag: '0',
                       key: ValueKey(0),
-                      child: GestureDetector(
-                        onHorizontalDragUpdate: (direction) {
-                          if (direction.delta.dx < 0) {
-                            final bpm = context.read<MetronomeBloc>().state.bpm;
-                            final gap = ((bpm - 1) ~/ 2 * 2) - bpm;
-                            context.read<MetronomeBloc>().add(ChangeBpm(gap));
-                          } else if (direction.delta.dx > 0) {
-                            final bpm = context.read<MetronomeBloc>().state.bpm;
-                            final gap = ((bpm + 2) ~/ 2 * 2) - bpm;
-                            context.read<MetronomeBloc>().add(ChangeBpm(gap));
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Minus Button
-                            minusButton(),
-                            const SizedBox(width: 2),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          // Minus Button
+                          minusButton(),
+                          const SizedBox(width: 2),
 
-                            showBpmWidget(),
+                          showBpmWidget(),
 
-                            const SizedBox(width: 2),
+                          const SizedBox(width: 2),
 
-                            // Plus Button
-                            plusButton(),
-                          ],
-                        ),
+                          // Plus Button
+                          plusButton(),
+                        ],
                       ),
                     ),
 

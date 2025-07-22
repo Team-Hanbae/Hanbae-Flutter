@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/utils/local_storage.dart';
 import 'package:lottie/lottie.dart';
@@ -20,18 +21,20 @@ class CommonDialog {
               children: [
                 Align(
                   alignment: Alignment.topRight,
-                  child: SizedBox(
-                    width: 44,
-                    height: 44,
-                    child: InkWell(
-                      onTap: () {
-                        Storage().setFirstUserCheck();
-                        Navigator.pop(context);
-                      },
-                      child: Icon(
-                        Icons.close,
-                        size: 20,
-                        color: AppColors.textTertiary,
+                  child: InkWell(
+                    onTap: () {
+                      Storage().setFirstUserCheck();
+                      Navigator.pop(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: SvgPicture.asset(
+                          'assets/images/icon/x_mark.svg',
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   ),

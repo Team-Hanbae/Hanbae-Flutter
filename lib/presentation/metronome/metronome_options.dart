@@ -204,7 +204,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
             ),
           ),
         ),
-        SizedBox(width: 14),
+        SizedBox(width: 8),
 
         Column(
           children: [
