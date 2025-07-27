@@ -44,13 +44,17 @@ class _MetronomeControlState extends State<MetronomeControl> {
           padding: const EdgeInsets.symmetric(vertical: 24),
           child: GestureDetector(
             onHorizontalDragUpdate: (direction) {
+              int gestureSpeed = 2;
+              if (minimum) {
+                gestureSpeed = 1;
+              }
               if (direction.delta.dx < 0) {
                 final bpm = context.read<MetronomeBloc>().state.bpm;
-                final gap = ((bpm - 1) ~/ 2 * 2) - bpm;
+                final gap = ((bpm - 1) ~/ gestureSpeed * gestureSpeed) - bpm;
                 context.read<MetronomeBloc>().add(ChangeBpm(gap));
               } else if (direction.delta.dx > 0) {
                 final bpm = context.read<MetronomeBloc>().state.bpm;
-                final gap = ((bpm + 2) ~/ 2 * 2) - bpm;
+                final gap = ((bpm + 2) ~/ gestureSpeed * gestureSpeed) - bpm;
                 context.read<MetronomeBloc>().add(ChangeBpm(gap));
               }
             },

@@ -40,6 +40,13 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
     });
   }
 
+  @override
+  void deactivate() {
+    if (context.read<MetronomeBloc>().state.minimum)
+      context.read<MetronomeBloc>().add(const ToggleMinimum());
+    super.deactivate();
+  }
+
   void firstUserDialog() async {
     final bool result = await Storage().getFirstUserCheck();
     if (!result) {
