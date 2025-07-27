@@ -462,6 +462,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
 
             // 메트로놈 스크린 시작
             child: Scaffold(
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 toolbarHeight: 44.0,
                 title: Text(

@@ -246,7 +246,10 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       child: Icon(
                         isPlaying ? Icons.stop : Icons.play_arrow,
                         size: 29,
-                        color: AppColors.backgroundDefault,
+                        color:
+                            isPlaying
+                                ? Colors.white
+                                : AppColors.backgroundDefault,
                       ),
                     ),
                   )
@@ -329,7 +332,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       context.read<MetronomeBloc>().add(const TapTempo());
                     },
                     style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(120, 72),
+                      fixedSize: const Size(112, 74),
                       backgroundColor:
                           isTapping
                               ? AppColors.buttonActive
