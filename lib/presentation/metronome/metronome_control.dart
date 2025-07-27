@@ -92,7 +92,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                             ),
                   ),
                 ),
-                testMetronomeControlWidget(isTapping, minimum, isPlaying),
+                metronomeControlWidget(isTapping, minimum, isPlaying),
               ],
             ),
           ),
@@ -101,7 +101,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
     );
   }
 
-  Widget testMetronomeControlWidget(isTapping, minimum, isPlaying) {
+  Widget metronomeControlWidget(isTapping, minimum, isPlaying) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 500),
       width: double.infinity,
@@ -166,8 +166,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                         children: [
                           // Minus Button
                           minusButton(),
-                          const SizedBox(width: 2),
 
+                          const SizedBox(width: 2),
                           showBpmWidget(),
 
                           const SizedBox(width: 2),

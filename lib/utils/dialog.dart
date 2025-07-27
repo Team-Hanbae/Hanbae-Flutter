@@ -70,7 +70,6 @@ class CommonDialog {
                             colors: [
                               Colors.transparent,
                               AppColors.textBPMDefault,
-                              AppColors.textBPMDefault,
                               AppColors.textBPMDefault, // 중앙의 밝은 색
                               Colors.transparent,
                             ],
