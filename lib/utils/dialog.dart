@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/theme/colors.dart';
+import 'package:hanbae/theme/text_styles.dart';
 import 'package:hanbae/utils/local_storage.dart';
 import 'package:lottie/lottie.dart';
 
@@ -86,14 +87,13 @@ class CommonDialog {
                       const SizedBox(height: 24),
 
                       // 설명 텍스트
-                      const Text(
+                      Text(
                         '이제 화면을 더 크게 쓸 수 있어요.',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: AppTextStyles.bodySb.copyWith(
                           fontSize: 17,
-                          color: AppColors.textSecondary,
-                          fontWeight: FontWeight.bold,
                           letterSpacing: -0.43,
+                          color: AppColors.textSecondary,
                         ),
                       ),
 
@@ -113,9 +113,10 @@ class CommonDialog {
                           child: Center(
                             child: Text(
                               '확인',
-                              style: TextStyle(
+                              style: AppTextStyles.bodySb.copyWith(
                                 fontSize: 17,
                                 color: AppColors.textDefault,
+                                letterSpacing: -0.43,
                               ),
                             ),
                           ),

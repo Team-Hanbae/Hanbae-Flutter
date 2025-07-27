@@ -4,6 +4,7 @@ import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/theme/text_styles.dart';
+import 'package:hanbae/utils/animation.dart';
 import 'package:hanbae/utils/local_storage.dart';
 import 'dart:ui'; // Ensure this import is present
 import '../../bloc/metronome/metronome_bloc.dart';
@@ -208,11 +209,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
 
         Column(
           children: [
-            if (!showNewMinimumIcon)
-              SizedBox(
-                width: 60,
-                child: SvgPicture.asset('assets/images/icon/new_icon.svg'),
-              ),
+            if (!showNewMinimumIcon) WigglingSvgIcon(),
             InkWell(
               onTap: () {
                 Storage().setFirstMinimumCheck();
