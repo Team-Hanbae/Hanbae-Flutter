@@ -184,6 +184,7 @@ class BakbarSet extends StatelessWidget {
                 .entries
                 .map(
                   (entry) => Flexible(
+                    /// TODO 화면 까매지는 에러 원인
                     child: Bakbar(
                       accent: entry.value,
                       bakNumber: bakNumber,
@@ -274,6 +275,7 @@ class Bakbar extends StatelessWidget {
     final isPlaying = context.select(
       (MetronomeBloc bloc) => bloc.state.isPlaying,
     );
+    final height = MediaQuery.of(context).size.height;
 
     return GestureDetector(
       onTap: () {
@@ -305,23 +307,26 @@ class Bakbar extends StatelessWidget {
             // 주황 박스
             Align(
               alignment: Alignment.bottomCenter,
-              child: FractionallySizedBox(
-                heightFactor: fillFraction,
-                widthFactor: 1.0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient:
-                        isActive
-                            ? const LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                AppColors.bakBarActiveTop,
-                                AppColors.bakBarActiveBottom,
-                              ],
-                            )
-                            : null,
-                    color: isActive ? null : AppColors.bakBarInactive,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: height * fillFraction),
+                child: FractionallySizedBox(
+                  heightFactor: fillFraction,
+                  widthFactor: 1.0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient:
+                          isActive
+                              ? const LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  AppColors.bakBarActiveTop,
+                                  AppColors.bakBarActiveBottom,
+                                ],
+                              )
+                              : null,
+                      color: isActive ? null : AppColors.bakBarInactive,
+                    ),
                   ),
                 ),
               ),

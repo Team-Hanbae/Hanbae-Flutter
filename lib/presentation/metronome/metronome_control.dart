@@ -123,7 +123,6 @@ class _MetronomeControlState extends State<MetronomeControl> {
                           children: [
                             // Minus Button
                             minusButton(),
-                            const SizedBox(width: 2),
 
                             // BPM Text
                             // Bloc 상태를 사용하여 BPM 값을 업데이트
@@ -133,7 +132,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
 
                             // Plus Button
                             plusButton(),
-                            SizedBox(width: 16),
+                            SizedBox(width: 8),
                           ],
                         ),
                       ),
@@ -392,10 +391,13 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       context.read<MetronomeBloc>().add(ChangeBpm(-1));
                     },
                     onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
-                    child: Icon(
-                      Icons.remove,
-                      size: 16,
-                      color: AppColors.textQuaternary,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Icon(
+                        Icons.remove,
+                        size: 16,
+                        color: AppColors.textQuaternary,
+                      ),
                     ),
                   )
                   : GestureDetector(
@@ -563,10 +565,13 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       context.read<MetronomeBloc>().add(ChangeBpm(1));
                     },
                     onLongPressEnd: (_) => _bpmChangeTimer?.cancel(),
-                    child: Icon(
-                      Icons.add,
-                      size: 16,
-                      color: AppColors.textQuaternary,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Icon(
+                        Icons.add,
+                        size: 16,
+                        color: AppColors.textQuaternary,
+                      ),
                     ),
                   )
                   : GestureDetector(
