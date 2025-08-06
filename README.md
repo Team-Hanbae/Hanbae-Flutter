@@ -9,11 +9,10 @@
 
 **이제부터 한배가 도와드릴게요! 국악 장단 연습을 간편하게 시작하세요**
 
-<div align="left">
-  <a href = "https://apps.apple.com/kr/app/한배-국악-메트로놈/id6736651881" >
-    <img  width=150  src="https://github.com/user-attachments/assets/8e8b42e7-a4d1-404c-abbd-4395f0b3ba3b" />
-  </a>
-</div>
+| App Store | Play Store |
+| :-------: | :--------: |
+| <a href = "https://apps.apple.com/kr/app/한배-국악-메트로놈/id6736651881"> <img width=150 src="https://github.com/user-attachments/assets/8e8b42e7-a4d1-404c-abbd-4395f0b3ba3b"/> </a> | <a href = "https://play.google.com/store/apps/details?id=krabs.hanbae&pcampaignid=web_share" > <img width=150  src="https://github.com/user-attachments/assets/33431a5d-456c-4207-862c-5f6ee76c1c5c"/> </a> |
+
 
 </br>
 
@@ -25,7 +24,13 @@
 
 <br>
 
-#### Krabs 팀 소개
+#### Hanbae (25.01 ~ )
+|헤이즐 / 하진주|폰 / 황윤기|룰루 / 이진아|스노우 / 박재현|
+|:-:|:-:|:-:|:-:|
+|[@daydog1122](https://github.com/daydog1122)|[@YunKi](https://github.com/YunKi-H)|[@Jina](https://github.com/l1004ga)|[@apmh0709](https://github.com/apmh0709)|
+|Design|iOS|iOS|Flutter|
+
+#### Krabs 팀 (24.09 ~ 24.12)
 |헤이즐 / 하진주|트란 / 이주현|폰 / 황윤기|룰루 / 이진아|타이니 / 이원선|에디 / 장해원|
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |[@daydog1122](https://github.com/daydog1122)|[@JenTran](https://github.com/JenJen02230202)|[@YunKi](https://github.com/YunKi-H)|[@Jina](https://github.com/l1004ga)|[@Wonsun Lee](https://github.com/onesunny2)|[@Eddie](https://github.com/penum1227)|
