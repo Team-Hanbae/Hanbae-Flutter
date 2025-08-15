@@ -9,6 +9,8 @@ import 'package:hanbae/presentation/metronome/metronome_options.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
+import 'package:hanbae/utils/dialog.dart';
+import 'package:hanbae/utils/local_storage.dart';
 
 enum AppBarMode { builtin, custom, create }
 
@@ -29,6 +31,28 @@ class MetronomeScreen extends StatefulWidget {
 class _MetronomeScreenState extends State<MetronomeScreen> {
   bool _showFlashOverlay = false;
   bool _awaitingSave = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      firstUserDialog();
+    });
+  }
+
+  @override
+  void deactivate() {
+    if (context.read<MetronomeBloc>().state.minimum)
+      context.read<MetronomeBloc>().add(const ToggleMinimum());
+    super.deactivate();
+  }
+
+  void firstUserDialog() async {
+    final bool result = await Storage().getFirstUserCheck();
+    if (!result) {
+      CommonDialog().firstShowDialog(context);
+    }
+  }
 
   String get appBarTitle {
     final selected = context.watch<MetronomeBloc>().state.selectedJangdan;
@@ -62,11 +86,12 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                   return AlertDialog(
                     backgroundColor: AppColors.backgroundCard,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        12,
-                      ),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    title: Text('나만의 장단 저장', style: TextStyle(color: AppColors.textDefault),),
+                    title: Text(
+                      '나만의 장단 저장',
+                      style: TextStyle(color: AppColors.textDefault),
+                    ),
                     content: TextField(
                       controller: controller,
                       maxLength: 10,
@@ -82,12 +107,18 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text('취소', style: TextStyle(color: AppColors.textSecondary)),
+                        child: Text(
+                          '취소',
+                          style: TextStyle(color: AppColors.textSecondary),
+                        ),
                       ),
                       TextButton(
                         onPressed:
                             () => Navigator.pop(context, controller.text),
-                        child: Text('저장', style: TextStyle(color: Colors.orange)),
+                        child: Text(
+                          '저장',
+                          style: TextStyle(color: Colors.orange),
+                        ),
                       ),
                     ],
                   );
@@ -157,11 +188,12 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                       return AlertDialog(
                         backgroundColor: AppColors.backgroundCard,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            12,
-                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        title: Text('다른 이름으로 저장', style: TextStyle(color: AppColors.textDefault)),
+                        title: Text(
+                          '다른 이름으로 저장',
+                          style: TextStyle(color: AppColors.textDefault),
+                        ),
                         content: TextField(
                           controller: controller,
                           maxLength: 10,
@@ -177,12 +209,18 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: Text('취소', style: TextStyle(color: AppColors.textSecondary)),
+                            child: Text(
+                              '취소',
+                              style: TextStyle(color: AppColors.textSecondary),
+                            ),
                           ),
                           TextButton(
                             onPressed:
                                 () => Navigator.pop(context, controller.text),
-                            child: Text('저장', style: TextStyle(color: Colors.orange)),
+                            child: Text(
+                              '저장',
+                              style: TextStyle(color: Colors.orange),
+                            ),
                           ),
                         ],
                       );
@@ -204,11 +242,12 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                       return AlertDialog(
                         backgroundColor: AppColors.backgroundCard,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            12,
-                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        title: Text('장단 이름 변경', style: TextStyle(color: AppColors.textDefault)),
+                        title: Text(
+                          '장단 이름 변경',
+                          style: TextStyle(color: AppColors.textDefault),
+                        ),
                         content: TextField(
                           controller: controller,
                           maxLength: 10,
@@ -224,12 +263,18 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: Text('취소', style: TextStyle(color: AppColors.textSecondary)),
+                            child: Text(
+                              '취소',
+                              style: TextStyle(color: AppColors.textSecondary),
+                            ),
                           ),
                           TextButton(
                             onPressed:
                                 () => Navigator.pop(context, controller.text),
-                            child: Text('변경', style: TextStyle(color: Colors.orange)),
+                            child: Text(
+                              '변경',
+                              style: TextStyle(color: Colors.orange),
+                            ),
                           ),
                         ],
                       );
@@ -282,11 +327,12 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                   return AlertDialog(
                     backgroundColor: AppColors.backgroundCard,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        12,
-                      ),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    title: Text('나만의 장단 저장', style: TextStyle(color: AppColors.textDefault)),
+                    title: Text(
+                      '나만의 장단 저장',
+                      style: TextStyle(color: AppColors.textDefault),
+                    ),
                     content: TextField(
                       controller: controller,
                       maxLength: 10,
@@ -302,12 +348,18 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text('취소', style: TextStyle(color: AppColors.textSecondary)),
+                        child: Text(
+                          '취소',
+                          style: TextStyle(color: AppColors.textSecondary),
+                        ),
                       ),
                       TextButton(
                         onPressed:
                             () => Navigator.pop(context, controller.text),
-                        child: Text('저장', style: TextStyle(color: Colors.orange)),
+                        child: Text(
+                          '저장',
+                          style: TextStyle(color: Colors.orange),
+                        ),
                       ),
                     ],
                   );
@@ -365,17 +417,24 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                 builder:
                     (_) => AlertDialog(
                       backgroundColor: AppColors.backgroundCard,
-                            shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      12,
-                                    ),
-                                  ),
-                      title: Text('저장 실패', style: TextStyle(color: AppColors.textDefault)),
-                      content: Text('이미 등록된 장단 이름입니다.\n다른 이름으로 다시 시도해주세요.', style: TextStyle(color: AppColors.textSecondary)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      title: Text(
+                        '저장 실패',
+                        style: TextStyle(color: AppColors.textDefault),
+                      ),
+                      content: Text(
+                        '이미 등록된 장단 이름입니다.\n다른 이름으로 다시 시도해주세요.',
+                        style: TextStyle(color: AppColors.textSecondary),
+                      ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: Text('확인', style: TextStyle(color: AppColors.textDefault)),
+                          child: Text(
+                            '확인',
+                            style: TextStyle(color: AppColors.textDefault),
+                          ),
                         ),
                       ],
                     ),
@@ -403,6 +462,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
 
             // 메트로놈 스크린 시작
             child: Scaffold(
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 toolbarHeight: 44.0,
                 title: Text(
@@ -414,34 +474,45 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                 centerTitle: true,
                 actions: appBarActions,
               ),
-              body: LayoutBuilder(
-                builder: (context, constraints) {
-                  return SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: constraints.maxHeight,
-                      ),
-                      child: IntrinsicHeight(
-                        child: Column(
-                          children: [
-                            BlocBuilder<MetronomeBloc, MetronomeState>(
-                              builder: (context, state) => HanbaeBoard(),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
+              body: SafeArea(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: IntrinsicHeight(
+                          child: Column(
+                            children: [
+                              BlocBuilder<MetronomeBloc, MetronomeState>(
+                                builder: (context, state) => HanbaeBoard(),
                               ),
-                              child: MetronomeOptions(),
-                            ),
-                            BlocBuilder<MetronomeBloc, MetronomeState>(
-                              builder: (context, state) => MetronomeControl(),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                ),
+                                child: MetronomeOptions(),
+                              ),
+                              BlocBuilder<MetronomeBloc, MetronomeState>(
+                                builder: (context, state) {
+                                  double iconSize =
+                                      context
+                                              .read<MetronomeBloc>()
+                                              .state
+                                              .minimum
+                                          ? 16
+                                          : 32;
+                                  return MetronomeControl(iconSize: iconSize);
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),

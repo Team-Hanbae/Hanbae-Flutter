@@ -67,3 +67,7 @@ class TapTempo extends MetronomeEvent {
 class StopTapping extends MetronomeEvent {
   const StopTapping();
 }
+
+class ToggleMinimum extends MetronomeEvent {
+  const ToggleMinimum();
+}

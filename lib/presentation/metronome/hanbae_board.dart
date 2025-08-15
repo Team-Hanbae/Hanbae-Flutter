@@ -14,8 +14,8 @@ class HanbaeBoard extends StatelessWidget {
       (MetronomeBloc bloc) => bloc.state.selectedJangdan,
     );
 
-    return SizedBox(
-      height: 350,
+    return Flexible(
+      // height: 350,
       child: Column(
         children: [
           SizedBox(
@@ -75,7 +75,11 @@ class HanbaeBoard extends StatelessWidget {
 class SobakSegment extends StatelessWidget {
   final int sobakSegmentCount;
   final int activedSobak;
-  const SobakSegment({super.key, required this.sobakSegmentCount, required this.activedSobak});
+  const SobakSegment({
+    super.key,
+    required this.sobakSegmentCount,
+    required this.activedSobak,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +183,8 @@ class BakbarSet extends StatelessWidget {
                 .asMap()
                 .entries
                 .map(
-                  (entry) => Expanded(
+                  (entry) => Flexible(
+                    /// TODO 화면 까매지는 에러 원인
                     child: Bakbar(
                       accent: entry.value,
                       bakNumber: bakNumber,
@@ -191,7 +196,7 @@ class BakbarSet extends StatelessWidget {
                 )
                 .toList()
             : [
-              Expanded(
+              Flexible(
                 child: Bakbar(
                   accent: daebak.first,
                   bakNumber: bakNumber,
@@ -266,10 +271,11 @@ class Bakbar extends StatelessWidget {
         (state.currentRowIndex == rowIndex &&
             state.currentDaebakIndex == daebakIndex &&
             (state.selectedJangdan.jangdanType.sobakSegmentCount != null ||
-            (!state.isSobakOn || state.currentSobakIndex == sobakIndex)));
+                (!state.isSobakOn || state.currentSobakIndex == sobakIndex)));
     final isPlaying = context.select(
       (MetronomeBloc bloc) => bloc.state.isPlaying,
     );
+    final height = MediaQuery.of(context).size.height;
 
     return GestureDetector(
       onTap: () {
@@ -283,7 +289,12 @@ class Bakbar extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: !isPlaying ? AppColors.frame : isActive ? Color(0x80FFA91F) : AppColors.frame,
+          color:
+              !isPlaying
+                  ? AppColors.frame
+                  : isActive
+                  ? Color(0x80FFA91F)
+                  : AppColors.frame,
           border: const Border(
             left: BorderSide(color: AppColors.bakBarLine, width: 1),
           ),
@@ -296,23 +307,26 @@ class Bakbar extends StatelessWidget {
             // 주황 박스
             Align(
               alignment: Alignment.bottomCenter,
-              child: FractionallySizedBox(
-                heightFactor: fillFraction,
-                widthFactor: 1.0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient:
-                        isActive
-                            ? const LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                AppColors.bakBarActiveTop,
-                                AppColors.bakBarActiveBottom,
-                              ],
-                            )
-                            : null,
-                    color: isActive ? null : AppColors.bakBarInactive,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: height * fillFraction),
+                child: FractionallySizedBox(
+                  heightFactor: fillFraction,
+                  widthFactor: 1.0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient:
+                          isActive
+                              ? const LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  AppColors.bakBarActiveTop,
+                                  AppColors.bakBarActiveBottom,
+                                ],
+                              )
+                              : null,
+                      color: isActive ? null : AppColors.bakBarInactive,
+                    ),
                   ),
                 ),
               ),
