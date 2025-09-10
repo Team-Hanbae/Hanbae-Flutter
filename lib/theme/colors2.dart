@@ -84,6 +84,14 @@ class AppColors {
   // Metronome
   static const Color bakBarTop                = Primitives.redOrange6;
   static const Color bakBarBottom             = Primitives.orange6;
+  static const LinearGradient bakBarGradient  = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      bakBarTop,
+      bakBarBottom
+    ],
+  );
   static const Color bakBarInactive           = Primitives.neutral9;
   static const Color bakBarLine               = Primitives.common0;
   static const Color bakBarBorder             = Primitives.neutral8;
