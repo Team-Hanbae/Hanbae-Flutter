@@ -166,4 +166,11 @@ abstract class AppTextStyles {
     height: 1.18,
     letterSpacing: 0.01,
   );
+
+  static const TextStyle gosanja = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w400,
+    fontFamily: "Gosanja",
+    height: 1.4
+  );
 }
