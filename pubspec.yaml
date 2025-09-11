@@ -131,6 +131,10 @@ flutter:
           weight: 800
         - asset: assets/fonts/Pretendard-Black.ttf
           weight: 900
+    - family: Gosanja
+      fonts:
+        - asset: assets/fonts/GosanjaOTF.otf
+          weight: 400
 
 flutter_launcher_icons:
   android: true
