@@ -29,6 +29,10 @@ void main() async {
   fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-Thin.ttf'));
   await fontLoader.load();
 
+  final gosanjaFontLoader = FontLoader('Gosanja');
+  gosanjaFontLoader.addFont(rootBundle.load('assets/fonts/GosanjaOTF.otf'));
+  await gosanjaFontLoader.load();
+
   WidgetsBinding.instance.allowFirstFrame();
 
   await Hive.initFlutter();
