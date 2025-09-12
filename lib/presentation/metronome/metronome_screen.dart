@@ -84,23 +84,23 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    backgroundColor: AppColors.backgroundCard,
+                    backgroundColor: AppColors.backgroundElevated,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     title: Text(
                       '나만의 장단 저장',
-                      style: TextStyle(color: AppColors.textDefault),
+                      style: TextStyle(color: AppColors.labelPrimary),
                     ),
                     content: TextField(
                       controller: controller,
                       maxLength: 10,
                       autofocus: true,
-                      cursorColor: Colors.orange,
+                      cursorColor: AppColors.brandNormal,
                       decoration: InputDecoration(
                         hintText: '장단 이름을 입력하세요',
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.orange),
+                          borderSide: BorderSide(color: AppColors.brandNormal),
                         ),
                       ),
                     ),
@@ -109,7 +109,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         onPressed: () => Navigator.pop(context),
                         child: Text(
                           '취소',
-                          style: TextStyle(color: AppColors.textSecondary),
+                          style: TextStyle(color: AppColors.labelSecondary),
                         ),
                       ),
                       TextButton(
@@ -117,7 +117,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                             () => Navigator.pop(context, controller.text),
                         child: Text(
                           '저장',
-                          style: TextStyle(color: Colors.orange),
+                          style: TextStyle(color: AppColors.brandNormal),
                         ),
                       ),
                     ],
@@ -149,7 +149,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            color: AppColors.backgroundPopupMenu,
+            color: AppColors.backgroundElevated,
             itemBuilder:
                 (context) => [
                   PopupMenuItem(
@@ -186,23 +186,23 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        backgroundColor: AppColors.backgroundCard,
+                        backgroundColor: AppColors.backgroundElevated,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         title: Text(
                           '다른 이름으로 저장',
-                          style: TextStyle(color: AppColors.textDefault),
+                          style: TextStyle(color: AppColors.labelPrimary),
                         ),
                         content: TextField(
                           controller: controller,
                           maxLength: 10,
                           autofocus: true,
-                          cursorColor: Colors.orange,
+                          cursorColor: AppColors.brandNormal,
                           decoration: InputDecoration(
                             hintText: '장단 이름을 입력하세요',
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.orange),
+                              borderSide: BorderSide(color: AppColors.brandNormal),
                             ),
                           ),
                         ),
@@ -211,7 +211,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                             onPressed: () => Navigator.pop(context),
                             child: Text(
                               '취소',
-                              style: TextStyle(color: AppColors.textSecondary),
+                              style: TextStyle(color: AppColors.labelSecondary),
                             ),
                           ),
                           TextButton(
@@ -219,7 +219,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                                 () => Navigator.pop(context, controller.text),
                             child: Text(
                               '저장',
-                              style: TextStyle(color: Colors.orange),
+                              style: TextStyle(color: AppColors.brandNormal),
                             ),
                           ),
                         ],
@@ -240,23 +240,23 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        backgroundColor: AppColors.backgroundCard,
+                        backgroundColor: AppColors.backgroundElevated,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         title: Text(
                           '장단 이름 변경',
-                          style: TextStyle(color: AppColors.textDefault),
+                          style: TextStyle(color: AppColors.labelPrimary),
                         ),
                         content: TextField(
                           controller: controller,
                           maxLength: 10,
                           autofocus: true,
-                          cursorColor: Colors.orange,
+                          cursorColor: AppColors.brandNormal,
                           decoration: InputDecoration(
                             hintText: '새 장단 이름을 입력하세요',
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.orange),
+                              borderSide: BorderSide(color: AppColors.brandNormal),
                             ),
                           ),
                         ),
@@ -265,7 +265,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                             onPressed: () => Navigator.pop(context),
                             child: Text(
                               '취소',
-                              style: TextStyle(color: AppColors.textSecondary),
+                              style: TextStyle(color: AppColors.labelSecondary),
                             ),
                           ),
                           TextButton(
@@ -273,7 +273,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                                 () => Navigator.pop(context, controller.text),
                             child: Text(
                               '변경',
-                              style: TextStyle(color: Colors.orange),
+                              style: TextStyle(color: AppColors.brandNormal),
                             ),
                           ),
                         ],
@@ -325,23 +325,23 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    backgroundColor: AppColors.backgroundCard,
+                    backgroundColor: AppColors.backgroundElevated,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     title: Text(
                       '나만의 장단 저장',
-                      style: TextStyle(color: AppColors.textDefault),
+                      style: TextStyle(color: AppColors.labelPrimary),
                     ),
                     content: TextField(
                       controller: controller,
                       maxLength: 10,
                       autofocus: true,
-                      cursorColor: Colors.orange,
+                      cursorColor: AppColors.brandNormal,
                       decoration: InputDecoration(
                         hintText: '장단 이름을 입력하세요',
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.orange),
+                          borderSide: BorderSide(color: AppColors.brandNormal),
                         ),
                       ),
                     ),
@@ -350,7 +350,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         onPressed: () => Navigator.pop(context),
                         child: Text(
                           '취소',
-                          style: TextStyle(color: AppColors.textSecondary),
+                          style: TextStyle(color: AppColors.labelSecondary),
                         ),
                       ),
                       TextButton(
@@ -358,7 +358,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                             () => Navigator.pop(context, controller.text),
                         child: Text(
                           '저장',
-                          style: TextStyle(color: Colors.orange),
+                          style: TextStyle(color: AppColors.brandNormal),
                         ),
                       ),
                     ],
@@ -380,7 +380,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
             },
             child: Text(
               '저장',
-              style: AppTextStyles.bodyR.copyWith(color: AppColors.textDefault),
+              style: AppTextStyles.bodyR.copyWith(color: AppColors.labelPrimary),
             ),
           ),
         ];
@@ -416,24 +416,24 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                 context: context,
                 builder:
                     (_) => AlertDialog(
-                      backgroundColor: AppColors.backgroundCard,
+                      backgroundColor: AppColors.backgroundElevated,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       title: Text(
                         '저장 실패',
-                        style: TextStyle(color: AppColors.textDefault),
+                        style: TextStyle(color: AppColors.labelPrimary),
                       ),
                       content: Text(
                         '이미 등록된 장단 이름입니다.\n다른 이름으로 다시 시도해주세요.',
-                        style: TextStyle(color: AppColors.textSecondary),
+                        style: TextStyle(color: AppColors.labelSecondary),
                       ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
                           child: Text(
                             '확인',
-                            style: TextStyle(color: AppColors.textDefault),
+                            style: TextStyle(color: AppColors.labelPrimary),
                           ),
                         ),
                       ],
@@ -468,7 +468,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                 title: Text(
                   appBarTitle,
                   style: AppTextStyles.bodyR.copyWith(
-                    color: AppColors.textSecondary,
+                    color: AppColors.labelDefault,
                   ),
                 ),
                 centerTitle: true,
