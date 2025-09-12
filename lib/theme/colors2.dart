@@ -63,8 +63,8 @@ class AppColors {
   static const Color labelPrimary    = Primitives.common100;
   static const Color labelSecondary  = Primitives.neutral3;
   static const Color labelTertiary   = Primitives.neutral6;
-  static final Color labelAssistive  = Primitives.neutral5.withValues(alpha: 133); // 52% 투명도
-  static final Color labelDisable    = Primitives.neutral4.withValues(alpha: 71); // 28% 투명도
+  static final Color labelAssistive  = Primitives.neutral5.withAlpha(133); // 52% 투명도
+  static final Color labelDisable    = Primitives.neutral4.withAlpha(71); // 28% 투명도
   static const Color labelInverse    = Primitives.common0;
 
   // Button
@@ -105,9 +105,9 @@ class AppColors {
   static const Color blink                    = Primitives.orange6;
 
   //Dimmer
-  static final Color dimmerDefault = Primitives.common0.withValues(alpha: 110); // 43% 투명도
-  static final Color dimmerStrong  = Primitives.common0.withValues(alpha: 188); // 74% 투명도
-  static final Color dimmerHeavy   = Primitives.common0.withValues(alpha: 224); // 88% 투명도
+  static final Color dimmerDefault = Primitives.common0.withAlpha(110); // 43% 투명도
+  static final Color dimmerStrong  = Primitives.common0.withAlpha(188); // 74% 투명도
+  static final Color dimmerHeavy   = Primitives.common0.withAlpha(224); // 88% 투명도
 
   //Color Palette
   static const Color neutral1  = Primitives.neutral1;
