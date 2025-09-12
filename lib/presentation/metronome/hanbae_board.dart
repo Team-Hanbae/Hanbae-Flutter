@@ -315,16 +315,7 @@ class Bakbar extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       gradient:
-                          isActive
-                              ? const LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  AppColors.bakBarTop,
-                                  AppColors.bakBarBottom,
-                                ],
-                              )
-                              : null,
+                          isActive ? AppColors.bakBarGradient : null,
                       color: isActive ? null : AppColors.bakBarInactive,
                     ),
                   ),
