@@ -11,6 +11,11 @@ import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/jangdan_repository.dart';
 import 'package:flutter/services.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+late Mixpanel mixpanel;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +35,19 @@ void main() async {
   await fontLoader.load();
 
   WidgetsBinding.instance.allowFirstFrame();
+
+  try {
+    await dotenv.load(fileName: ".env");
+
+    final String mixpanelToken = kDebugMode
+    ? dotenv.env['MIXPANEL_DEV_TOKEN']!
+    : dotenv.env['MIXPANEL_PROD_TOKEN']!;
+
+    mixpanel = await Mixpanel.init(mixpanelToken, trackAutomaticEvents: false);
+
+  } catch(e) {
+    print(e.toString());
+  }
 
   await Hive.initFlutter();
 
