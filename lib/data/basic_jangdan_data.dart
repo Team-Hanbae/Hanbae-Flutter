@@ -182,7 +182,7 @@ List<Jangdan> basicJangdanList = [
     ],
   ),
   Jangdan(
-    name: "사물놀이 - 좌질굿",
+    name: "좌질굿",
     createdAt: DateTime.now(),
     jangdanType: JangdanType.jwajilgut,
     bpm: 100,
