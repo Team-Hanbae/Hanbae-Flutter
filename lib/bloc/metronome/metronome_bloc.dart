@@ -135,7 +135,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         final roundedDuration = (seconds * 100).round() / 100;
         final jangdanType = state.selectedJangdan.jangdanType.label;
         final jangdanName = state.selectedJangdan.name;
-        print(roundedDuration);
+
         mixpanel.track('metronome_play', properties: {
           'duration': roundedDuration,
           'sound_type': state.currentSound.label,
