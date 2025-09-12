@@ -37,6 +37,18 @@ class JangdanTypeAdapter extends TypeAdapter<JangdanType> {
         return JangdanType.ginyeombul;
       case 11:
         return JangdanType.banyeombul;
+      case 12:
+        return JangdanType.jwajilgut;
+      case 13:
+        return JangdanType.sangnyeongsan;
+      case 14:
+        return JangdanType.seryeongsan;
+      case 15:
+        return JangdanType.taryeong;
+      case 16:
+        return JangdanType.chwita;
+      case 17:
+        return JangdanType.jeolhwa;
       default:
         return JangdanType.jinyang;
     }
@@ -80,6 +92,24 @@ class JangdanTypeAdapter extends TypeAdapter<JangdanType> {
         break;
       case JangdanType.banyeombul:
         writer.writeByte(11);
+        break;
+      case JangdanType.jwajilgut:
+        writer.writeByte(12);
+        break;
+      case JangdanType.sangnyeongsan:
+        writer.writeByte(13);
+        break;
+      case JangdanType.seryeongsan:
+        writer.writeByte(14);
+        break;
+      case JangdanType.taryeong:
+        writer.writeByte(15);
+        break;
+      case JangdanType.chwita:
+        writer.writeByte(16);
+        break;
+      case JangdanType.jeolhwa:
+        writer.writeByte(17);
         break;
     }
   }
