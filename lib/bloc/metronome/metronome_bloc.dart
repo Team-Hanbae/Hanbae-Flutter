@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hanbae/main.dart';
 import 'package:hanbae/model/accent.dart';
+import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hive/hive.dart';
 import 'dart:async';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -19,6 +21,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
   final List<DateTime> _tapHistory = [];
   double _averageSobakPerDaebak = 1.0;
   final Box<Jangdan> _jangdanBox = Hive.box<Jangdan>('customJangdanBox');
+  DateTime? _playStartTime;
 
   MetronomeBloc()
     : super(() {
@@ -84,6 +87,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentSobakIndex: lastSobakIndex,
         ),
       );
+      _playStartTime = DateTime.now();
 
       _startPreciseTicker();
       WakelockPlus.enable();
@@ -125,6 +129,22 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
 
     on<Stop>((event, emit) {
+      if (_playStartTime != null) {
+        final duration = DateTime.now().difference(_playStartTime!).inMilliseconds;
+        final seconds = duration / 1000;
+        final roundedDuration = (seconds * 100).round() / 100;
+        final jangdanType = state.selectedJangdan.jangdanType.label;
+        final jangdanName = state.selectedJangdan.name;
+        print(roundedDuration);
+        mixpanel.track('metronome_play', properties: {
+          'duration': roundedDuration,
+          'sound_type': state.currentSound.label,
+          'jangdan_type': jangdanType,
+          'jangdan_name': jangdanType == jangdanName ? "template" : jangdanName
+        });
+        _playStartTime = null;
+      }
+
       _stopPreciseTicker();
       WakelockPlus.disable();
       emit(state.copyWith(isPlaying: false));
