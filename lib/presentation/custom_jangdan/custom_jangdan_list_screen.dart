@@ -20,9 +20,9 @@ class CustomJangdanListScreen extends StatelessWidget {
       backgroundColor: AppColors.backgroundDefault,
       appBar: AppBar(
         toolbarHeight: 44.0,
-        title: Text('내가 저장한 장단', style: AppTextStyles.bodyR.copyWith(color: AppColors.textSecondary)),
+        title: Text('내가 저장한 장단', style: AppTextStyles.bodyR.copyWith(color: AppColors.labelDefault)),
         centerTitle: true,
-        backgroundColor: AppColors.backgroundNavigationbar,
+        backgroundColor: AppColors.backgroundMute,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 8),
@@ -66,7 +66,7 @@ class CustomJangdanListScreen extends StatelessWidget {
                           vertical: 20,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundCard,
+                          color: AppColors.backgroundMute,
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Row(
@@ -80,21 +80,21 @@ class CustomJangdanListScreen extends StatelessWidget {
                                 Text(
                                   '아직 저장한 장단이 없어요',
                                   style: AppTextStyles.subheadlineR.copyWith(
-                                    color: AppColors.textTertiary,
+                                    color: AppColors.labelSecondary,
                                   ),
                                 ),
                                 SizedBox(height: 8),
                                 Text(
                                   '장단 만들러 가기',
                                   style: AppTextStyles.title3R.copyWith(
-                                    color: AppColors.textSecondary,
+                                    color: AppColors.labelSecondary,
                                   ),
                                 ),
                               ],
                             ),
                             Icon(
                               Icons.chevron_right,
-                              color: AppColors.textTertiary,
+                              color: AppColors.labelSecondary,
                             ),
                           ],
                         ),
@@ -125,22 +125,22 @@ class CustomJangdanListScreen extends StatelessWidget {
                         return await showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            backgroundColor: AppColors.backgroundCard,
+                            backgroundColor: AppColors.backgroundElevated,
                             shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(
                                       12,
                                     ),
                                   ),
-                            title: Text('삭제 확인', style: TextStyle(color: AppColors.textDefault),),
-                            content: Text('정말 이 장단을 삭제할까요?', style: TextStyle(color: AppColors.textSecondary),),
+                            title: Text('삭제 확인', style: TextStyle(color: AppColors.labelPrimary),),
+                            content: Text('정말 이 장단을 삭제할까요?', style: TextStyle(color: AppColors.labelDefault),),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(false),
-                                child: Text('취소', style: TextStyle(color: AppColors.textSecondary),)
+                                child: Text('취소', style: TextStyle(color: AppColors.labelSecondary),)
                               ),
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(true),
-                                child: Text('삭제', style: TextStyle(color: Colors.orangeAccent),),
+                                child: Text('삭제', style: TextStyle(color: AppColors.brandNormal),),
                               ),
                             ],
                           ),
@@ -154,7 +154,7 @@ class CustomJangdanListScreen extends StatelessWidget {
                         title: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
                           decoration: BoxDecoration(
-                            color: AppColors.backgroundCard,
+                            color: AppColors.backgroundMute,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: LayoutBuilder(
@@ -171,7 +171,7 @@ class CustomJangdanListScreen extends StatelessWidget {
                                         Text(
                                           jangdan.jangdanType.label,
                                           style: AppTextStyles.subheadlineR.copyWith(
-                                            color: AppColors.textSecondary,
+                                            color: AppColors.labelDefault,
                                           ),
                                         ),
                                         const SizedBox(height: 12),
@@ -180,7 +180,7 @@ class CustomJangdanListScreen extends StatelessWidget {
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: AppTextStyles.title3R.copyWith(
-                                            color: AppColors.textDefault,
+                                            color: AppColors.labelPrimary,
                                           ),
                                         ),
                                       ],
@@ -189,7 +189,7 @@ class CustomJangdanListScreen extends StatelessWidget {
                                   Text(
                                     DateFormat('yyyy.MM.dd.').format(jangdan.createdAt),
                                     style: AppTextStyles.subheadlineR.copyWith(
-                                      color: AppColors.textSecondary,
+                                      color: AppColors.labelDefault,
                                     ),
                                   ),
                                 ],

@@ -222,7 +222,7 @@ class BakbarSet extends StatelessWidget {
             child: IgnorePointer(
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.bakBarDivider, width: 1),
+                  border: Border.all(color: AppColors.bakBarBorder, width: 1),
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -293,7 +293,7 @@ class Bakbar extends StatelessWidget {
               !isPlaying
                   ? AppColors.frame
                   : isActive
-                  ? Color(0x80FFA91F)
+                  ? AppColors.themeNormal.withAlpha(133)
                   : AppColors.frame,
           border: const Border(
             left: BorderSide(color: AppColors.bakBarLine, width: 1),
@@ -315,16 +315,7 @@ class Bakbar extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       gradient:
-                          isActive
-                              ? const LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  AppColors.bakBarActiveTop,
-                                  AppColors.bakBarActiveBottom,
-                                ],
-                              )
-                              : null,
+                          isActive ? AppColors.bakBarGradient : null,
                       color: isActive ? null : AppColors.bakBarInactive,
                     ),
                   ),
@@ -342,7 +333,7 @@ class Bakbar extends StatelessWidget {
                   bakNumber.toString(),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    color: AppColors.textDefault,
+                    color: AppColors.labelPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -360,7 +351,7 @@ class AccentDividerPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = AppColors.bakBarDivider
+          ..color = AppColors.bakBarBorder
           ..strokeWidth = 1
           ..style = PaintingStyle.stroke;
 

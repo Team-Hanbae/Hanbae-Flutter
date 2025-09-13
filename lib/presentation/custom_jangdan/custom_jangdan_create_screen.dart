@@ -26,7 +26,7 @@ class CustomJangdanCreateScreen extends StatelessWidget {
           children: [
             Text(
               "만들 장단의\n종류를 선택해주세요.",
-              style: AppTextStyles.title1R.copyWith(color: AppColors.textDefault),
+              style: AppTextStyles.title1R.copyWith(color: AppColors.labelDefault),
             ),
             const SizedBox(height: 24),
             Expanded(
@@ -59,7 +59,7 @@ class CustomJangdanCreateScreen extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                           decoration: BoxDecoration(
-                            color: AppColors.backgroundSheet,
+                            color: AppColors.backgroundMute,
                             borderRadius: BorderRadius.vertical(
                               top: index == 0 ? Radius.circular(16) : Radius.zero,
                               bottom: index == JangdanType.values.length - 1 ? Radius.circular(16) : Radius.zero,
@@ -71,12 +71,12 @@ class CustomJangdanCreateScreen extends StatelessWidget {
                               Text(
                                 jangdan.label,
                                 style: AppTextStyles.title3R.copyWith(
-                                  color: AppColors.textDefault,
+                                  color: AppColors.labelDefault,
                                 ),
                               ),
                               Icon(
                                 Icons.chevron_right_rounded,
-                                color: AppColors.textTertiary,
+                                color: AppColors.labelSecondary,
                               ),
                             ],
                           ),
