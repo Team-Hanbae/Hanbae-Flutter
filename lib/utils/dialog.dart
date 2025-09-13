@@ -50,14 +50,11 @@ class CommonDialog {
                   ),
                   child: Column(
                     children: [
-                      const Text(
+                      Text(
                         '새로운 기능!',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.labelDefault,
-                        ),
+                        style: AppTextStyles.gosanja.copyWith(color: AppColors.textSecondary),
+
                       ),
                       const SizedBox(height: 16),
                       Container(
