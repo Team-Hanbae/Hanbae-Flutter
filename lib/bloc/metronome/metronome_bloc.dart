@@ -100,9 +100,11 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
       /// 예비박
       if (reserveBeat) {
+        SoundManager.play(Sound.clave, Accent.medium);
         emit(state.copyWith(reserveBeatTime: 3));
         if (state.isPlaying) {
           await Future.delayed(oneBeatDuration, () {
+            SoundManager.play(Sound.clave, Accent.medium);
             emit(state.copyWith(reserveBeatTime: 2));
           });
         } else {
@@ -110,6 +112,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         }
         if (state.isPlaying) {
           await Future.delayed(oneBeatDuration, () {
+            SoundManager.play(Sound.clave, Accent.medium);
             emit(state.copyWith(reserveBeatTime: 1));
           });
         } else {
