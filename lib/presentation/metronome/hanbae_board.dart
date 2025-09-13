@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc package
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
@@ -14,58 +17,91 @@ class HanbaeBoard extends StatelessWidget {
       (MetronomeBloc bloc) => bloc.state.selectedJangdan,
     );
 
+    final isPlaying = context.select(
+      (MetronomeBloc bloc) => bloc.state.isPlaying,
+    );
+
+    final reserveBeat = context.select(
+      (MetronomeBloc bloc) => bloc.state.reserveBeat,
+    );
+
+    final reserveBeatTime = context.select(
+      (MetronomeBloc bloc) => bloc.state.reserveBeatTime,
+    );
+
     return Flexible(
       // height: 350,
-      child: Column(
+      child: Stack(
         children: [
-          SizedBox(
-            height:
-                (jangdan.jangdanType.sobakSegmentCount != null) ? 16.0 : 28.0,
-          ),
-          ...jangdan.accents.asMap().entries.map((rowEntry) {
-            final rowIndex = rowEntry.key;
-            final row = rowEntry.value;
-            return Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  children:
-                      row.asMap().entries.map((colEntry) {
-                        final daebakIndex = colEntry.key;
-                        final daebak = colEntry.value;
-                        final bakNumber =
-                            jangdan.accents
-                                .take(rowIndex)
-                                .fold<int>(0, (sum, row) => sum + row.length) +
-                            daebakIndex;
+          Column(
+            children: [
+              SizedBox(
+                height:
+                    (jangdan.jangdanType.sobakSegmentCount != null)
+                        ? 16.0
+                        : 28.0,
+              ),
+              ...jangdan.accents.asMap().entries.map((rowEntry) {
+                final rowIndex = rowEntry.key;
+                final row = rowEntry.value;
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children:
+                          row.asMap().entries.map((colEntry) {
+                            final daebakIndex = colEntry.key;
+                            final daebak = colEntry.value;
+                            final bakNumber =
+                                jangdan.accents
+                                    .take(rowIndex)
+                                    .fold<int>(
+                                      0,
+                                      (sum, row) => sum + row.length,
+                                    ) +
+                                daebakIndex;
 
-                        return Flexible(
-                          flex: daebak.length,
-                          child: BakbarSet(
-                            daebak: daebak,
-                            rowIndex: rowIndex,
-                            daebakIndex: daebakIndex,
-                            bakNumber: bakNumber + 1,
-                          ),
-                        );
-                      }).toList(),
+                            return Flexible(
+                              flex: daebak.length,
+                              child: BakbarSet(
+                                daebak: daebak,
+                                rowIndex: rowIndex,
+                                daebakIndex: daebakIndex,
+                                bakNumber: bakNumber + 1,
+                              ),
+                            );
+                          }).toList(),
+                    ),
+                  ),
+                );
+              }),
+              SizedBox(
+                height:
+                    (jangdan.jangdanType.sobakSegmentCount != null)
+                        ? 4.0
+                        : 28.0,
+              ),
+              if (jangdan.jangdanType.sobakSegmentCount != null) ...[
+                SobakSegment(
+                  sobakSegmentCount: jangdan.jangdanType.sobakSegmentCount!,
+                  activedSobak: context.select(
+                    (MetronomeBloc bloc) => bloc.state.currentSobakIndex,
+                  ),
+                ),
+                SizedBox(height: 14.0),
+              ],
+            ],
+          ),
+          if (reserveBeat && reserveBeatTime > 0)
+            Positioned(
+              child: SizedBox(
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/images/icon/$reserveBeatTime.svg',
+                  ),
                 ),
               ),
-            );
-          }),
-          SizedBox(
-            height:
-                (jangdan.jangdanType.sobakSegmentCount != null) ? 4.0 : 28.0,
-          ),
-          if (jangdan.jangdanType.sobakSegmentCount != null) ...[
-            SobakSegment(
-              sobakSegmentCount: jangdan.jangdanType.sobakSegmentCount!,
-              activedSobak: context.select(
-                (MetronomeBloc bloc) => bloc.state.currentSobakIndex,
-              ),
             ),
-            SizedBox(height: 14.0),
-          ],
         ],
       ),
     );
@@ -184,7 +220,6 @@ class BakbarSet extends StatelessWidget {
                 .entries
                 .map(
                   (entry) => Flexible(
-                    /// TODO 화면 까매지는 에러 원인
                     child: Bakbar(
                       accent: entry.value,
                       bakNumber: bakNumber,
@@ -265,13 +300,19 @@ class Bakbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final reserveBeatTime = context.select(
+      (MetronomeBloc bloc) => bloc.state.reserveBeatTime,
+    );
+
     final state = context.watch<MetronomeBloc>().state;
     final isActive =
-        !state.isPlaying ||
-        (state.currentRowIndex == rowIndex &&
-            state.currentDaebakIndex == daebakIndex &&
-            (state.selectedJangdan.jangdanType.sobakSegmentCount != null ||
-                (!state.isSobakOn || state.currentSobakIndex == sobakIndex)));
+        reserveBeatTime == 0 &&
+        (!state.isPlaying ||
+            (state.currentRowIndex == rowIndex &&
+                state.currentDaebakIndex == daebakIndex &&
+                (state.selectedJangdan.jangdanType.sobakSegmentCount != null ||
+                    (!state.isSobakOn ||
+                        state.currentSobakIndex == sobakIndex))));
     final isPlaying = context.select(
       (MetronomeBloc bloc) => bloc.state.isPlaying,
     );
@@ -314,8 +355,7 @@ class Bakbar extends StatelessWidget {
                   widthFactor: 1.0,
                   child: Container(
                     decoration: BoxDecoration(
-                      gradient:
-                          isActive ? AppColors.bakBarGradient : null,
+                      gradient: isActive ? AppColors.bakBarGradient : null,
                       color: isActive ? null : AppColors.bakBarInactive,
                     ),
                   ),

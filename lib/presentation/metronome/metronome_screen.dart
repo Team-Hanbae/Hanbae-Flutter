@@ -202,7 +202,9 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                           decoration: InputDecoration(
                             hintText: '장단 이름을 입력하세요',
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.brandNormal),
+                              borderSide: BorderSide(
+                                color: AppColors.brandNormal,
+                              ),
                             ),
                           ),
                         ),
@@ -256,7 +258,9 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                           decoration: InputDecoration(
                             hintText: '새 장단 이름을 입력하세요',
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.brandNormal),
+                              borderSide: BorderSide(
+                                color: AppColors.brandNormal,
+                              ),
                             ),
                           ),
                         ),
@@ -380,7 +384,9 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
             },
             child: Text(
               '저장',
-              style: AppTextStyles.bodyR.copyWith(color: AppColors.labelPrimary),
+              style: AppTextStyles.bodyR.copyWith(
+                color: AppColors.labelPrimary,
+              ),
             ),
           ),
         ];

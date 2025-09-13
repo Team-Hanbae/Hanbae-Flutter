@@ -53,10 +53,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                   borderRadius: BorderRadius.circular(12),
                   border:
                       isOn
-                          ? Border.all(
-                            color: AppColors.themeNormal,
-                            width: 1,
-                          )
+                          ? Border.all(color: AppColors.themeNormal, width: 1)
                           : null,
                 ),
                 child: IconButton(
@@ -98,10 +95,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                   borderRadius: BorderRadius.circular(12),
                   border:
                       isOn
-                          ? Border.all(
-                            color: AppColors.themeNormal,
-                            width: 1,
-                          )
+                          ? Border.all(color: AppColors.themeNormal, width: 1)
                           : null,
                 ),
                 child: IconButton(
@@ -116,6 +110,45 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                   ),
                   onPressed: () {
                     context.read<MetronomeBloc>().add(ToggleFlash());
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(width: 8),
+
+        BlocBuilder<MetronomeBloc, MetronomeState>(
+          builder: (context, state) {
+            final isOn = state.reserveBeat;
+            return Expanded(
+              child: Container(
+                height: 50,
+                margin: EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color:
+                      isOn
+                          ? AppColors.backgroundSubtle
+                          : AppColors.buttonDefault,
+                  borderRadius: BorderRadius.circular(12),
+                  border:
+                      isOn
+                          ? Border.all(color: AppColors.themeNormal, width: 1)
+                          : null,
+                ),
+                child: IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/images/icon/reserve_beat_icon.svg',
+                    width: 32,
+                    height: 32,
+                    colorFilter: ColorFilter.mode(
+                      isOn ? AppColors.themeNormal : AppColors.labelDefault,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  onPressed: () {
+                    context.read<MetronomeBloc>().add(ToggleReserveBeat());
                   },
                 ),
               ),
@@ -146,33 +179,16 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              icon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/icon/Icon_SoundSwitch.svg',
-                    width: 32,
-                    height: 32,
-                    colorFilter: ColorFilter.mode(
+              icon: Text(
+                context
+                    .select((MetronomeBloc bloc) => bloc.state.currentSound)
+                    .label,
+                style: AppTextStyles.bodyR.copyWith(
+                  color:
                       _isSoundMenuOpen
                           ? AppColors.themeNormal
                           : AppColors.labelDefault,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  const SizedBox(width: 3),
-                  Text(
-                    context
-                        .select((MetronomeBloc bloc) => bloc.state.currentSound)
-                        .label,
-                    style: AppTextStyles.bodyR.copyWith(
-                      color:
-                          _isSoundMenuOpen
-                              ? AppColors.themeNormal
-                              : AppColors.labelDefault,
-                    ),
-                  ),
-                ],
+                ),
               ),
               onCanceled: () {
                 setState(() => _isSoundMenuOpen = false);
