@@ -48,13 +48,13 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                 decoration: BoxDecoration(
                   color:
                       isOn
-                          ? AppColors.backgroundCard
-                          : AppColors.buttonToggleOff,
+                          ? AppColors.backgroundSubtle
+                          : AppColors.buttonDefault,
                   borderRadius: BorderRadius.circular(12),
                   border:
                       isOn
                           ? Border.all(
-                            color: AppColors.buttonToggleOn,
+                            color: AppColors.themeNormal,
                             width: 1,
                           )
                           : null,
@@ -67,7 +67,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                     width: 32,
                     height: 32,
                     colorFilter: ColorFilter.mode(
-                      isOn ? AppColors.buttonToggleOn : AppColors.textSecondary,
+                      isOn ? AppColors.themeNormal : AppColors.labelDefault,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -93,13 +93,13 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                 decoration: BoxDecoration(
                   color:
                       isOn
-                          ? AppColors.backgroundCard
-                          : AppColors.buttonToggleOff,
+                          ? AppColors.backgroundSubtle
+                          : AppColors.buttonDefault,
                   borderRadius: BorderRadius.circular(12),
                   border:
                       isOn
                           ? Border.all(
-                            color: AppColors.buttonToggleOn,
+                            color: AppColors.themeNormal,
                             width: 1,
                           )
                           : null,
@@ -110,7 +110,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                     width: 32,
                     height: 32,
                     colorFilter: ColorFilter.mode(
-                      isOn ? AppColors.buttonToggleOn : AppColors.textSecondary,
+                      isOn ? AppColors.themeNormal : AppColors.labelDefault,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -133,16 +133,16 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
             decoration: BoxDecoration(
               color:
                   _isSoundMenuOpen
-                      ? AppColors.backgroundCard
-                      : AppColors.buttonToggleOff,
+                      ? AppColors.backgroundSubtle
+                      : AppColors.buttonDefault,
               borderRadius: BorderRadius.circular(12),
               border:
                   _isSoundMenuOpen
-                      ? Border.all(color: AppColors.buttonToggleOn, width: 1)
+                      ? Border.all(color: AppColors.themeNormal, width: 1)
                       : null,
             ),
             child: PopupMenuButton<Sound>(
-              color: AppColors.backgroundPopupMenu,
+              color: AppColors.backgroundElevated,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -155,8 +155,8 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                     height: 32,
                     colorFilter: ColorFilter.mode(
                       _isSoundMenuOpen
-                          ? AppColors.buttonToggleOn
-                          : AppColors.textSecondary,
+                          ? AppColors.themeNormal
+                          : AppColors.labelDefault,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -168,8 +168,8 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                     style: AppTextStyles.bodyR.copyWith(
                       color:
                           _isSoundMenuOpen
-                              ? AppColors.buttonToggleOn
-                              : AppColors.textSecondary,
+                              ? AppColors.themeNormal
+                              : AppColors.labelDefault,
                     ),
                   ),
                 ],
@@ -221,7 +221,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                 width: 60,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundCard,
+                  color: AppColors.backgroundMute,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                 ),
                 child: BlocBuilder<MetronomeBloc, MetronomeState>(
@@ -232,7 +232,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                             ? Icons.keyboard_arrow_up_rounded
                             : Icons.keyboard_arrow_down_rounded,
                         size: 36,
-                        color: AppColors.textQuaternary,
+                        color: AppColors.labelTertiary,
                       ),
                     );
                   },

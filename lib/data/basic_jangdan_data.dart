@@ -3,6 +3,7 @@ import '../model/jangdan.dart';
 import '../model/jangdan_type.dart';
 
 List<Jangdan> basicJangdanList = [
+  // 민속악
   Jangdan(
     name: "진양",
     createdAt: DateTime.now(),
@@ -177,6 +178,129 @@ List<Jangdan> basicJangdanList = [
         [Accent.weak, Accent.none],
         [Accent.medium, Accent.none],
         [Accent.weak, Accent.none],
+      ],
+    ],
+  ),
+  Jangdan(
+    name: "좌질굿",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.jwajilgut,
+    bpm: 100,
+    accents: [
+      [
+        [Accent.weak, Accent.medium],
+        [Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+      ],
+      [
+        [Accent.weak, Accent.medium],
+        [Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+      ],
+      [
+        [Accent.weak, Accent.medium],
+        [Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+      ],
+      [
+        [Accent.strong, Accent.none, Accent.weak, Accent.weak, Accent.none],
+        [Accent.strong, Accent.none, Accent.weak, Accent.weak, Accent.none],
+      ],
+    ],
+  ),
+  // 정악
+  Jangdan(
+    name: "상령산, 중령산",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.sangnyeongsan,
+    bpm: 3,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.none, Accent.none, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.none, Accent.none],
+      ],
+      [
+        [Accent.weak, Accent.none, Accent.none, Accent.none],
+        [Accent.weak, Accent.medium, Accent.none, Accent.none, Accent.none, Accent.weak],
+      ],
+    ],
+  ),
+  Jangdan(
+    name: "세령산, 가락덜이",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.seryeongsan,
+    bpm: 5,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.weak],
+        [Accent.medium, Accent.none],
+      ],
+      [
+        [Accent.weak, Accent.none],
+        [Accent.medium, Accent.none, Accent.none],
+      ],
+    ],
+  ),
+  Jangdan(
+    name: "타령, 군악",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.taryeong,
+    bpm: 35,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.none, Accent.none, Accent.none],
+      ],
+    ],
+  ),
+  Jangdan(
+    name: "취타",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.chwita,
+    bpm: 60,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+      ],
+      [
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+      ],
+      [
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.none, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+      ],
+    ],
+  ),
+  Jangdan(
+    name: "절화",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.chwita,
+    bpm: 60,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+      ],
+      [
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.none, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
       ],
     ],
   ),

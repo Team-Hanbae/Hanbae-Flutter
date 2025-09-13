@@ -66,7 +66,7 @@ class HomeScreen extends StatelessWidget {
                       Text(
                         "내가 저장한 장단",
                         style: AppTextStyles.title2B.copyWith(
-                          color: AppColors.textDefault,
+                          color: AppColors.labelPrimary,
                         ),
                       ),
                       TextButton(
@@ -86,7 +86,7 @@ class HomeScreen extends StatelessWidget {
                         child: Text(
                           "더보기",
                           style: AppTextStyles.calloutR.copyWith(
-                            color: AppColors.textTertiary,
+                            color: AppColors.labelSecondary,
                           ),
                         ),
                       ),
@@ -105,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                             child: Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                color: AppColors.backgroundSheet,
+                                color: AppColors.backgroundMute,
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(16),
                                 ),
@@ -115,7 +115,7 @@ class HomeScreen extends StatelessWidget {
                                   "저장한 장단이 없어요",
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: AppColors.textQuaternary,
+                                    color: AppColors.labelTertiary,
                                   ),
                                 ),
                               ),
@@ -148,7 +148,7 @@ class HomeScreen extends StatelessWidget {
                                     width: 156,
                                     height: 84,
                                     decoration: BoxDecoration(
-                                      color: AppColors.backgroundSheet,
+                                      color: AppColors.backgroundMute,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(16),
                                       ),
@@ -158,7 +158,7 @@ class HomeScreen extends StatelessWidget {
                                         "더보기",
                                         style: TextStyle(
                                           fontSize: 17,
-                                          color: AppColors.textTertiary,
+                                          color: AppColors.labelTertiary,
                                         ),
                                       ),
                                     ),
@@ -190,7 +190,7 @@ class HomeScreen extends StatelessWidget {
                                     ),
                                     clipBehavior: Clip.hardEdge,
                                     decoration: BoxDecoration(
-                                      color: AppColors.backgroundSheet,
+                                      color: AppColors.backgroundMute,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(16),
                                       ),
@@ -213,8 +213,8 @@ class HomeScreen extends StatelessWidget {
                                                     radius: 1.0,
                                                     center: Alignment.center,
                                                     colors: [
-                                                      AppColors.bakBarActiveTop,
-                                                      AppColors.backgroundCard
+                                                      AppColors.bakBarTop,
+                                                      AppColors.neutral12
                                                           .withAlpha(0),
                                                     ],
                                                     stops: [0, 0.5],
@@ -234,14 +234,14 @@ class HomeScreen extends StatelessWidget {
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
                                                 fontSize: 17,
-                                                color: AppColors.textDefault,
+                                                color: AppColors.labelDefault,
                                               ),
                                             ),
                                             Text(
                                               item.jangdanType.label,
                                               style: TextStyle(
                                                 fontSize: 15,
-                                                color: AppColors.textTertiary,
+                                                color: AppColors.labelSecondary,
                                               ),
                                             ),
                                           ],
@@ -273,7 +273,7 @@ class HomeScreen extends StatelessWidget {
                           Text(
                             "바로 연습하기",
                             style: AppTextStyles.title2B.copyWith(
-                              color: AppColors.textDefault,
+                              color: AppColors.labelPrimary,
                             ),
                           ),
                         ],
@@ -314,7 +314,7 @@ class HomeScreen extends StatelessWidget {
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.backgroundSheet,
+                            color: AppColors.backgroundMute,
                             borderRadius: BorderRadius.all(Radius.circular(16)),
                           ),
                           child: Row(
@@ -324,7 +324,7 @@ class HomeScreen extends StatelessWidget {
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: AppColors.jangdanLogoBackground,
+                                      color: AppColors.orange13,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(10),
                                       ),
@@ -339,7 +339,7 @@ class HomeScreen extends StatelessWidget {
                                           child: SvgPicture.asset(
                                             "assets/${jangdan.logoAssetPath}",
                                             colorFilter: ColorFilter.mode(
-                                              AppColors.jangdanLogoPrimary,
+                                              AppColors.orange8,
                                               BlendMode.srcIn,
                                             ),
                                           ),
@@ -357,7 +357,7 @@ class HomeScreen extends StatelessWidget {
                                       Text(
                                         jangdan.label,
                                         style: AppTextStyles.title3Sb.copyWith(
-                                          color: AppColors.textDefault,
+                                          color: AppColors.labelDefault,
                                         ),
                                       ),
 
@@ -367,7 +367,7 @@ class HomeScreen extends StatelessWidget {
                                         jangdan.bakInformation,
                                         style: AppTextStyles.subheadlineR
                                             .copyWith(
-                                              color: AppColors.textQuaternary,
+                                              color: AppColors.labelSecondary,
                                             ),
                                       ),
                                     ],
@@ -377,7 +377,7 @@ class HomeScreen extends StatelessWidget {
                               Icon(
                                 Icons.chevron_right_rounded,
                                 size: 32,
-                                color: AppColors.textTertiary,
+                                color: AppColors.labelSecondary,
                               ),
                             ],
                           ),

@@ -12,7 +12,7 @@ class CommonDialog {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Dialog(
-          backgroundColor: AppColors.backgroundCard,
+          backgroundColor: AppColors.backgroundElevated,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),
@@ -54,6 +54,7 @@ class CommonDialog {
                         '새로운 기능!',
                         textAlign: TextAlign.center,
                         style: AppTextStyles.gosanja.copyWith(color: AppColors.textSecondary),
+
                       ),
                       const SizedBox(height: 16),
                       Container(
@@ -65,8 +66,8 @@ class CommonDialog {
                             // 그라데이션 색상 설정
                             colors: [
                               Colors.transparent,
-                              AppColors.textBPMDefault,
-                              AppColors.textBPMDefault, // 중앙의 밝은 색
+                              AppColors.neutral4,
+                              AppColors.neutral4, // 중앙의 밝은 색
                               Colors.transparent,
                             ],
                             // 그라데이션의 시작점과 끝점 설정 (가로 방향)
@@ -88,7 +89,7 @@ class CommonDialog {
                         style: AppTextStyles.bodySb.copyWith(
                           fontSize: 17,
                           letterSpacing: -0.43,
-                          color: AppColors.textSecondary,
+                          color: AppColors.labelDefault,
                         ),
                       ),
 
@@ -100,7 +101,7 @@ class CommonDialog {
                         height: 46,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.buttonPrimary,
+                            backgroundColor: AppColors.buttonDefault,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -110,7 +111,7 @@ class CommonDialog {
                               '확인',
                               style: AppTextStyles.bodySb.copyWith(
                                 fontSize: 17,
-                                color: AppColors.textDefault,
+                                color: AppColors.labelPrimary,
                                 letterSpacing: -0.43,
                               ),
                             ),

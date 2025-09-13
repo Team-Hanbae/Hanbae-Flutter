@@ -31,7 +31,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
     return Container(
       margin: const EdgeInsets.only(left: 16.0, right: 16, bottom: 16),
       decoration: BoxDecoration(
-        color: AppColors.backgroundCard,
+        color: AppColors.backgroundMute,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
           bottomLeft: Radius.circular(16),
@@ -80,14 +80,14 @@ class _MetronomeControlState extends State<MetronomeControl> {
                               child: Text(
                                 "원하는 빠르기로 계속 탭해주세요",
                                 style: AppTextStyles.bodySb.copyWith(
-                                  color: AppColors.textDefault,
+                                  color: AppColors.labelPrimary
                                 ),
                               ),
                             )
                             : Text(
                               '빠르기(BPM)',
                               style: AppTextStyles.calloutR.copyWith(
-                                color: AppColors.textTertiary,
+                                color: AppColors.labelSecondary,
                               ),
                             ),
                   ),
@@ -238,8 +238,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       fixedSize: const Size(double.infinity, 74),
                       backgroundColor:
                           isPlaying
-                              ? AppColors.buttonPlaystop
-                              : AppColors.buttonPlaystart,
+                              ? AppColors.buttonDefault
+                              : AppColors.buttonInverse,
                     ),
                     child: Center(
                       child: Icon(
@@ -247,8 +247,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                         size: 29,
                         color:
                             isPlaying
-                                ? Colors.white
-                                : AppColors.backgroundDefault,
+                                ? AppColors.labelPrimary
+                                : AppColors.labelInverse,
                       ),
                     ),
                   )
@@ -263,8 +263,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       minimumSize: const Size(double.infinity, 74),
                       backgroundColor:
                           isPlaying
-                              ? AppColors.buttonPlaystop
-                              : AppColors.buttonPlaystart,
+                              ? AppColors.buttonDefault
+                              : AppColors.buttonInverse,
                     ),
                     child: Text(
                       isPlaying ? "멈춤" : "시작",
@@ -273,8 +273,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                         fontWeight: FontWeight.w500,
                         color:
                             isPlaying
-                                ? AppColors.textButtonPrimary
-                                : AppColors.textButtonEmphasis,
+                                ? AppColors.labelPrimary
+                                : AppColors.labelInverse,
                       ),
                     ),
                   ),
@@ -309,8 +309,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       fixedSize: const Size(74, 74),
                       backgroundColor:
                           isTapping
-                              ? AppColors.buttonActive
-                              : AppColors.buttonPrimary,
+                              ? AppColors.themeNormal
+                              : AppColors.buttonDefault,
                     ),
                     child: Text(
                       "탭",
@@ -318,10 +318,10 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       style:
                           isTapping
                               ? AppTextStyles.bodyR.copyWith(
-                                color: AppColors.textButtonEmphasis,
+                                color: AppColors.labelInverse,
                               )
                               : AppTextStyles.bodyR.copyWith(
-                                color: AppColors.textButtonPrimary,
+                                color: AppColors.labelPrimary,
                               ),
                     ),
                   )
@@ -334,8 +334,8 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       fixedSize: const Size(112, 74),
                       backgroundColor:
                           isTapping
-                              ? AppColors.buttonActive
-                              : AppColors.buttonPrimary,
+                              ? AppColors.themeNormal
+                              : AppColors.buttonDefault,
                     ),
                     child: Text(
                       isTapping ? "탭" : "빠르기\n찾기",
@@ -343,10 +343,10 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       style:
                           isTapping
                               ? AppTextStyles.title1R.copyWith(
-                                color: AppColors.textButtonEmphasis,
+                                color: AppColors.labelInverse,
                               )
                               : AppTextStyles.bodyR.copyWith(
-                                color: AppColors.textButtonPrimary,
+                                color: AppColors.labelPrimary,
                                 height: 1.12,
                               ),
                     ),
@@ -396,7 +396,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       child: Icon(
                         Icons.remove,
                         size: 16,
-                        color: AppColors.textQuaternary,
+                        color: AppColors.labelTertiary,
                       ),
                     ),
                   )
@@ -417,14 +417,14 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       width: 50,
                       height: 50,
                       decoration: const BoxDecoration(
-                        color: AppColors.buttonBpmControlDefault,
+                        color: AppColors.buttonMute,
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
                         icon: const Icon(
                           Icons.remove,
                           size: 32,
-                          color: AppColors.textButtonSecondary,
+                          color: AppColors.labelDefault,
                         ),
                         onPressed: () {
                           context.read<MetronomeBloc>().add(ChangeBpm(-1));
@@ -474,7 +474,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                                 style: const TextStyle(
                                   fontSize: 44,
                                   fontWeight: FontWeight.w500,
-                                  color: AppColors.textBPMSearch,
+                                  color: AppColors.themeNormal,
                                   letterSpacing: -0.5,
                                 ),
                               ),
@@ -485,7 +485,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                               style: const TextStyle(
                                 fontSize: 44,
                                 fontWeight: FontWeight.w500,
-                                color: AppColors.textButtonSecondary,
+                                color: AppColors.labelDefault,
                                 letterSpacing: -0.5,
                               ),
                             ),
@@ -508,7 +508,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                                   style: const TextStyle(
                                     fontSize: 58,
                                     fontWeight: FontWeight.w500,
-                                    color: AppColors.textBPMSearch,
+                                    color: AppColors.themeNormal,
                                     letterSpacing: -0.5,
                                   ),
                                 ),
@@ -519,7 +519,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                                 style: const TextStyle(
                                   fontSize: 58,
                                   fontWeight: FontWeight.w500,
-                                  color: AppColors.textButtonSecondary,
+                                  color: AppColors.labelDefault,
                                   letterSpacing: -0.5,
                                 ),
                               ),
@@ -570,7 +570,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       child: Icon(
                         Icons.add,
                         size: 16,
-                        color: AppColors.textQuaternary,
+                        color: AppColors.labelTertiary,
                       ),
                     ),
                   )
@@ -591,14 +591,14 @@ class _MetronomeControlState extends State<MetronomeControl> {
                       width: 50,
                       height: 50,
                       decoration: const BoxDecoration(
-                        color: AppColors.buttonBpmControlDefault,
+                        color: AppColors.buttonMute,
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
                         icon: Icon(
                           Icons.add,
                           size: 32,
-                          color: AppColors.textButtonSecondary,
+                          color: AppColors.labelDefault,
                         ),
                         onPressed: () {
                           context.read<MetronomeBloc>().add(ChangeBpm(1));

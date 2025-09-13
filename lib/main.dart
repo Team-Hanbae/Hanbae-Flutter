@@ -69,7 +69,7 @@ class Hanbae extends StatelessWidget {
         scaffoldBackgroundColor:
             AppColors.backgroundDefault, // scaffold 배경색을 오버라이드
         appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.backgroundNavigationbar,
+          backgroundColor: AppColors.backgroundMute,
         ),
         textTheme: ThemeData.dark().textTheme.apply(fontFamily: 'Pretendard'),
       ),
