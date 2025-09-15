@@ -54,7 +54,7 @@ class CommonDialog {
                         '새로운 기능!',
                         textAlign: TextAlign.center,
                         style: AppTextStyles.gosanja.copyWith(
-                          color: AppColors.orange2,
+                          color: AppColors.labelDefault,
                         ),
                       ),
                       const SizedBox(height: 16),
