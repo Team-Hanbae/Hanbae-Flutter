@@ -20,4 +20,14 @@ class Storage {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('firstMinimumCheck') ?? false;
   }
+
+  Future<bool> setReserveBeat(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.setBool('reserveBeat', value);
+  }
+
+  Future<bool> getReserveBeat() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('reserveBeat') ?? false;
+  }
 }

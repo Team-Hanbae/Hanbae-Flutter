@@ -49,7 +49,12 @@ class ToggleAccent extends MetronomeEvent {
 class ToggleSobak extends MetronomeEvent {}
 
 class ToggleReserveBeat extends MetronomeEvent {
-  const ToggleReserveBeat();
+  final bool? reserveBeat;
+
+  const ToggleReserveBeat({this.reserveBeat});
+
+  @override
+  List<Object?> get props => [reserveBeat];
 }
 
 class ChangeSound extends MetronomeEvent {

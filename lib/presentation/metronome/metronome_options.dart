@@ -24,6 +24,14 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
   @override
   void initState() {
     super.initState();
+    Storage().getReserveBeat().then((value) {
+      if (!mounted) return;
+      setState(() {
+        context.read<MetronomeBloc>().add(
+          ToggleReserveBeat(reserveBeat: value),
+        );
+      });
+    });
     Storage().getFirstMinimumCheck().then((value) {
       setState(() {
         showNewMinimumIcon = value;
@@ -147,7 +155,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                       BlendMode.srcIn,
                     ),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     context.read<MetronomeBloc>().add(ToggleReserveBeat());
                   },
                 ),

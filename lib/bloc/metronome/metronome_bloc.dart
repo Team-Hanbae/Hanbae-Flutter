@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:hanbae/main.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:hanbae/model/jangdan_type.dart';
+import 'package:hanbae/utils/local_storage.dart';
 import 'package:hive/hive.dart';
 import 'dart:async';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -275,8 +276,12 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       emit(state.copyWith(isSobakOn: !state.isSobakOn));
     });
 
-    on<ToggleReserveBeat>((event, emit) {
-      emit(state.copyWith(reserveBeat: !state.reserveBeat));
+    on<ToggleReserveBeat>((event, emit) async {
+      final newReserveBeatValue = event.reserveBeat ?? !state.reserveBeat;
+
+      await Storage().setReserveBeat(newReserveBeatValue);
+
+      emit(state.copyWith(reserveBeat: newReserveBeatValue));
     });
 
     on<ToggleFlash>((event, emit) {
