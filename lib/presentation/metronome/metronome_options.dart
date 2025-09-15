@@ -167,68 +167,68 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
         const SizedBox(width: 8),
 
         // 소리 변경 토글
-        Expanded(
-          child: Container(
-            height: 50,
-            margin: EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color:
-                  _isSoundMenuOpen
-                      ? AppColors.backgroundSubtle
-                      : AppColors.buttonDefault,
+        Container(
+          width: 70,
+          height: 50,
+          margin: EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color:
+                _isSoundMenuOpen
+                    ? AppColors.backgroundSubtle
+                    : AppColors.buttonDefault,
+            borderRadius: BorderRadius.circular(12),
+            border:
+                _isSoundMenuOpen
+                    ? Border.all(color: AppColors.themeNormal, width: 1)
+                    : null,
+          ),
+          child: PopupMenuButton<Sound>(
+            color: AppColors.backgroundElevated,
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              border:
-                  _isSoundMenuOpen
-                      ? Border.all(color: AppColors.themeNormal, width: 1)
-                      : null,
             ),
-            child: PopupMenuButton<Sound>(
-              color: AppColors.backgroundElevated,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+            icon: Text(
+              context
+                  .select((MetronomeBloc bloc) => bloc.state.currentSound)
+                  .label,
+              style: AppTextStyles.bodyR.copyWith(
+                color:
+                    _isSoundMenuOpen
+                        ? AppColors.themeNormal
+                        : AppColors.labelDefault,
               ),
-              icon: Text(
-                context
-                    .select((MetronomeBloc bloc) => bloc.state.currentSound)
-                    .label,
-                style: AppTextStyles.bodyR.copyWith(
-                  color:
-                      _isSoundMenuOpen
-                          ? AppColors.themeNormal
-                          : AppColors.labelDefault,
-                ),
-              ),
-              onCanceled: () {
-                setState(() => _isSoundMenuOpen = false);
-              },
-              onSelected: (value) {
-                setState(() => _isSoundMenuOpen = false);
-                context.read<MetronomeBloc>().add(ChangeSound(value));
-              },
-              itemBuilder:
-                  (ctx) => const [
-                    PopupMenuItem(
-                      value: Sound.janggu,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('장구', style: AppTextStyles.bodyR),
-                    ),
-                    PopupMenuItem(
-                      value: Sound.buk,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('북', style: AppTextStyles.bodyR),
-                    ),
-                    PopupMenuItem(
-                      value: Sound.clave,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('나무', style: AppTextStyles.bodyR),
-                    ),
-                  ],
-              onOpened: () {
-                setState(() => _isSoundMenuOpen = true);
-              },
             ),
+            onCanceled: () {
+              setState(() => _isSoundMenuOpen = false);
+            },
+            onSelected: (value) {
+              setState(() => _isSoundMenuOpen = false);
+              context.read<MetronomeBloc>().add(ChangeSound(value));
+            },
+            itemBuilder:
+                (ctx) => const [
+                  PopupMenuItem(
+                    value: Sound.janggu,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('장구', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: Sound.buk,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('북', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: Sound.clave,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('나무', style: AppTextStyles.bodyR),
+                  ),
+                ],
+            onOpened: () {
+              setState(() => _isSoundMenuOpen = true);
+            },
           ),
         ),
+
         SizedBox(width: 8),
 
         Column(

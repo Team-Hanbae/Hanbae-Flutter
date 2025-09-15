@@ -96,8 +96,12 @@ class HanbaeBoard extends StatelessWidget {
             Positioned(
               child: SizedBox(
                 child: Center(
-                  child: SvgPicture.asset(
-                    'assets/images/icon/$reserveBeatTime.svg',
+                  // child: SvgPicture.asset(
+                  //   'assets/images/icon/$reserveBeatTime.svg',
+                  // ),
+                  child: Text(
+                    '$reserveBeatTime',
+                    style: TextStyle(fontSize: 100),
                   ),
                 ),
               ),
