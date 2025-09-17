@@ -3,6 +3,7 @@ part of 'metronome_bloc.dart';
 class MetronomeState extends Equatable {
   final Jangdan selectedJangdan;
   final bool isPlaying;
+
   final bool isSobakOn;
   final bool isFlashOn;
   final int bpm;
@@ -12,6 +13,10 @@ class MetronomeState extends Equatable {
   final Sound currentSound;
   final bool isTapping;
   final bool minimum;
+
+  /// 예비박 여부
+  final bool reserveBeat;
+  final int reserveBeatTime;
 
   const MetronomeState({
     required this.selectedJangdan,
@@ -25,6 +30,8 @@ class MetronomeState extends Equatable {
     required this.currentSound,
     required this.isTapping,
     required this.minimum,
+    required this.reserveBeat,
+    this.reserveBeatTime = 0,
   });
 
   MetronomeState copyWith({
@@ -39,6 +46,8 @@ class MetronomeState extends Equatable {
     Sound? currentSound,
     bool? isTapping,
     bool? minimum,
+    bool? reserveBeat,
+    int? reserveBeatTime,
   }) {
     return MetronomeState(
       selectedJangdan: selectedJangdan ?? this.selectedJangdan,
@@ -52,6 +61,8 @@ class MetronomeState extends Equatable {
       currentSound: currentSound ?? this.currentSound,
       isTapping: isTapping ?? this.isTapping,
       minimum: minimum ?? this.minimum,
+      reserveBeat: reserveBeat ?? this.reserveBeat,
+      reserveBeatTime: reserveBeatTime ?? this.reserveBeatTime,
     );
   }
 
@@ -68,5 +79,7 @@ class MetronomeState extends Equatable {
     currentSound,
     isTapping,
     minimum,
+    reserveBeat,
+    reserveBeatTime,
   ];
 }

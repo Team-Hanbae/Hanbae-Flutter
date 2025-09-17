@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hanbae/main.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:hanbae/model/jangdan_type.dart';
+import 'package:hanbae/utils/local_storage.dart';
 import 'package:hive/hive.dart';
 import 'dart:async';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -42,6 +44,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentSound: Sound.clave,
           isTapping: false,
           minimum: false,
+          reserveBeat: false,
         );
       }()) {
     SoundPreferences.load().then((loaded) {
@@ -63,7 +66,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       emit(state.copyWith(selectedJangdan: original, bpm: original.bpm));
     });
 
-    on<Play>((event, emit) {
+    on<Play>((event, emit) async {
       final jangdan = state.selectedJangdan;
       final lastRowIndex = jangdan.accents.length - 1;
       final lastDaebakIndex = jangdan.accents[lastRowIndex].length - 1;
@@ -79,6 +82,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       final averageSobakPerDaebak = totalSobak / totalDaebak;
 
       _averageSobakPerDaebak = averageSobakPerDaebak;
+
       emit(
         state.copyWith(
           isPlaying: true,
@@ -87,10 +91,49 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentSobakIndex: lastSobakIndex,
         ),
       );
+
       _playStartTime = DateTime.now();
 
-      _startPreciseTicker();
-      WakelockPlus.enable();
+      final reserveBeat = state.reserveBeat;
+      final bpm = state.bpm;
+
+      final oneBeatDuration = Duration(milliseconds: (60000 / bpm).round());
+
+      /// 예비박
+      if (reserveBeat) {
+        SoundManager.play(Sound.clave, Accent.medium);
+        emit(state.copyWith(reserveBeatTime: 3));
+        if (state.isPlaying) {
+          await Future.delayed(oneBeatDuration, () {
+            SoundManager.play(Sound.clave, Accent.medium);
+            emit(state.copyWith(reserveBeatTime: 2));
+          });
+        } else {
+          emit(state.copyWith(reserveBeatTime: 0));
+        }
+        if (state.isPlaying) {
+          await Future.delayed(oneBeatDuration, () {
+            SoundManager.play(Sound.clave, Accent.medium);
+            emit(state.copyWith(reserveBeatTime: 1));
+          });
+        } else {
+          emit(state.copyWith(reserveBeatTime: 0));
+        }
+        if (state.isPlaying) {
+          await Future.delayed(oneBeatDuration, () {
+            emit(state.copyWith(reserveBeatTime: 0));
+          });
+        } else {
+          emit(state.copyWith(reserveBeatTime: 0));
+        }
+      }
+
+      if (state.isPlaying) {
+        _startPreciseTicker();
+        WakelockPlus.enable();
+      } else {
+        emit(state.copyWith(reserveBeatTime: 0));
+      }
     });
 
     on<Tick>((event, emit) async {
@@ -130,18 +173,23 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
     on<Stop>((event, emit) {
       if (_playStartTime != null) {
-        final duration = DateTime.now().difference(_playStartTime!).inMilliseconds;
+        final duration =
+            DateTime.now().difference(_playStartTime!).inMilliseconds;
         final seconds = duration / 1000;
         final roundedDuration = (seconds * 100).round() / 100;
         final jangdanType = state.selectedJangdan.jangdanType.label;
         final jangdanName = state.selectedJangdan.name;
 
-        mixpanel.track('metronome_play', properties: {
-          'duration': roundedDuration,
-          'sound_type': state.currentSound.label,
-          'jangdan_type': jangdanType,
-          'jangdan_name': jangdanType == jangdanName ? "template" : jangdanName
-        });
+        mixpanel.track(
+          'metronome_play',
+          properties: {
+            'duration': roundedDuration,
+            'sound_type': state.currentSound.label,
+            'jangdan_type': jangdanType,
+            'jangdan_name':
+                jangdanType == jangdanName ? "template" : jangdanName,
+          },
+        );
         _playStartTime = null;
       }
 
@@ -226,6 +274,14 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
     on<ToggleSobak>((event, emit) {
       emit(state.copyWith(isSobakOn: !state.isSobakOn));
+    });
+
+    on<ToggleReserveBeat>((event, emit) async {
+      final newReserveBeatValue = event.reserveBeat ?? !state.reserveBeat;
+
+      await Storage().setReserveBeat(newReserveBeatValue);
+
+      emit(state.copyWith(reserveBeat: newReserveBeatValue));
     });
 
     on<ToggleFlash>((event, emit) {

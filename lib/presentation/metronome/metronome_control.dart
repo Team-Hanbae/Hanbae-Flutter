@@ -80,7 +80,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                               child: Text(
                                 "원하는 빠르기로 계속 탭해주세요",
                                 style: AppTextStyles.bodySb.copyWith(
-                                  color: AppColors.labelPrimary
+                                  color: AppColors.labelPrimary,
                                 ),
                               ),
                             )

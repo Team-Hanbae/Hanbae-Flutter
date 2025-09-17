@@ -24,6 +24,14 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
   @override
   void initState() {
     super.initState();
+    Storage().getReserveBeat().then((value) {
+      if (!mounted) return;
+      setState(() {
+        context.read<MetronomeBloc>().add(
+          ToggleReserveBeat(reserveBeat: value),
+        );
+      });
+    });
     Storage().getFirstMinimumCheck().then((value) {
       setState(() {
         showNewMinimumIcon = value;
@@ -53,10 +61,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                   borderRadius: BorderRadius.circular(12),
                   border:
                       isOn
-                          ? Border.all(
-                            color: AppColors.themeNormal,
-                            width: 1,
-                          )
+                          ? Border.all(color: AppColors.themeNormal, width: 1)
                           : null,
                 ),
                 child: IconButton(
@@ -98,10 +103,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                   borderRadius: BorderRadius.circular(12),
                   border:
                       isOn
-                          ? Border.all(
-                            color: AppColors.themeNormal,
-                            width: 1,
-                          )
+                          ? Border.all(color: AppColors.themeNormal, width: 1)
                           : null,
                 ),
                 child: IconButton(
@@ -125,86 +127,108 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
 
         const SizedBox(width: 8),
 
-        // 소리 변경 토글
-        Expanded(
-          child: Container(
-            height: 50,
-            margin: EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color:
-                  _isSoundMenuOpen
-                      ? AppColors.backgroundSubtle
-                      : AppColors.buttonDefault,
-              borderRadius: BorderRadius.circular(12),
-              border:
-                  _isSoundMenuOpen
-                      ? Border.all(color: AppColors.themeNormal, width: 1)
-                      : null,
-            ),
-            child: PopupMenuButton<Sound>(
-              color: AppColors.backgroundElevated,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              icon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/icon/Icon_SoundSwitch.svg',
+        BlocBuilder<MetronomeBloc, MetronomeState>(
+          builder: (context, state) {
+            final isOn = state.reserveBeat;
+            return Expanded(
+              child: Container(
+                height: 50,
+                margin: EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color:
+                      isOn
+                          ? AppColors.backgroundSubtle
+                          : AppColors.buttonDefault,
+                  borderRadius: BorderRadius.circular(12),
+                  border:
+                      isOn
+                          ? Border.all(color: AppColors.themeNormal, width: 1)
+                          : null,
+                ),
+                child: IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/images/icon/reserve_beat_icon.svg',
                     width: 32,
                     height: 32,
                     colorFilter: ColorFilter.mode(
-                      _isSoundMenuOpen
-                          ? AppColors.themeNormal
-                          : AppColors.labelDefault,
+                      isOn ? AppColors.themeNormal : AppColors.labelDefault,
                       BlendMode.srcIn,
                     ),
                   ),
-                  const SizedBox(width: 3),
-                  Text(
-                    context
-                        .select((MetronomeBloc bloc) => bloc.state.currentSound)
-                        .label,
-                    style: AppTextStyles.bodyR.copyWith(
-                      color:
-                          _isSoundMenuOpen
-                              ? AppColors.themeNormal
-                              : AppColors.labelDefault,
-                    ),
+                  onPressed: () async {
+                    context.read<MetronomeBloc>().add(ToggleReserveBeat());
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(width: 8),
+
+        // 소리 변경 토글
+        Container(
+          width: 70,
+          height: 50,
+          margin: EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color:
+                _isSoundMenuOpen
+                    ? AppColors.backgroundSubtle
+                    : AppColors.buttonDefault,
+            borderRadius: BorderRadius.circular(12),
+            border:
+                _isSoundMenuOpen
+                    ? Border.all(color: AppColors.themeNormal, width: 1)
+                    : null,
+          ),
+          child: PopupMenuButton<Sound>(
+            color: AppColors.backgroundElevated,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            icon: Text(
+              context
+                  .select((MetronomeBloc bloc) => bloc.state.currentSound)
+                  .label,
+              style: AppTextStyles.bodyR.copyWith(
+                color:
+                    _isSoundMenuOpen
+                        ? AppColors.themeNormal
+                        : AppColors.labelDefault,
+              ),
+            ),
+            onCanceled: () {
+              setState(() => _isSoundMenuOpen = false);
+            },
+            onSelected: (value) {
+              setState(() => _isSoundMenuOpen = false);
+              context.read<MetronomeBloc>().add(ChangeSound(value));
+            },
+            itemBuilder:
+                (ctx) => const [
+                  PopupMenuItem(
+                    value: Sound.janggu,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('장구', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: Sound.buk,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('북', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: Sound.clave,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('나무', style: AppTextStyles.bodyR),
                   ),
                 ],
-              ),
-              onCanceled: () {
-                setState(() => _isSoundMenuOpen = false);
-              },
-              onSelected: (value) {
-                setState(() => _isSoundMenuOpen = false);
-                context.read<MetronomeBloc>().add(ChangeSound(value));
-              },
-              itemBuilder:
-                  (ctx) => const [
-                    PopupMenuItem(
-                      value: Sound.janggu,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('장구', style: AppTextStyles.bodyR),
-                    ),
-                    PopupMenuItem(
-                      value: Sound.buk,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('북', style: AppTextStyles.bodyR),
-                    ),
-                    PopupMenuItem(
-                      value: Sound.clave,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('나무', style: AppTextStyles.bodyR),
-                    ),
-                  ],
-              onOpened: () {
-                setState(() => _isSoundMenuOpen = true);
-              },
-            ),
+            onOpened: () {
+              setState(() => _isSoundMenuOpen = true);
+            },
           ),
         ),
+
         SizedBox(width: 8),
 
         Column(

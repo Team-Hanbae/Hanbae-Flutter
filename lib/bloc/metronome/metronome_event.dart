@@ -15,7 +15,9 @@ class SelectJangdan extends MetronomeEvent {
   List<Object?> get props => [jangdan];
 }
 
-class Play extends MetronomeEvent {}
+class Play extends MetronomeEvent {
+  const Play();
+}
 
 class Tick extends MetronomeEvent {}
 
@@ -45,6 +47,15 @@ class ToggleAccent extends MetronomeEvent {
 }
 
 class ToggleSobak extends MetronomeEvent {}
+
+class ToggleReserveBeat extends MetronomeEvent {
+  final bool? reserveBeat;
+
+  const ToggleReserveBeat({this.reserveBeat});
+
+  @override
+  List<Object?> get props => [reserveBeat];
+}
 
 class ChangeSound extends MetronomeEvent {
   final Sound sound;

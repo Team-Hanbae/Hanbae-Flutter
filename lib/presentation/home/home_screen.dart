@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,13 +14,15 @@ import 'package:hanbae/theme/text_styles.dart';
 import '../../model/jangdan_type.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<JangdanBloc>().state;
     final customJangdanList =
         state is JangdanLoaded ? state.jangdans : <Jangdan>[];
+
+    final bannerList = ["assets/images/banner/JeongakBanner.png"];
 
     return Scaffold(
       appBar: AppBar(
@@ -47,9 +50,26 @@ class HomeScreen extends StatelessWidget {
                     await launchUrl(url, mode: LaunchMode.externalApplication);
                   }
                 },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset("assets/images/banner/JeongakBanner.png"),
+                child: CarouselSlider(
+                  items:
+                      bannerList.map((path) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.asset(path),
+                            );
+                          },
+                        );
+                      }).toList(),
+                  options: CarouselOptions(
+                    height: 110,
+                    autoPlay: false,
+                    // autoPlayInterval: const Duration(
+                    //   seconds: 3,
+                    // ),
+                    viewportFraction: 1.0,
+                  ),
                 ),
               ),
             ),
