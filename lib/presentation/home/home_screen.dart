@@ -23,9 +23,15 @@ class HomeScreen extends StatelessWidget {
         state is JangdanLoaded ? state.jangdans : <Jangdan>[];
 
     final bannerList = [
-      "assets/images/banner/JeongakBanner.png",
-      "assets/images/banner/SurveyBanner.png",
-      ];
+      {
+        "image": "assets/images/banner/JeongakBanner.png",
+        "link": "https://forms.gle/BxXn9vp7qWVQ6eoQA",
+      },
+      {
+        "image": "assets/images/banner/SurveyBanner.png",
+        "link": "https://forms.gle/pKarubn5MPXkudgw6",
+      },
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -44,35 +50,34 @@ class HomeScreen extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: GestureDetector(
-                onTap: () async {
-                  final Uri url = Uri.parse(
-                    'https://forms.gle/BxXn9vp7qWVQ6eoQA',
+              child: CarouselSlider(
+                items: bannerList.map((item) {
+                  final imagePath = item["image"]!;
+                  final link = item["link"]!;
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return GestureDetector(
+                        onTap: () async {
+                          final Uri url = Uri.parse(link);
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url, mode: LaunchMode.externalApplication);
+                          }
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.asset(imagePath),
+                        ),
+                      );
+                    },
                   );
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url, mode: LaunchMode.externalApplication);
-                  }
-                },
-                child: CarouselSlider(
-                  items:
-                      bannerList.map((path) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Image.asset(path),
-                            );
-                          },
-                        );
-                      }).toList(),
-                  options: CarouselOptions(
-                    height: 110,
-                    autoPlay: true,
-                    autoPlayInterval: const Duration(
-                      seconds: 5,
-                    ),
-                    viewportFraction: 1.0,
+                }).toList(),
+                options: CarouselOptions(
+                  height: 110,
+                  autoPlay: true,
+                  autoPlayInterval: const Duration(
+                    seconds: 5,
                   ),
+                  viewportFraction: 1.0,
                 ),
               ),
             ),
