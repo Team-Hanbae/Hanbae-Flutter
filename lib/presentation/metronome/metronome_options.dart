@@ -208,14 +208,24 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
             itemBuilder:
                 (ctx) => const [
                   PopupMenuItem(
-                    value: Sound.janggu,
+                    value: Sound.janggu1,
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('장구', style: AppTextStyles.bodyR),
+                    child: Text('장구1', style: AppTextStyles.bodyR),
                   ),
                   PopupMenuItem(
-                    value: Sound.buk,
+                    value: Sound.janggu2,
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('북', style: AppTextStyles.bodyR),
+                    child: Text('장구2', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: Sound.buk1,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('북1', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: Sound.buk2,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('북2', style: AppTextStyles.bodyR),
                   ),
                   PopupMenuItem(
                     value: Sound.clave,
