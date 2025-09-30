@@ -48,15 +48,15 @@ class HomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CarouselSlider(
-                items: bannerList.map((item) {
-                  final imagePath = item["image"]!;
-                  final link = item["link"]!;
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return GestureDetector(
+            CarouselSlider(
+              items: bannerList.map((item) {
+                final imagePath = item["image"]!;
+                final link = item["link"]!;
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: GestureDetector(
                         onTap: () async {
                           final Uri url = Uri.parse(link);
                           if (await canLaunchUrl(url)) {
@@ -67,18 +67,18 @@ class HomeScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           child: Image.asset(imagePath),
                         ),
-                      );
-                    },
-                  );
-                }).toList(),
-                options: CarouselOptions(
-                  height: 110,
-                  autoPlay: true,
-                  autoPlayInterval: const Duration(
-                    seconds: 5,
-                  ),
-                  viewportFraction: 1.0,
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
+              options: CarouselOptions(
+                height: 110,
+                autoPlay: true,
+                autoPlayInterval: const Duration(
+                  seconds: 5,
                 ),
+                viewportFraction: 1.0,
               ),
             ),
 
