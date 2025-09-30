@@ -33,6 +33,11 @@ class HomeScreen extends StatelessWidget {
       },
     ];
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    const horizontalPadding = 16.0;
+    final imageWidth = screenWidth - (horizontalPadding * 2);
+    final bannerHeight = imageWidth / 3;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundDefault,
@@ -73,11 +78,9 @@ class HomeScreen extends StatelessWidget {
                 );
               }).toList(),
               options: CarouselOptions(
-                height: 110,
+                height: bannerHeight,
                 autoPlay: true,
-                autoPlayInterval: const Duration(
-                  seconds: 5,
-                ),
+                autoPlayInterval: const Duration(seconds: 5),
                 viewportFraction: 1.0,
               ),
             ),
