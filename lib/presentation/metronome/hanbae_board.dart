@@ -126,6 +126,9 @@ class SobakSegment extends StatelessWidget {
     final isSobakOn = context.select(
       (MetronomeBloc bloc) => bloc.state.isSobakOn,
     );
+    final reserveBeat = context.select(
+      (MetronomeBloc bloc) => bloc.state.reserveBeatTime,
+    );
     final isPlaying = context.select(
       (MetronomeBloc bloc) => bloc.state.isPlaying,
     );
@@ -154,16 +157,13 @@ class SobakSegment extends StatelessWidget {
                     return Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color:
-                              isSobakOn
-                                  ? isPlaying
-                                      ? activedSobak * 2 == index
-                                          ? index == 0
-                                              ? AppColors.sobakSegmentDaebak
-                                              : AppColors.sobakSegmentSobak
-                                          : AppColors.frame
-                                      : AppColors.frame
-                                  : AppColors.frame,
+                          color: !isSobakOn || !isPlaying || reserveBeat != 0
+                                ? AppColors.frame
+                                : (activedSobak * 2 == index
+                                    ? (index == 0
+                                        ? AppColors.sobakSegmentDaebak
+                                        : AppColors.sobakSegmentSobak)
+                                    : AppColors.frame),
                         ),
                       ),
                     );
