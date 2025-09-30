@@ -247,20 +247,19 @@ class HomeScreen extends StatelessWidget {
                                         Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
+                                          spacing: 2,
                                           children: [
                                             Text(
                                               item.name,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontSize: 17,
+                                              style: AppTextStyles.headlineSb.copyWith(
                                                 color: AppColors.labelDefault,
                                               ),
                                             ),
                                             Text(
                                               item.jangdanType.label,
-                                              style: TextStyle(
-                                                fontSize: 15,
+                                              style: AppTextStyles.subheadlineR.copyWith(
                                                 color: AppColors.labelSecondary,
                                               ),
                                             ),
