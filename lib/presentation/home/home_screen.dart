@@ -22,7 +22,10 @@ class HomeScreen extends StatelessWidget {
     final customJangdanList =
         state is JangdanLoaded ? state.jangdans : <Jangdan>[];
 
-    final bannerList = ["assets/images/banner/JeongakBanner.png"];
+    final bannerList = [
+      "assets/images/banner/JeongakBanner.png",
+      "assets/images/banner/SurveyBanner.png",
+      ];
 
     return Scaffold(
       appBar: AppBar(
@@ -64,10 +67,10 @@ class HomeScreen extends StatelessWidget {
                       }).toList(),
                   options: CarouselOptions(
                     height: 110,
-                    autoPlay: false,
-                    // autoPlayInterval: const Duration(
-                    //   seconds: 3,
-                    // ),
+                    autoPlay: true,
+                    autoPlayInterval: const Duration(
+                      seconds: 5,
+                    ),
                     viewportFraction: 1.0,
                   ),
                 ),
