@@ -6,7 +6,8 @@ import 'package:hanbae/model/accent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc package
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/model/jangdan_type.dart';
-import 'package:hanbae/theme/colors.dart'; // Import the MetronomeBloc
+import 'package:hanbae/theme/colors.dart';
+import 'package:hanbae/theme/text_styles.dart'; // Import the MetronomeBloc
 
 class HanbaeBoard extends StatelessWidget {
   const HanbaeBoard({super.key});
@@ -101,7 +102,10 @@ class HanbaeBoard extends StatelessWidget {
                   // ),
                   child: Text(
                     '$reserveBeatTime',
-                    style: TextStyle(fontSize: 100),
+                    style: AppTextStyles.title1B.copyWith(
+                      color: AppColors.bakBarNumberDefault,
+                      fontSize: 100
+                      ),
                   ),
                 ),
               ),
