@@ -285,7 +285,7 @@ List<Jangdan> basicJangdanList = [
     ],
   ),
   Jangdan(
-    name: "절화",
+    name: "절화(길군악)",
     createdAt: DateTime.now(),
     jangdanType: JangdanType.chwita,
     bpm: 60,
