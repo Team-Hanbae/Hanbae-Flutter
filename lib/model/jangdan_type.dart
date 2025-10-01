@@ -66,7 +66,7 @@ extension JangdanTypeExtension on JangdanType {
       case JangdanType.seryeongsan: return "세령산, 가락덜이";
       case JangdanType.taryeong: return "타령, 군악";
       case JangdanType.chwita: return "취타";
-      case JangdanType.jeolhwa: return "절화";
+      case JangdanType.jeolhwa: return "절화(길군악)";
       case JangdanType.ginyeombul: return "긴염불";
       case JangdanType.banyeombul: return "반염불";
     }
