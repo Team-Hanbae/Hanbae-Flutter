@@ -349,9 +349,9 @@ class Bakbar extends StatelessWidget {
             // 주황 박스
             Align(
               alignment: Alignment.bottomCenter,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: height * fillFraction),
-                child: FractionallySizedBox(
+              child: fillFraction == 0
+              ? SizedBox.shrink()
+              : FractionallySizedBox(
                   heightFactor: fillFraction,
                   widthFactor: 1.0,
                   child: Container(
@@ -361,7 +361,6 @@ class Bakbar extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
             ),
 
             // 상단 숫자
