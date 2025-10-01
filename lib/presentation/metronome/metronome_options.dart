@@ -205,24 +205,15 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
               setState(() => _isSoundMenuOpen = false);
               context.read<MetronomeBloc>().add(ChangeSound(value));
             },
-            itemBuilder:
-                (ctx) => const [
-                  PopupMenuItem(
-                    value: Sound.janggu,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('장구', style: AppTextStyles.bodyR),
-                  ),
-                  PopupMenuItem(
-                    value: Sound.buk,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('북', style: AppTextStyles.bodyR),
-                  ),
-                  PopupMenuItem(
-                    value: Sound.clave,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('나무', style: AppTextStyles.bodyR),
-                  ),
-                ],
+            itemBuilder: (ctx) {
+              return Sound.values.map((sound) {
+                return PopupMenuItem(
+                  value: sound,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(sound.label, style: AppTextStyles.bodyR),
+                );
+              }).toList();
+            },
             onOpened: () {
               setState(() => _isSoundMenuOpen = true);
             },
