@@ -74,7 +74,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       emit(state.copyWith(selectedJangdan: original, bpm: original.bpm));
     });
 
-    on<Play>((event, emit) async {
+    on<Play>((event, emit) {
       final jangdan = state.selectedJangdan;
       final lastRowIndex = jangdan.accents.length - 1;
       final lastDaebakIndex = jangdan.accents[lastRowIndex].length - 1;
