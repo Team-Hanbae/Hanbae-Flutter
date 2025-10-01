@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc package
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
@@ -16,10 +13,6 @@ class HanbaeBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     final jangdan = context.select(
       (MetronomeBloc bloc) => bloc.state.selectedJangdan,
-    );
-
-    final isPlaying = context.select(
-      (MetronomeBloc bloc) => bloc.state.isPlaying,
     );
 
     final reserveBeat = context.select(
@@ -130,6 +123,9 @@ class SobakSegment extends StatelessWidget {
     final isSobakOn = context.select(
       (MetronomeBloc bloc) => bloc.state.isSobakOn,
     );
+    final reserveBeat = context.select(
+      (MetronomeBloc bloc) => bloc.state.reserveBeatTime,
+    );
     final isPlaying = context.select(
       (MetronomeBloc bloc) => bloc.state.isPlaying,
     );
@@ -158,16 +154,13 @@ class SobakSegment extends StatelessWidget {
                     return Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color:
-                              isSobakOn
-                                  ? isPlaying
-                                      ? activedSobak * 2 == index
-                                          ? index == 0
-                                              ? AppColors.sobakSegmentDaebak
-                                              : AppColors.sobakSegmentSobak
-                                          : AppColors.frame
-                                      : AppColors.frame
-                                  : AppColors.frame,
+                          color: !isSobakOn || !isPlaying || reserveBeat != 0
+                                ? AppColors.frame
+                                : (activedSobak * 2 == index
+                                    ? (index == 0
+                                        ? AppColors.sobakSegmentDaebak
+                                        : AppColors.sobakSegmentSobak)
+                                    : AppColors.frame),
                         ),
                       ),
                     );
