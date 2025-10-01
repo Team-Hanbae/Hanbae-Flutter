@@ -317,7 +317,6 @@ class Bakbar extends StatelessWidget {
     final isPlaying = context.select(
       (MetronomeBloc bloc) => bloc.state.isPlaying,
     );
-    final height = MediaQuery.of(context).size.height;
 
     return GestureDetector(
       onTap: () {
