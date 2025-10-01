@@ -1,4 +1,3 @@
-import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
@@ -6,8 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc pack
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart'; // Import the MetronomeBloc
 import 'package:hero_animation/hero_animation.dart';
 import 'dart:async';
-
-import 'package:hive/hive.dart'; // Import the async package for Timer
 
 class MetronomeControl extends StatefulWidget {
   final double iconSize;
@@ -364,7 +361,6 @@ class _MetronomeControlState extends State<MetronomeControl> {
               previous.minimum != current.minimum ||
               previous.bpm != current.bpm,
       builder: (context, state) {
-        final isPlaying = state.isPlaying;
         final minimum = state.minimum;
         final bpm = state.bpm;
 
@@ -446,7 +442,6 @@ class _MetronomeControlState extends State<MetronomeControl> {
               previous.isTapping != current.isTapping ||
               previous.bpm != current.bpm,
       builder: (context, state) {
-        final isPlaying = state.isPlaying;
         final minimum = state.minimum;
         final isTapping = state.isTapping;
         final bpm = state.bpm;
@@ -538,7 +533,6 @@ class _MetronomeControlState extends State<MetronomeControl> {
               previous.minimum != current.minimum ||
               previous.bpm != current.bpm,
       builder: (context, state) {
-        final isPlaying = state.isPlaying;
         final minimum = state.minimum;
         final bpm = state.bpm;
 
