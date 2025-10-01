@@ -19,6 +19,7 @@ part 'metronome_state.dart';
 class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
   Timer? _tickTimer;
   Timer? _tapResetTimer;
+  Timer? _precountTimer;
   final List<DateTime> _tapHistory = [];
   double _averageSobakPerDaebak = 1.0;
   final Box<Jangdan> _jangdanBox = Hive.box<Jangdan>('customJangdanBox');
@@ -48,6 +49,14 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       }()) {
     SoundPreferences.load().then((loaded) {
       add(ChangeSound(loaded));
+    });
+
+    on<PrecountTick>((event, emit) {
+      emit(state.copyWith(reserveBeatTime: event.count));
+      if (event.count <= 0) {
+        _startPreciseTicker();
+        WakelockPlus.enable();
+      }
     });
 
     on<SelectJangdan>((event, emit) {
@@ -94,44 +103,12 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       _playStartTime = DateTime.now();
 
       final reserveBeat = state.reserveBeat;
-      final bpm = state.bpm;
 
-      final oneBeatDuration = Duration(milliseconds: (60000 / bpm).round());
-
-      /// 예비박
       if (reserveBeat) {
-        SoundManager.play(Sound.clave, Accent.medium);
-        emit(state.copyWith(reserveBeatTime: 3));
-        if (state.isPlaying) {
-          await Future.delayed(oneBeatDuration, () {
-            SoundManager.play(Sound.clave, Accent.medium);
-            emit(state.copyWith(reserveBeatTime: 2));
-          });
-        } else {
-          emit(state.copyWith(reserveBeatTime: 0));
-        }
-        if (state.isPlaying) {
-          await Future.delayed(oneBeatDuration, () {
-            SoundManager.play(Sound.clave, Accent.medium);
-            emit(state.copyWith(reserveBeatTime: 1));
-          });
-        } else {
-          emit(state.copyWith(reserveBeatTime: 0));
-        }
-        if (state.isPlaying) {
-          await Future.delayed(oneBeatDuration, () {
-            emit(state.copyWith(reserveBeatTime: 0));
-          });
-        } else {
-          emit(state.copyWith(reserveBeatTime: 0));
-        }
-      }
-
-      if (state.isPlaying) {
+        _startPrecountTicker();
+      } else {
         _startPreciseTicker();
         WakelockPlus.enable();
-      } else {
-        emit(state.copyWith(reserveBeatTime: 0));
       }
     });
 
@@ -194,7 +171,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
       _stopPreciseTicker();
       WakelockPlus.disable();
-      emit(state.copyWith(isPlaying: false));
+      emit(state.copyWith(isPlaying: false, reserveBeatTime: 0));
     });
 
     on<ChangeBpm>((event, emit) {
@@ -292,6 +269,33 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
   }
 
+  void _startPrecountTicker() {
+    int precount = 3;
+
+    void tick() {
+      if (!state.isPlaying) {
+        _precountTimer?.cancel();
+        _precountTimer = null;
+        emit(state.copyWith(reserveBeatTime: 0));
+        return;
+      }
+      final bpm = state.bpm;
+      final interval = Duration(milliseconds: (60000 / bpm).round());
+
+      add(PrecountTick(precount));
+      if (precount > 0) {
+        SoundManager.play(Sound.clave, Accent.medium);
+      }
+      precount--;
+
+      if (precount >= 0) {
+        _precountTimer = Timer(interval, tick);
+      }
+    }
+
+    tick();
+  }
+
   void _startPreciseTicker() {
     void tickLoop() {
       final bpm = state.bpm;
@@ -312,5 +316,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
   void _stopPreciseTicker() {
     _tickTimer?.cancel();
     _tickTimer = null;
+    _precountTimer?.cancel();
+    _precountTimer = null;
   }
 }
