@@ -82,3 +82,11 @@ class StopTapping extends MetronomeEvent {
 class ToggleMinimum extends MetronomeEvent {
   const ToggleMinimum();
 }
+
+class PrecountTick extends MetronomeEvent {
+  final int count;
+  const PrecountTick(this.count);
+
+  @override
+  List<Object?> get props => [count];
+}

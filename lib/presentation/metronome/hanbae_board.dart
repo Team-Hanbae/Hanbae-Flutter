@@ -15,16 +15,11 @@ class HanbaeBoard extends StatelessWidget {
       (MetronomeBloc bloc) => bloc.state.selectedJangdan,
     );
 
-    final reserveBeat = context.select(
-      (MetronomeBloc bloc) => bloc.state.reserveBeat,
-    );
-
     final reserveBeatTime = context.select(
       (MetronomeBloc bloc) => bloc.state.reserveBeatTime,
     );
 
     return Flexible(
-      // height: 350,
       child: Stack(
         children: [
           Column(
@@ -86,13 +81,10 @@ class HanbaeBoard extends StatelessWidget {
               ],
             ],
           ),
-          if (reserveBeat && reserveBeatTime > 0)
+          if (reserveBeatTime > 0)
             Positioned(
               child: SizedBox(
                 child: Center(
-                  // child: SvgPicture.asset(
-                  //   'assets/images/icon/$reserveBeatTime.svg',
-                  // ),
                   child: Text(
                     '$reserveBeatTime',
                     style: AppTextStyles.title1B.copyWith(
