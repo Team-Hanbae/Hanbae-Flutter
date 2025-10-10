@@ -140,8 +140,8 @@ flutter:
         - asset: assets/fonts/GosanjaOTF.otf
           weight: 400
 
-flutter_launcher_icons:
-  android: true
-  ios: false
-  image_path: "assets/images/icon/AppIcon.png"
-  adaptive_icon_background: "#000000"
+#flutter_launcher_icons:
+#  android: true
+#  ios: false
+#  image_path: "assets/images/icon/AppIcon.png"
+#  adaptive_icon_background: "#000000"
