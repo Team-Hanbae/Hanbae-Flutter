@@ -54,29 +54,33 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           children: [
             CarouselSlider(
-              items: bannerList.map((item) {
-                final imagePath = item["image"]!;
-                final link = item["link"]!;
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: GestureDetector(
-                        onTap: () async {
-                          final Uri url = Uri.parse(link);
-                          if (await canLaunchUrl(url)) {
-                            await launchUrl(url, mode: LaunchMode.externalApplication);
-                          }
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.asset(imagePath),
-                        ),
-                      ),
+              items:
+                  bannerList.map((item) {
+                    final imagePath = item["image"]!;
+                    final link = item["link"]!;
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: GestureDetector(
+                            onTap: () async {
+                              final Uri url = Uri.parse(link);
+                              if (await canLaunchUrl(url)) {
+                                await launchUrl(
+                                  url,
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              }
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.asset(imagePath),
+                            ),
+                          ),
+                        );
+                      },
                     );
-                  },
-                );
-              }).toList(),
+                  }).toList(),
               options: CarouselOptions(
                 height: bannerHeight,
                 autoPlay: true,
@@ -264,15 +268,20 @@ class HomeScreen extends StatelessWidget {
                                               item.name,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
-                                              style: AppTextStyles.headlineSb.copyWith(
-                                                color: AppColors.labelDefault,
-                                              ),
+                                              style: AppTextStyles.headlineSb
+                                                  .copyWith(
+                                                    color:
+                                                        AppColors.labelDefault,
+                                                  ),
                                             ),
                                             Text(
                                               item.jangdanType.label,
-                                              style: AppTextStyles.subheadlineR.copyWith(
-                                                color: AppColors.labelSecondary,
-                                              ),
+                                              style: AppTextStyles.subheadlineR
+                                                  .copyWith(
+                                                    color:
+                                                        AppColors
+                                                            .labelSecondary,
+                                                  ),
                                             ),
                                           ],
                                         ),
