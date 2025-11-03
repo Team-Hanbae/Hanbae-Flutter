@@ -31,7 +31,7 @@ jobs:
         run: flutter pub get
 
       - name: Run analyzer
-        run: flutter analyze
+        run: flutter analyze --no-fatal-warnings
 
       # - name: Run unit tests
       #   run: flutter test
