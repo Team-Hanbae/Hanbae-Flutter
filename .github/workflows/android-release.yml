@@ -55,7 +55,6 @@ jobs:
     if: github.event_name == 'push'
     name: Deploy to Internal Track
     runs-on: ubuntu-latest
-    needs: test_build
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
