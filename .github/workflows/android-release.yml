@@ -70,6 +70,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Install Fastlane
+        run: gem install fastlane -NV
+
       - name: Create key.properties
         run: |
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
@@ -93,9 +101,7 @@ jobs:
         run: flutter build appbundle --release
 
       - name: Deploy with Fastlane (Internal)
-        uses: maierj/fastlane-action@v3.1.0
-        with:
-          lane: android internal
+        run: fastlane android internal
         env:
           PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_JSON_KEY }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
