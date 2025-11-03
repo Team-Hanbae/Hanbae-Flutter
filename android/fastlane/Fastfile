@@ -1,0 +1,38 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Upload to Internal Testing Track"
+  lane :internal do
+    gradle(task: "bundle", build_type: "Release")
+    upload_to_play_store(
+      track: "internal",  # 내부 테스트 트랙
+      json_key: "hanbae-477019-f7b2c68be3c3.json",
+      aab: "../build/app/outputs/bundle/release/app-release.aab"
+    )
+  end
+
+  desc "Upload to Production"
+  lane :production do
+    gradle(task: "bundle", build_type: "Release")
+    upload_to_play_store(
+      track: "production",  # 실제 공개 트랙
+      json_key: "hanbae-477019-f7b2c68be3c3.json",
+      aab: "../build/app/outputs/bundle/release/app-release.aab"
+    )
+  end
+end

@@ -1,0 +1,104 @@
+name: Android CI/CD
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  # ✅ 1️⃣ Pull Request: CI (Test & Build Verification)
+  test_build:
+    if: github.event_name == 'pull_request'
+    name: Test & Build Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=../hanbae-release-key.jks" >> android/key.properties
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEY_JKS_BASE64 }}" | base64 --decode > android/hanbae-release-key.jks
+
+      - name: Create .env file
+        run: |
+          echo "MIXPANEL_DEV_TOKEN=${{ secrets.MIXPANEL_DEV_TOKEN }}" >> .env
+          echo "MIXPANEL_PROD_TOKEN=${{ secrets.MIXPANEL_PROD_TOKEN }}" >> .env
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run analyzer
+        run: flutter analyze --no-fatal-warnings --no-fatal-infos
+
+      # - name: Run unit tests
+      #   run: flutter test
+
+      - name: Verify build (no upload)
+        run: flutter build appbundle --release
+
+  # 🚀 2️⃣ Main Push: Internal Release
+  internal_release:
+    if: github.event_name == 'push'
+    name: Deploy to Internal Track
+    runs-on: ubuntu-latest
+    needs: test_build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=../hanbae-release-key.jks" >> android/key.properties
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEY_JKS_BASE64 }}" | base64 --decode > android/hanbae-release-key.jks
+
+      - name: Create .env file
+        run: |
+          echo "MIXPANEL_DEV_TOKEN=${{ secrets.MIXPANEL_DEV_TOKEN }}" >> .env
+          echo "MIXPANEL_PROD_TOKEN=${{ secrets.MIXPANEL_PROD_TOKEN }}" >> .env
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build AppBundle
+        run: flutter build appbundle --release
+
+      - name: Deploy with Fastlane (Internal)
+        uses: maierj/fastlane-action@v3
+        with:
+          lane: android internal
+        env:
+          PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_JSON_KEY }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
