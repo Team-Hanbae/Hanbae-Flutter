@@ -93,7 +93,7 @@ jobs:
         run: flutter build appbundle --release
 
       - name: Deploy with Fastlane (Internal)
-        uses: maierj/fastlane-action@v2
+        uses: maierj/fastlane-action@v3.1.0
         with:
           lane: android internal
         env:
