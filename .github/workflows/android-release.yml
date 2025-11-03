@@ -22,6 +22,17 @@ jobs:
         with:
           flutter-version: '3.35.7'
 
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=key.jks" >> android/key.properties
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEY_JKS_BASE64 }}" | base64 --decode > android/hanbae-release-key.jks
+
       - name: Create .env file
         run: |
           echo "MIXPANEL_DEV_TOKEN=${{ secrets.MIXPANEL_DEV_TOKEN }}" >> .env
@@ -60,9 +71,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=key.jks" >> android/key.properties
+
       - name: Decode keystore
         run: |
-          echo "${{ secrets.KEY_JKS_BASE64 }}" | base64 --decode > android/app/key.jks
+          echo "${{ secrets.KEY_JKS_BASE64 }}" | base64 --decode > android/hanbae-release-key.jks
 
       - name: Create .env file
         run: |
