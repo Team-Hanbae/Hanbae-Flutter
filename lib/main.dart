@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/presentation/home/home_screen.dart';
+import 'package:hanbae/presentation/splash/splash.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/data/sound_manager.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -20,7 +21,7 @@ late Mixpanel mixpanel;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  WidgetsBinding.instance.deferFirstFrame();
+  // WidgetsBinding.instance.deferFirstFrame();
 
   final fontLoader = FontLoader('Pretendard');
   fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-Black.ttf'));
@@ -38,18 +39,18 @@ void main() async {
   gosanjaFontLoader.addFont(rootBundle.load('assets/fonts/GosanjaOTF.otf'));
   await gosanjaFontLoader.load();
 
-  WidgetsBinding.instance.allowFirstFrame();
+  // WidgetsBinding.instance.allowFirstFrame();
 
   try {
     await dotenv.load(fileName: ".env");
 
-    final String mixpanelToken = kDebugMode
-    ? dotenv.env['MIXPANEL_DEV_TOKEN']!
-    : dotenv.env['MIXPANEL_PROD_TOKEN']!;
+    final String mixpanelToken =
+        kDebugMode
+            ? dotenv.env['MIXPANEL_DEV_TOKEN']!
+            : dotenv.env['MIXPANEL_PROD_TOKEN']!;
 
     mixpanel = await Mixpanel.init(mixpanelToken, trackAutomaticEvents: false);
-
-  } catch(e) {
+  } catch (e) {
     print(e.toString());
   }
 
@@ -68,7 +69,9 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => MetronomeBloc()),
-        BlocProvider(create: (_) => JangdanBloc(jangdanRepository)..add(LoadJangdan())),
+        BlocProvider(
+          create: (_) => JangdanBloc(jangdanRepository)..add(LoadJangdan()),
+        ),
       ],
       child: Hanbae(),
     ),
@@ -99,7 +102,7 @@ class Hanbae extends StatelessWidget {
           child: child!,
         );
       },
-      home: HomeScreen(),
+      home: SplashPage(),
     );
   }
 }
