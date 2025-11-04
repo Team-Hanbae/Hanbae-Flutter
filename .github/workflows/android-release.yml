@@ -95,6 +95,13 @@ jobs:
           echo "MIXPANEL_DEV_TOKEN=${{ secrets.MIXPANEL_DEV_TOKEN }}" >> .env
           echo "MIXPANEL_PROD_TOKEN=${{ secrets.MIXPANEL_PROD_TOKEN }}" >> .env
 
+      - name: Create Store Json Key
+        uses: jsdaniell/create-json@v1.2.3
+        with:
+          name: "hanbae-477019-f7b2c68be3c3.json"
+          json: ${{ secrets.PLAY_STORE_JSON_KEY }}
+          dir: "android/"
+
       - name: Install dependencies
         run: flutter pub get
 

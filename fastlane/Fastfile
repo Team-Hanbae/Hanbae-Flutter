@@ -25,7 +25,7 @@ platform :android do
     )
     upload_to_play_store(
       track: "internal",  # 내부 테스트 트랙
-      json_key: "android/hanbae-477019-f7b2c68be3c3.json",
+      json_key_data: ENV["PLAY_STORE_JSON_KEY"],
       aab: "./build/app/outputs/bundle/release/app-release.aab"
     )
   end
@@ -39,7 +39,7 @@ platform :android do
     )
     upload_to_play_store(
       track: "production",  # 실제 공개 트랙
-      json_key: "android/hanbae-477019-f7b2c68be3c3.json",
+      json_key_data: ENV["PLAY_STORE_JSON_KEY"],
       aab: "./build/app/outputs/bundle/release/app-release.aab"
     )
   end
