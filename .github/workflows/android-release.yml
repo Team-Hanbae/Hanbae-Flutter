@@ -106,7 +106,7 @@ jobs:
         run: flutter pub get
 
       - name: Build AppBundle
-        run: flutter build appbundle --release
+        run: flutter build appbundle --release --build-number=GITHUB_RUN_NUMBER
 
       - name: Deploy with Fastlane (Internal)
         run: fastlane android internal
