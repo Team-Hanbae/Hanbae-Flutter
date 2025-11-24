@@ -18,7 +18,6 @@ class MetronomeOptions extends StatefulWidget {
 
 class _MetronomeOptionsState extends State<MetronomeOptions> {
   bool _isSoundMenuOpen = false;
-  bool showNewMinimumIcon = false;
 
   @override
   void initState() {
@@ -29,11 +28,6 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
         context.read<MetronomeBloc>().add(
           ToggleReserveBeat(reserveBeat: value),
         );
-      });
-    });
-    Storage().getFirstMinimumCheck().then((value) {
-      setState(() {
-        showNewMinimumIcon = value;
       });
     });
   }
@@ -234,9 +228,7 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
                   top: Radius.circular(12),
                 ),
                 onTap: () {
-                  Storage().setFirstMinimumCheck();
                   context.read<MetronomeBloc>().add(const ToggleMinimum());
-                  showNewMinimumIcon = true;
                   setState(() {});
                 },
                 child: Ink(
