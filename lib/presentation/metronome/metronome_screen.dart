@@ -9,7 +9,6 @@ import 'package:hanbae/presentation/metronome/metronome_options.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
-import 'package:hanbae/utils/dialog.dart';
 import 'package:hanbae/utils/local_storage.dart';
 
 enum AppBarMode { builtin, custom, create }
@@ -33,12 +32,6 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
   bool _awaitingSave = false;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      firstUserDialog();
-    });
-  }
 
   @override
   void deactivate() {
@@ -47,12 +40,6 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
     super.deactivate();
   }
 
-  void firstUserDialog() async {
-    final bool result = await Storage().getFirstUserCheck();
-    if (!result) {
-      CommonDialog().firstShowDialog(context);
-    }
-  }
 
   String get appBarTitle {
     final selected = context.watch<MetronomeBloc>().state.selectedJangdan;

@@ -4,7 +4,6 @@ import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/theme/text_styles.dart';
-import 'package:hanbae/utils/animation.dart';
 import 'package:hanbae/utils/local_storage.dart';
 import 'dart:ui'; // Ensure this import is present
 import '../../bloc/metronome/metronome_bloc.dart';
@@ -19,7 +18,6 @@ class MetronomeOptions extends StatefulWidget {
 
 class _MetronomeOptionsState extends State<MetronomeOptions> {
   bool _isSoundMenuOpen = false;
-  bool showNewMinimumIcon = false;
 
   @override
   void initState() {
@@ -30,11 +28,6 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
         context.read<MetronomeBloc>().add(
           ToggleReserveBeat(reserveBeat: value),
         );
-      });
-    });
-    Storage().getFirstMinimumCheck().then((value) {
-      setState(() {
-        showNewMinimumIcon = value;
       });
     });
   }
@@ -224,33 +217,42 @@ class _MetronomeOptionsState extends State<MetronomeOptions> {
 
         Column(
           children: [
-            if (!showNewMinimumIcon) WigglingSvgIcon(),
-            InkWell(
-              onTap: () {
-                Storage().setFirstMinimumCheck();
-                context.read<MetronomeBloc>().add(const ToggleMinimum());
-                showNewMinimumIcon = true;
-                setState(() {});
-              },
-              child: Container(
-                width: 60,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundMute,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            Material(
+              color: Colors.transparent,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
                 ),
-                child: BlocBuilder<MetronomeBloc, MetronomeState>(
-                  builder: (context, state) {
-                    return Center(
-                      child: Icon(
-                        context.read<MetronomeBloc>().state.minimum
-                            ? Icons.keyboard_arrow_up_rounded
-                            : Icons.keyboard_arrow_down_rounded,
-                        size: 36,
-                        color: AppColors.labelTertiary,
-                      ),
-                    );
-                  },
+                onTap: () {
+                  context.read<MetronomeBloc>().add(const ToggleMinimum());
+                  setState(() {});
+                },
+                child: Ink(
+                  width: 60,
+                  height: 36,
+                  decoration: const BoxDecoration(
+                    color: AppColors.backgroundMute,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(12),
+                    ),
+                  ),
+                  child: BlocBuilder<MetronomeBloc, MetronomeState>(
+                    builder: (context, state) {
+                      return Center(
+                        child: Icon(
+                          context.read<MetronomeBloc>().state.minimum
+                              ? Icons.keyboard_arrow_up_rounded
+                              : Icons.keyboard_arrow_down_rounded,
+                          size: 36,
+                          color: AppColors.labelTertiary,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
