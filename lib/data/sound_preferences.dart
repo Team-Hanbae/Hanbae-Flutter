@@ -14,7 +14,7 @@ class SoundPreferences {
     final name = prefs.getString(_key);
     return Sound.values.firstWhere(
       (s) => s.name == name,
-      orElse: () => Sound.clave,
+      orElse: () => Sound.janggu1,
     );
   }
 }
