@@ -41,7 +41,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentRowIndex: lastRowIndex,
           currentDaebakIndex: lastDaebakIndex,
           currentSobakIndex: lastSobakIndex,
-          currentSound: Sound.clave,
+          currentSound: Sound.janggu1,
           isTapping: false,
           minimum: false,
           reserveBeat: false,
