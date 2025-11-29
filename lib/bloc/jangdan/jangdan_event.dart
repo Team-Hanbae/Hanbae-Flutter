@@ -33,3 +33,8 @@ class UpdateJangdan extends JangdanEvent {
   @override
   List<Object?> get props => [key, jangdan];
 }
+
+class ChangeJangdanCategory extends JangdanEvent {
+  final JangdanCategory category;
+  ChangeJangdanCategory(this.category);
+}
