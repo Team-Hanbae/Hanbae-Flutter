@@ -50,6 +50,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+      backgroundColor: AppColors.backgroundDefault,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -299,132 +300,144 @@ class HomeScreen extends StatelessWidget {
             //내가 저장한 장단 끝
             const SizedBox(height: 32),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: SizedBox(
-                      height: 40,
-                      child: Row(
-                        children: [
-                          Text(
-                            "바로 연습하기",
+            // 장단 카테고리
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: InkWell(
+                    onTap: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 6,
+                            horizontal: 8,
+                          ),
+                          child: Text(
+                            "전체 장단",
                             style: AppTextStyles.title2B.copyWith(
                               color: AppColors.labelPrimary,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          size: 32,
+                          color: AppColors.labelDefault,
+                        ),
+                      ],
                     ),
                   ),
+                ),
 
-                  const SizedBox(height: 8),
+                SizedBox(height: 12),
+              ],
+            ),
 
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    itemCount: JangdanType.values.length,
-                    separatorBuilder: (context, index) => SizedBox(height: 8),
-                    itemBuilder: (context, index) {
-                      final jangdan = JangdanType.values[index];
-                      final selectedJangdan = basicJangdanData[jangdan.label]!;
-                      return InkWell(
-                        onTap: () {
-                          context.read<MetronomeBloc>().add(
-                            SelectJangdan(selectedJangdan),
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => MetronomeScreen(
-                                    jangdan: basicJangdanData[jangdan.label]!,
-                                  ),
-                            ),
-                          );
-                        },
-                        child: Container(
+            // 장단 리스트
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ListView.separated(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemCount: JangdanType.values.length,
+                separatorBuilder: (context, index) => SizedBox(height: 0),
+                itemBuilder: (context, index) {
+                  final jangdan = JangdanType.values[index];
+                  final selectedJangdan = basicJangdanData[jangdan.label]!;
+                  return InkWell(
+                    onTap: () {
+                      context.read<MetronomeBloc>().add(
+                        SelectJangdan(selectedJangdan),
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => MetronomeScreen(
+                                jangdan: basicJangdanData[jangdan.label]!,
+                              ),
+                        ),
+                      );
+                    },
+                    child: Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
+                            horizontal: 10,
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.backgroundMute,
                             borderRadius: BorderRadius.all(Radius.circular(16)),
                           ),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: AppColors.orange13,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                    ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.orange13,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                child: SizedBox(
+                                  width: 64,
+                                  height: 64,
+                                  child: Center(
                                     child: SizedBox(
-                                      width: 64,
-                                      height: 64,
-                                      child: Center(
-                                        child: SizedBox(
-                                          width: 36,
-                                          height: 36,
-                                          child: SvgPicture.asset(
-                                            "assets/${jangdan.logoAssetPath}",
-                                            colorFilter: ColorFilter.mode(
-                                              AppColors.orange8,
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
+                                      width: 36,
+                                      height: 36,
+                                      child: SvgPicture.asset(
+                                        "assets/${jangdan.logoAssetPath}",
+                                        colorFilter: ColorFilter.mode(
+                                          AppColors.orange8,
+                                          BlendMode.srcIn,
                                         ),
                                       ),
                                     ),
                                   ),
+                                ),
+                              ),
 
-                                  const SizedBox(width: 20),
+                              const SizedBox(width: 20),
 
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        jangdan.label,
-                                        style: AppTextStyles.title3Sb.copyWith(
-                                          color: AppColors.labelDefault,
-                                        ),
-                                      ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    jangdan.label,
+                                    style: AppTextStyles.title3Sb.copyWith(
+                                      color: AppColors.labelDefault,
+                                    ),
+                                  ),
 
-                                      const SizedBox(height: 4),
+                                  const SizedBox(height: 4),
 
-                                      Text(
-                                        jangdan.bakInformation,
-                                        style: AppTextStyles.subheadlineR
-                                            .copyWith(
-                                              color: AppColors.labelSecondary,
-                                            ),
-                                      ),
-                                    ],
+                                  Text(
+                                    jangdan.bakInformation,
+                                    style: AppTextStyles.subheadlineR.copyWith(
+                                      color: AppColors.labelSecondary,
+                                    ),
                                   ),
                                 ],
-                              ),
-                              Icon(
-                                Icons.chevron_right_rounded,
-                                size: 32,
-                                color: AppColors.labelSecondary,
                               ),
                             ],
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ],
+                        Container(
+                          height: 1,
+                          width: double.infinity,
+                          color: AppColors.neutral11,
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
 
