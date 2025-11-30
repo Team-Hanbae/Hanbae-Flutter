@@ -8,6 +8,7 @@ import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/model/jangdan_category.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_list_screen.dart';
+import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
@@ -413,121 +414,193 @@ class HomeScreen extends StatelessWidget {
               child:
                   isCustomCategory
                       // 커스텀 장단 리스트
-                      ? ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        itemCount: jangdanList.length,
-                        separatorBuilder:
-                            (context, index) => SizedBox(height: 0),
-                        itemBuilder: (context, index) {
-                          final jangdan = jangdanList[index]!;
-                          return InkWell(
-                            onTap: () {
-                              context.read<MetronomeBloc>().add(
-                                SelectJangdan(jangdan),
-                              );
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => MetronomeScreen(
-                                        jangdan: jangdan,
-                                        appBarMode: AppBarMode.custom,
-                                      ),
+                      ? jangdanList.isEmpty
+                          ? Column(
+                            children: [
+                              SizedBox(height: 10),
+
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 44,
                                 ),
-                              );
-                            },
-                            child: Stack(
-                              alignment: Alignment.bottomCenter,
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 10,
+                                decoration: BoxDecoration(
+                                  color: AppColors.backgroundMute,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
                                   ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(16),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      "아직 저장한 장단이 없어요.\n원하는 강세와 빠르기로 장단을 저장해보세요!",
+                                      textAlign: TextAlign.center,
+                                      style: AppTextStyles.calloutR.copyWith(
+                                        color: AppColors.labelDefault,
+                                      ),
                                     ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: AppColors.orange13,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
+
+                                    const SizedBox(height: 20),
+
+                                    FilledButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) =>
+                                                    const CustomJangdanCreateScreen(),
+                                          ),
+                                        );
+                                      },
+                                      style: FilledButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 10,
+                                        ),
+                                        backgroundColor: AppColors.brandHeavy,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
                                           ),
                                         ),
-                                        child: SizedBox(
-                                          width: 64,
-                                          height: 64,
-                                          child: Center(
+                                      ),
+                                      child: Text(
+                                        "장단 만들러 가기",
+                                        style: AppTextStyles.bodySb.copyWith(
+                                          color: AppColors.labelPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 100),
+                            ],
+                          )
+                          : ListView.separated(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            itemCount: jangdanList.length,
+                            separatorBuilder:
+                                (context, index) => SizedBox(height: 0),
+                            itemBuilder: (context, index) {
+                              final jangdan = jangdanList[index]!;
+                              return InkWell(
+                                onTap: () {
+                                  context.read<MetronomeBloc>().add(
+                                    SelectJangdan(jangdan),
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => MetronomeScreen(
+                                            jangdan: jangdan,
+                                            appBarMode: AppBarMode.custom,
+                                          ),
+                                    ),
+                                  );
+                                },
+                                child: Stack(
+                                  alignment: Alignment.bottomCenter,
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(16),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: AppColors.orange13,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(10),
+                                              ),
+                                            ),
                                             child: SizedBox(
-                                              width: 36,
-                                              height: 36,
-                                              child: SvgPicture.asset(
-                                                "assets/${jangdan.jangdanType.logoAssetPath}",
-                                                colorFilter: ColorFilter.mode(
-                                                  AppColors.orange8,
-                                                  BlendMode.srcIn,
+                                              width: 64,
+                                              height: 64,
+                                              child: Center(
+                                                child: SizedBox(
+                                                  width: 36,
+                                                  height: 36,
+                                                  child: SvgPicture.asset(
+                                                    "assets/${jangdan.jangdanType.logoAssetPath}",
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          AppColors.orange8,
+                                                          BlendMode.srcIn,
+                                                        ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ),
 
-                                      const SizedBox(width: 20),
+                                          const SizedBox(width: 20),
 
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            jangdan.name,
-                                            style: AppTextStyles.title3Sb
-                                                .copyWith(
-                                                  color: AppColors.labelDefault,
-                                                ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                jangdan.name,
+                                                style: AppTextStyles.title3Sb
+                                                    .copyWith(
+                                                      color:
+                                                          AppColors
+                                                              .labelDefault,
+                                                    ),
+                                              ),
+
+                                              const SizedBox(height: 4),
+
+                                              Text(
+                                                jangdan.jangdanType.label,
+                                                style: AppTextStyles
+                                                    .subheadlineR
+                                                    .copyWith(
+                                                      color:
+                                                          AppColors
+                                                              .labelSecondary,
+                                                    ),
+                                              ),
+                                            ],
                                           ),
 
-                                          const SizedBox(height: 4),
+                                          Spacer(),
 
                                           Text(
-                                            jangdan.jangdanType.label,
+                                            formatDateShort(jangdan.createdAt),
                                             style: AppTextStyles.subheadlineR
                                                 .copyWith(
                                                   color:
-                                                      AppColors.labelSecondary,
+                                                      AppColors.labelTertiary,
                                                 ),
                                           ),
                                         ],
                                       ),
-                                      
-                                      Spacer(),
-
-                                      Text(
-                                        formatDateShort(jangdan.createdAt),
-                                        style: AppTextStyles.subheadlineR.copyWith(
-                                          color: AppColors.labelTertiary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    Container(
+                                      height: 1,
+                                      width: double.infinity,
+                                      color: AppColors.neutral11,
+                                    ),
+                                  ],
                                 ),
-                                Container(
-                                  height: 1,
-                                  width: double.infinity,
-                                  color: AppColors.neutral11,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      )
+                              );
+                            },
+                          )
                       // BuiltIn 장단 리스트
                       : ListView.separated(
                         shrinkWrap: true,
