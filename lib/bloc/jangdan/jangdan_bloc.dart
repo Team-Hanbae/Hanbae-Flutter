@@ -58,7 +58,7 @@ class JangdanBloc extends Bloc<JangdanEvent, JangdanState> {
   ) {
     final current = state;
     if (current is JangdanLoaded) {
-      emit(current.copyWith(seletedCategory: event.category));
+      emit(current.copyWith(selectedCategory: event.category));
     }
   }
 }

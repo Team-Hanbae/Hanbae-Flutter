@@ -6,6 +6,7 @@ import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan.dart';
+import 'package:hanbae/model/jangdan_category.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_list_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
@@ -21,6 +22,11 @@ class HomeScreen extends StatelessWidget {
     final state = context.watch<JangdanBloc>().state;
     final customJangdanList =
         state is JangdanLoaded ? state.jangdans : <Jangdan>[];
+    final selectedCategory =
+        state is JangdanLoaded
+            ? state.selectedCategory
+            : JangdanCategory.minsokak;
+    final categories = JangdanCategory.values;
 
     final bannerList = [
       {
@@ -334,6 +340,66 @@ class HomeScreen extends StatelessWidget {
                 ),
 
                 SizedBox(height: 12),
+
+                // 카테고리 Segmented Control
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(categories.length, (index) {
+                        final category = categories[index];
+                        final isSelected = category == selectedCategory;
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(50),
+                            onTap: () {
+                              context.read<JangdanBloc>().add(
+                                ChangeJangdanCategory(category),
+                              );
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 160),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    isSelected
+                                        ? AppColors.neutral1
+                                        : Colors.transparent,
+                                borderRadius: BorderRadius.circular(50),
+                                border: Border.all(
+                                  color:
+                                      isSelected
+                                          ? Colors.transparent
+                                          : AppColors.neutral11,
+                                  width: 1,
+                                ),
+                              ),
+                              child: Text(
+                                category.label,
+                                style:
+                                    isSelected
+                                        ? AppTextStyles.calloutSb.copyWith(
+                                          color: AppColors.labelInverse,
+                                        )
+                                        : AppTextStyles.calloutR.copyWith(
+                                          color: AppColors.labelTertiary,
+                                        ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
               ],
             ),
 

@@ -11,25 +11,25 @@ class JangdanInitial extends JangdanState {}
 
 class JangdanLoaded extends JangdanState {
   final List<Jangdan> jangdans;
-  final JangdanCategory seletedCategory;
+  final JangdanCategory selectedCategory;
 
   const JangdanLoaded({
     required this.jangdans,
-    this.seletedCategory = JangdanCategory.minsokak,
+    this.selectedCategory = JangdanCategory.minsokak,
   });
 
   JangdanLoaded copyWith({
     List<Jangdan>? jangdans,
-    JangdanCategory? seletedCategory,
+    JangdanCategory? selectedCategory,
   }) {
     return JangdanLoaded(
       jangdans: jangdans ?? this.jangdans,
-      seletedCategory: seletedCategory ?? this.seletedCategory,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
     );
   }
 
   @override
-  List<Object?> get props => [jangdans];
+  List<Object?> get props => [jangdans, selectedCategory];
 }
 
 class JangdanError extends JangdanState {
