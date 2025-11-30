@@ -33,6 +33,9 @@ class HomeScreen extends StatelessWidget {
     final categories = JangdanCategory.values;
     final isCustomCategory = selectedCategory == JangdanCategory.custom;
 
+    final List<Jangdan> recentPlayedJangdanList =
+        state is JangdanLoaded ? state.recentJangdans : [];
+
     final bannerList = [
       {
         "image": "assets/images/banner/JeongakBanner.png",
