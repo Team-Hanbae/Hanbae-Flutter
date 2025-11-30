@@ -1,4 +1,6 @@
+import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan_type.dart';
+import 'package:hanbae/model/jangdan.dart';
 
 enum JangdanCategory { minsokak, jeongak, samulnori, custom, popular }
 
@@ -18,50 +20,50 @@ extension JangdanCategoryExtension on JangdanCategory {
     }
   }
 
-  List<JangdanType>? get list {
+  List<Jangdan?>? get list {
     switch (this) {
       case JangdanCategory.minsokak:
         return [
-          JangdanType.jinyang,
-          JangdanType.jungmori,
-          JangdanType.jungjungmori,
-          JangdanType.jajinmori,
-          JangdanType.gutgeori,
-          JangdanType.eonmori,
-          JangdanType.eotjungmori,
-          JangdanType.hwimori,
-          JangdanType.semachi,
-          JangdanType.dongsalpuri,
-          JangdanType.jwajilgut,
+          basicJangdanData[JangdanType.jinyang.label],
+          basicJangdanData[JangdanType.jungmori.label],
+          basicJangdanData[JangdanType.jungjungmori.label],
+          basicJangdanData[JangdanType.jajinmori.label],
+          basicJangdanData[JangdanType.gutgeori.label],
+          basicJangdanData[JangdanType.eonmori.label],
+          basicJangdanData[JangdanType.eotjungmori.label],
+          basicJangdanData[JangdanType.hwimori.label],
+          basicJangdanData[JangdanType.semachi.label],
+          basicJangdanData[JangdanType.dongsalpuri.label],
+          basicJangdanData[JangdanType.jwajilgut.label],
         ];
       case JangdanCategory.jeongak:
         return [
-          JangdanType.sangnyeongsan,
-          JangdanType.seryeongsan,
-          JangdanType.taryeong,
-          JangdanType.chwita,
-          JangdanType.jeolhwa,
-          JangdanType.ginyeombul,
-          JangdanType.banyeombul,
+          basicJangdanData[JangdanType.sangnyeongsan.label],
+          basicJangdanData[JangdanType.seryeongsan.label],
+          basicJangdanData[JangdanType.taryeong.label],
+          basicJangdanData[JangdanType.chwita.label],
+          basicJangdanData[JangdanType.jeolhwa.label],
+          basicJangdanData[JangdanType.ginyeombul.label],
+          basicJangdanData[JangdanType.banyeombul.label],
         ];
       case JangdanCategory.samulnori:
         return [
-          JangdanType.gutgeori,
-          JangdanType.dongsalpuri,
-          JangdanType.jajinmori,
-          JangdanType.hwimori,
-          JangdanType.jwajilgut,
+          basicJangdanData[JangdanType.gutgeori.label],
+          basicJangdanData[JangdanType.dongsalpuri.label],
+          basicJangdanData[JangdanType.jajinmori.label],
+          basicJangdanData[JangdanType.hwimori.label],
+          basicJangdanData[JangdanType.jwajilgut.label],
         ];
       case JangdanCategory.custom:
         return null;
       case JangdanCategory.popular:
         return [
-          JangdanType.jungmori,
-          JangdanType.jinyang,
-          JangdanType.jajinmori,
-          JangdanType.jungjungmori,
-          JangdanType.gutgeori,
-          JangdanType.eonmori,
+          basicJangdanData[JangdanType.jungmori.label],
+          basicJangdanData[JangdanType.jinyang.label],
+          basicJangdanData[JangdanType.jajinmori.label],
+          basicJangdanData[JangdanType.jungjungmori.label],
+          basicJangdanData[JangdanType.gutgeori.label],
+          basicJangdanData[JangdanType.eonmori.label],
         ];
     }
   }
