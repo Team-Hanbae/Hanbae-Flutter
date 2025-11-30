@@ -26,6 +26,11 @@ class HomeScreen extends StatelessWidget {
         state is JangdanLoaded
             ? state.selectedCategory
             : JangdanCategory.minsokak;
+    final List<JangdanType> jangdanList =
+        state is JangdanLoaded
+            ? selectedCategory.list ??
+                state.jangdans.map((jangdan) => jangdan.jangdanType).toList()
+            : [];
     final categories = JangdanCategory.values;
 
     final bannerList = [
@@ -410,10 +415,10 @@ class HomeScreen extends StatelessWidget {
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
-                itemCount: JangdanType.values.length,
+                itemCount: jangdanList.length,
                 separatorBuilder: (context, index) => SizedBox(height: 0),
                 itemBuilder: (context, index) {
-                  final jangdan = JangdanType.values[index];
+                  final jangdan = jangdanList[index];
                   final selectedJangdan = basicJangdanData[jangdan.label]!;
                   return InkWell(
                     onTap: () {
