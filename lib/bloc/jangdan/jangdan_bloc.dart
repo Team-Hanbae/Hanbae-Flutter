@@ -59,6 +59,7 @@ class JangdanBloc extends Bloc<JangdanEvent, JangdanState> {
     Emitter<JangdanState> emit,
   ) async {
     await repository.delete(event.key);
+    await Storage().removeRecentJangdan(event.key);
     add(LoadJangdan());
   }
 

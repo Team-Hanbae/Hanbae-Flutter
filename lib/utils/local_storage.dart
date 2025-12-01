@@ -40,4 +40,10 @@ class Storage {
     // 최대 3개까지만 유지
     await setRecentJangdanNames(updated.take(3).toList());
   }
+  
+  Future<void> removeRecentJangdan(String name) async {
+    final recent = await getRecentJangdanNames();
+    final updated = recent.where((e) => e != name).toList();
+    await setRecentJangdanNames(updated);
+  }
 }
