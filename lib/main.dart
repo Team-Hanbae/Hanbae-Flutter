@@ -5,6 +5,7 @@ import 'package:hanbae/presentation/home/home_screen.dart';
 import 'package:hanbae/presentation/splash/splash.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/data/sound_manager.dart';
+import 'package:hanbae/utils/local_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/model/accent.dart';
@@ -64,13 +65,14 @@ void main() async {
   await SoundManager.preloadAllSounds();
 
   final jangdanRepository = JangdanRepository();
+  final storage = Storage();
 
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => MetronomeBloc()),
         BlocProvider(
-          create: (_) => JangdanBloc(jangdanRepository)..add(LoadJangdan()),
+          create: (_) => JangdanBloc(jangdanRepository, storage)..add(LoadJangdan()),
         ),
       ],
       child: Hanbae(),

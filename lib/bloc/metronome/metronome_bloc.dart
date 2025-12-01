@@ -12,6 +12,7 @@ import '../../data/basic_jangdan_data.dart';
 import '../../data/sound_manager.dart';
 import '../../model/sound.dart';
 import '../../data/sound_preferences.dart';
+import 'package:hanbae/utils/local_storage.dart';
 
 part 'metronome_event.dart';
 part 'metronome_state.dart';
@@ -110,6 +111,8 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         _startPreciseTicker();
         WakelockPlus.enable();
       }
+
+      Storage().addRecentJangdan(jangdan.name);
     });
 
     on<Tick>((event, emit) async {

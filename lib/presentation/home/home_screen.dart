@@ -6,12 +6,15 @@ import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan.dart';
+import 'package:hanbae/model/jangdan_category.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_list_screen.dart';
+import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
 import '../../model/jangdan_type.dart';
+import 'package:hanbae/utils/date_format.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -21,6 +24,17 @@ class HomeScreen extends StatelessWidget {
     final state = context.watch<JangdanBloc>().state;
     final customJangdanList =
         state is JangdanLoaded ? state.jangdans : <Jangdan>[];
+    final selectedCategory =
+        state is JangdanLoaded
+            ? state.selectedCategory
+            : JangdanCategory.minsokak;
+    final List<Jangdan?> jangdanList =
+        state is JangdanLoaded ? selectedCategory.list ?? state.jangdans : [];
+    final categories = JangdanCategory.values;
+    final isCustomCategory = selectedCategory == JangdanCategory.custom;
+
+    final List<Jangdan> recentPlayedJangdanList =
+        state is JangdanLoaded ? state.recentJangdans : [];
 
     final bannerList = [
       {
@@ -50,6 +64,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+      backgroundColor: AppColors.backgroundDefault,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -91,341 +106,563 @@ class HomeScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "내가 저장한 장단",
+            // 최근 연습
+            if (recentPlayedJangdanList.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsetsGeometry.only(left: 8),
+                      child: Text(
+                        "최근 연습",
                         style: AppTextStyles.title2B.copyWith(
                           color: AppColors.labelPrimary,
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CustomJangdanListScreen(),
-                            ),
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          minimumSize: Size(40, 40),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          padding: EdgeInsets.zero,
-                        ),
-                        child: Text(
-                          "더보기",
-                          style: AppTextStyles.calloutR.copyWith(
-                            color: AppColors.labelSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
 
-                const SizedBox(height: 8),
+                    const SizedBox(height: 16),
 
-                SizedBox(
-                  height: 84,
-                  child:
-                      customJangdanList.isEmpty
-                          ? Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
+                    Row(
+                      spacing: 8,
+                      children: List.generate(3, (index) {
+                        if (index >= recentPlayedJangdanList.length) {
+                          return const Expanded(child: SizedBox());
+                        }
+
+                        final jangdan = recentPlayedJangdanList[index];
+                        final isCustomJangdan =
+                            jangdan.name != jangdan.jangdanType.label;
+
+                        return Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              context.read<MetronomeBloc>().add(
+                                SelectJangdan(jangdan),
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MetronomeScreen(
+                                        jangdan: jangdan,
+                                        appBarMode: AppBarMode.custom,
+                                      ),
+                                ),
+                              );
+                            },
                             child: Container(
-                              width: double.infinity,
+                              height: 100,
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              clipBehavior: Clip.hardEdge,
                               decoration: BoxDecoration(
                                 color: AppColors.backgroundMute,
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(16),
                                 ),
                               ),
-                              child: Center(
-                                child: Text(
-                                  "저장한 장단이 없어요",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColors.labelTertiary,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                          : ListView.separated(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            scrollDirection: Axis.horizontal,
-                            itemCount:
-                                customJangdanList.length >= 2
-                                    ? customJangdanList.length + 1
-                                    : customJangdanList.length,
-                            separatorBuilder:
-                                (context, index) => SizedBox(width: 8),
-                            itemBuilder: (context, index) {
-                              if (customJangdanList.length >= 2 &&
-                                  index == customJangdanList.length) {
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) =>
-                                                CustomJangdanListScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: 156,
-                                    height: 84,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.backgroundMute,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(16),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        "더보기",
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          color: AppColors.labelTertiary,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Positioned.fill(
+                                    child: OverflowBox(
+                                      maxWidth: double.infinity,
+                                      maxHeight: double.infinity,
+                                      child: Transform.translate(
+                                        offset: Offset(0, 110),
+                                        child: Container(
+                                          width: 300,
+                                          height: 300,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            gradient: RadialGradient(
+                                              radius: 1.0,
+                                              center: Alignment.center,
+                                              colors: [
+                                                AppColors.bakBarTop,
+                                                AppColors.neutral12.withAlpha(
+                                                  0,
+                                                ),
+                                              ],
+                                              stops: [0, 0.5],
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                );
-                              } else {
-                                final item = customJangdanList[index];
-                                return InkWell(
-                                  onTap: () {
-                                    context.read<MetronomeBloc>().add(
-                                      SelectJangdan(item),
-                                    );
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => MetronomeScreen(
-                                              jangdan: item,
-                                              appBarMode: AppBarMode.custom,
-                                            ),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: 156,
-                                    height: 84,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                    ),
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.backgroundMute,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(16),
-                                      ),
-                                    ),
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Positioned.fill(
-                                          child: OverflowBox(
-                                            maxWidth: double.infinity,
-                                            maxHeight: double.infinity,
-                                            child: Transform.translate(
-                                              offset: Offset(0, 110),
-                                              child: Container(
-                                                width: 300,
-                                                height: 300,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  gradient: RadialGradient(
-                                                    radius: 1.0,
-                                                    center: Alignment.center,
-                                                    colors: [
-                                                      AppColors.bakBarTop,
-                                                      AppColors.neutral12
-                                                          .withAlpha(0),
-                                                    ],
-                                                    stops: [0, 0.5],
-                                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    spacing: isCustomJangdan ? 4 : 8,
+                                    children: [
+                                      isCustomJangdan
+                                          ? Text(
+                                            jangdan.name,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: AppTextStyles.calloutSb
+                                                .copyWith(
+                                                  color: AppColors.labelDefault,
                                                 ),
+                                          )
+                                          : SizedBox(
+                                            width: 36,
+                                            height: 36,
+                                            child: SvgPicture.asset(
+                                              "assets/${jangdan.jangdanType.logoAssetPath}",
+                                              colorFilter: ColorFilter.mode(
+                                                AppColors.orange8,
+                                                BlendMode.srcIn,
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          spacing: 2,
-                                          children: [
-                                            Text(
-                                              item.name,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: AppTextStyles.headlineSb
-                                                  .copyWith(
-                                                    color:
-                                                        AppColors.labelDefault,
-                                                  ),
-                                            ),
-                                            Text(
-                                              item.jangdanType.label,
-                                              style: AppTextStyles.subheadlineR
-                                                  .copyWith(
-                                                    color:
-                                                        AppColors
-                                                            .labelSecondary,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                ),
-              ],
-            ),
-
-            //내가 저장한 장단 끝
-            const SizedBox(height: 32),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: SizedBox(
-                      height: 40,
-                      child: Row(
-                        children: [
-                          Text(
-                            "바로 연습하기",
-                            style: AppTextStyles.title2B.copyWith(
-                              color: AppColors.labelPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    itemCount: JangdanType.values.length,
-                    separatorBuilder: (context, index) => SizedBox(height: 8),
-                    itemBuilder: (context, index) {
-                      final jangdan = JangdanType.values[index];
-                      final selectedJangdan = basicJangdanData[jangdan.label]!;
-                      return InkWell(
-                        onTap: () {
-                          context.read<MetronomeBloc>().add(
-                            SelectJangdan(selectedJangdan),
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => MetronomeScreen(
-                                    jangdan: basicJangdanData[jangdan.label]!,
-                                  ),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.backgroundMute,
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: AppColors.orange13,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                    ),
-                                    child: SizedBox(
-                                      width: 64,
-                                      height: 64,
-                                      child: Center(
-                                        child: SizedBox(
-                                          width: 36,
-                                          height: 36,
-                                          child: SvgPicture.asset(
-                                            "assets/${jangdan.logoAssetPath}",
-                                            colorFilter: ColorFilter.mode(
-                                              AppColors.orange8,
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 20),
-
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
                                       Text(
-                                        jangdan.label,
-                                        style: AppTextStyles.title3Sb.copyWith(
-                                          color: AppColors.labelDefault,
-                                        ),
-                                      ),
-
-                                      const SizedBox(height: 4),
-
-                                      Text(
-                                        jangdan.bakInformation,
-                                        style: AppTextStyles.subheadlineR
-                                            .copyWith(
-                                              color: AppColors.labelSecondary,
-                                            ),
+                                        jangdan.jangdanType.label,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style:
+                                            isCustomJangdan
+                                                ? AppTextStyles.subheadlineR
+                                                    .copyWith(
+                                                      color:
+                                                          AppColors
+                                                              .labelSecondary,
+                                                    )
+                                                : AppTextStyles.subheadlineSb
+                                                    .copyWith(
+                                                      color:
+                                                          AppColors
+                                                              .labelDefault,
+                                                    ),
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
-                              Icon(
-                                Icons.chevron_right_rounded,
-                                size: 32,
-                                color: AppColors.labelSecondary,
-                              ),
-                            ],
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              Container(
+                width: double.infinity,
+                height: 10,
+                color: AppColors.backgroundDark,
+              ),
+            ],
+
+            //내가 저장한 장단 끝
+            const SizedBox(height: 24),
+
+            // 장단 카테고리
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: InkWell(
+                    onTap: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 6,
+                            horizontal: 8,
+                          ),
+                          child: Text(
+                            "전체 장단",
+                            style: AppTextStyles.title2B.copyWith(
+                              color: AppColors.labelPrimary,
+                            ),
                           ),
                         ),
-                      );
-                    },
+
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          size: 32,
+                          color: AppColors.labelDefault,
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
+                ),
+
+                SizedBox(height: 12),
+
+                // 카테고리 Segmented Control
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(categories.length, (index) {
+                        final category = categories[index];
+                        final isSelected = category == selectedCategory;
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(50),
+                            onTap: () {
+                              context.read<JangdanBloc>().add(
+                                ChangeJangdanCategory(category),
+                              );
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 160),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    isSelected
+                                        ? AppColors.neutral1
+                                        : Colors.transparent,
+                                borderRadius: BorderRadius.circular(50),
+                                border: Border.all(
+                                  color:
+                                      isSelected
+                                          ? Colors.transparent
+                                          : AppColors.neutral11,
+                                  width: 1,
+                                ),
+                              ),
+                              child: Text(
+                                category.label,
+                                style:
+                                    isSelected
+                                        ? AppTextStyles.calloutSb.copyWith(
+                                          color: AppColors.labelInverse,
+                                        )
+                                        : AppTextStyles.calloutR.copyWith(
+                                          color: AppColors.labelTertiary,
+                                        ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+              ],
+            ),
+
+            // 장단 리스트
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child:
+                  isCustomCategory
+                      // 커스텀 장단 리스트
+                      ? jangdanList.isEmpty
+                          ? Column(
+                            children: [
+                              SizedBox(height: 10),
+
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 44,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.backgroundMute,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      "아직 저장한 장단이 없어요.\n원하는 강세와 빠르기로 장단을 저장해보세요!",
+                                      textAlign: TextAlign.center,
+                                      style: AppTextStyles.calloutR.copyWith(
+                                        color: AppColors.labelDefault,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 20),
+
+                                    FilledButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) =>
+                                                    const CustomJangdanCreateScreen(),
+                                          ),
+                                        );
+                                      },
+                                      style: FilledButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 10,
+                                        ),
+                                        backgroundColor: AppColors.brandHeavy,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "장단 만들러 가기",
+                                        style: AppTextStyles.bodySb.copyWith(
+                                          color: AppColors.labelPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 100),
+                            ],
+                          )
+                          : ListView.separated(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            itemCount: jangdanList.length,
+                            separatorBuilder:
+                                (context, index) => SizedBox(height: 0),
+                            itemBuilder: (context, index) {
+                              final jangdan = jangdanList[index]!;
+                              return InkWell(
+                                onTap: () {
+                                  context.read<MetronomeBloc>().add(
+                                    SelectJangdan(jangdan),
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => MetronomeScreen(
+                                            jangdan: jangdan,
+                                            appBarMode: AppBarMode.custom,
+                                          ),
+                                    ),
+                                  );
+                                },
+                                child: Stack(
+                                  alignment: Alignment.bottomCenter,
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(16),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: AppColors.orange13,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(10),
+                                              ),
+                                            ),
+                                            child: SizedBox(
+                                              width: 64,
+                                              height: 64,
+                                              child: Center(
+                                                child: SizedBox(
+                                                  width: 36,
+                                                  height: 36,
+                                                  child: SvgPicture.asset(
+                                                    "assets/${jangdan.jangdanType.logoAssetPath}",
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          AppColors.orange8,
+                                                          BlendMode.srcIn,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+
+                                          const SizedBox(width: 20),
+
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                jangdan.name,
+                                                style: AppTextStyles.title3Sb
+                                                    .copyWith(
+                                                      color:
+                                                          AppColors
+                                                              .labelDefault,
+                                                    ),
+                                              ),
+
+                                              const SizedBox(height: 4),
+
+                                              Text(
+                                                jangdan.jangdanType.label,
+                                                style: AppTextStyles
+                                                    .subheadlineR
+                                                    .copyWith(
+                                                      color:
+                                                          AppColors
+                                                              .labelSecondary,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          Spacer(),
+
+                                          Text(
+                                            formatDateShort(jangdan.createdAt),
+                                            style: AppTextStyles.subheadlineR
+                                                .copyWith(
+                                                  color:
+                                                      AppColors.labelTertiary,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 1,
+                                      width: double.infinity,
+                                      color: AppColors.neutral11,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          )
+                      // BuiltIn 장단 리스트
+                      : ListView.separated(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        itemCount: jangdanList.length,
+                        separatorBuilder:
+                            (context, index) => SizedBox(height: 0),
+                        itemBuilder: (context, index) {
+                          final jangdan = jangdanList[index]!;
+                          final selectedJangdan =
+                              basicJangdanData[jangdan.jangdanType.label]!;
+                          return InkWell(
+                            onTap: () {
+                              context.read<MetronomeBloc>().add(
+                                SelectJangdan(selectedJangdan),
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MetronomeScreen(
+                                        jangdan:
+                                            basicJangdanData[jangdan
+                                                .jangdanType
+                                                .label]!,
+                                      ),
+                                ),
+                              );
+                            },
+                            child: Stack(
+                              alignment: Alignment.bottomCenter,
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(16),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColors.orange13,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        child: SizedBox(
+                                          width: 64,
+                                          height: 64,
+                                          child: Center(
+                                            child: SizedBox(
+                                              width: 36,
+                                              height: 36,
+                                              child: SvgPicture.asset(
+                                                "assets/${jangdan.jangdanType.logoAssetPath}",
+                                                colorFilter: ColorFilter.mode(
+                                                  AppColors.orange8,
+                                                  BlendMode.srcIn,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      const SizedBox(width: 20),
+
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            jangdan.jangdanType.label,
+                                            style: AppTextStyles.title3Sb
+                                                .copyWith(
+                                                  color: AppColors.labelDefault,
+                                                ),
+                                          ),
+
+                                          const SizedBox(height: 4),
+
+                                          Text(
+                                            jangdan.jangdanType.bakInformation,
+                                            style: AppTextStyles.subheadlineR
+                                                .copyWith(
+                                                  color:
+                                                      AppColors.labelSecondary,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: 1,
+                                  width: double.infinity,
+                                  color: AppColors.neutral11,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
             ),
 
             const SizedBox(height: 80),

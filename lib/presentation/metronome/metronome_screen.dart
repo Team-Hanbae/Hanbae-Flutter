@@ -450,6 +450,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
             onPopInvokedWithResult: (bool didPop, result) async {
               if (didPop == true) {
                 context.read<MetronomeBloc>().add(Stop());
+                context.read<JangdanBloc>().add(LoadJangdan());
               }
             },
 
