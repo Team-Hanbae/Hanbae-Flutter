@@ -7,7 +7,6 @@ import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/model/jangdan_category.dart';
-import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_list_screen.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,8 +22,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<JangdanBloc>().state;
-    final customJangdanList =
-        state is JangdanLoaded ? state.jangdans : <Jangdan>[];
     final selectedCategory =
         state is JangdanLoaded
             ? state.selectedCategory
@@ -271,11 +268,11 @@ class HomeScreen extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MetronomeJangdanListScreen(),
-                      ),
-                    );
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MetronomeJangdanListScreen(),
+                        ),
+                      );
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
