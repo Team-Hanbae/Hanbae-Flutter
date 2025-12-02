@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
+import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
 import 'package:hanbae/presentation/splash/splash.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/data/sound_manager.dart';
@@ -69,6 +70,7 @@ void main() async {
         BlocProvider(
           create: (_) => JangdanBloc(jangdanRepository, storage)..add(LoadJangdan()),
         ),
+        BlocProvider(create: (_) => EditingCubit()),
       ],
       child: Hanbae(),
     ),

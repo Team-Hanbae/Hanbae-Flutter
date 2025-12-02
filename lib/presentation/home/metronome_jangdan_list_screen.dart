@@ -11,12 +11,22 @@ import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
 import 'package:hanbae/utils/date_format.dart';
 
+class EditingCubit extends Cubit<bool> {
+  EditingCubit() : super(false);
+
+  void toggle() => emit(!state);
+  void on() => emit(true);
+  void off() => emit(false);
+}
+
 class MetronomeJangdanListScreen extends StatelessWidget {
   const MetronomeJangdanListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     context.read<JangdanBloc>().add(LoadJangdan());
+
+    final isEditing = context.watch<EditingCubit>().state;
 
     return DefaultTabController(
       length: 2,
@@ -41,26 +51,44 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                   animation: tabController,
                   builder: (context, _) {
                     if (tabController.index == 0) {
+                      context.read<EditingCubit>().off();
                       return const SizedBox.shrink();
                     }
 
                     return Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => CustomJangdanCreateScreen(),
+                      padding: const EdgeInsets.only(right: 8),
+                      child: BlocBuilder<EditingCubit, bool>(
+                        builder: (context, isEditing) {
+                          return Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.add),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              CustomJangdanCreateScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+
+                              TextButton(
+                                child: Text(
+                                  isEditing ? "완료" : "편집",
+                                  style: AppTextStyles.bodyR.copyWith(
+                                    color: AppColors.labelPrimary,
+                                  ),
                                 ),
-                              );
-                            },
-                          ),
-                        ],
+                                onPressed: () {
+                                  context.read<EditingCubit>().toggle();
+                                },
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     );
                   },
@@ -276,6 +304,7 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                               Dismissible(
                                 key: ValueKey(jangdan.name),
                                 direction: DismissDirection.endToStart,
+
                                 background: Container(
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -401,34 +430,43 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                             ),
 
                                             const SizedBox(width: 20),
+                                            Expanded(
+                                              flex: 300,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    jangdan.name,
+                                                    style: AppTextStyles
+                                                        .title3Sb
+                                                        .copyWith(
+                                                          color:
+                                                              AppColors
+                                                                  .labelDefault,
+                                                        ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                  ),
 
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  jangdan.name,
-                                                  style: AppTextStyles.title3Sb
-                                                      .copyWith(
-                                                        color:
-                                                            AppColors
-                                                                .labelDefault,
-                                                      ),
-                                                ),
+                                                  const SizedBox(height: 4),
 
-                                                const SizedBox(height: 4),
-
-                                                Text(
-                                                  jangdan.jangdanType.label,
-                                                  style: AppTextStyles
-                                                      .subheadlineR
-                                                      .copyWith(
-                                                        color:
-                                                            AppColors
-                                                                .labelSecondary,
-                                                      ),
-                                                ),
-                                              ],
+                                                  Text(
+                                                    jangdan.jangdanType.label,
+                                                    style: AppTextStyles
+                                                        .subheadlineR
+                                                        .copyWith(
+                                                          color:
+                                                              AppColors
+                                                                  .labelSecondary,
+                                                        ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
 
                                             Spacer(),
@@ -443,6 +481,107 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                                         AppColors.labelTertiary,
                                                   ),
                                             ),
+
+                                            if (isEditing)
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                  left: 12,
+                                                ),
+                                                child: InkWell(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.red,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    padding: EdgeInsets.all(12),
+                                                    child: Icon(
+                                                      Icons.delete,
+                                                      color: Colors.white,
+                                                      size: 24,
+                                                    ),
+                                                  ),
+                                                  onTap: () async {
+                                                    return await showDialog(
+                                                      context: context,
+                                                      builder:
+                                                          (
+                                                            context,
+                                                          ) => AlertDialog(
+                                                            backgroundColor:
+                                                                AppColors
+                                                                    .backgroundElevated,
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    12,
+                                                                  ),
+                                                            ),
+                                                            title: Text(
+                                                              '삭제 확인',
+                                                              style: TextStyle(
+                                                                color:
+                                                                    AppColors
+                                                                        .labelPrimary,
+                                                              ),
+                                                            ),
+                                                            content: Text(
+                                                              '정말 이 장단을 삭제할까요?',
+                                                              style: TextStyle(
+                                                                color:
+                                                                    AppColors
+                                                                        .labelDefault,
+                                                              ),
+                                                            ),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed:
+                                                                    () => Navigator.of(
+                                                                      context,
+                                                                    ).pop(
+                                                                      false,
+                                                                    ),
+                                                                child: Text(
+                                                                  '취소',
+                                                                  style: TextStyle(
+                                                                    color:
+                                                                        AppColors
+                                                                            .labelSecondary,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed:
+                                                                    () => {
+                                                                      Navigator.of(
+                                                                        context,
+                                                                      ).pop(
+                                                                        true,
+                                                                      ),
+                                                                      context
+                                                                          .read<
+                                                                            JangdanBloc
+                                                                          >()
+                                                                          .add(
+                                                                            DeleteJangdan(
+                                                                              jangdan.name,
+                                                                            ),
+                                                                          ),
+                                                                    },
+                                                                child: Text(
+                                                                  '삭제',
+                                                                  style: TextStyle(
+                                                                    color:
+                                                                        AppColors
+                                                                            .brandNormal,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
                                           ],
                                         ),
                                       ),
@@ -454,6 +593,8 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                     ],
                                   ),
                                   onTap: () {
+                                    if (isEditing) return;
+
                                     context.read<MetronomeBloc>().add(
                                       SelectJangdan(jangdan),
                                     );
