@@ -114,7 +114,7 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsetsGeometry.only(left: 8),
+                      padding: EdgeInsets.only(left: 8),
                       child: Text(
                         "최근 연습",
                         style: AppTextStyles.title2B.copyWith(

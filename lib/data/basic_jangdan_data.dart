@@ -340,6 +340,24 @@ List<Jangdan> basicJangdanList = [
       ],
     ],
   ),
+  Jangdan(
+    name: "도드리",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.dodeuri,
+    bpm: 60,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.none, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.none],
+      ],
+      [
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.weak, Accent.weak],
+        [Accent.none, Accent.none, Accent.none],
+      ],
+    ],
+  ),
 ];
 
 final Map<String, Jangdan> basicJangdanData = {
