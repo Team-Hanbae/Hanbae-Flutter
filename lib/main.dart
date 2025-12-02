@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
-import 'package:hanbae/presentation/home/home_screen.dart';
 import 'package:hanbae/presentation/splash/splash.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/data/sound_manager.dart';
@@ -22,8 +21,6 @@ late Mixpanel mixpanel;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // WidgetsBinding.instance.deferFirstFrame();
-
   final fontLoader = FontLoader('Pretendard');
   fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-Black.ttf'));
   fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-Bold.ttf'));
@@ -39,8 +36,6 @@ void main() async {
   final gosanjaFontLoader = FontLoader('Gosanja');
   gosanjaFontLoader.addFont(rootBundle.load('assets/fonts/GosanjaOTF.otf'));
   await gosanjaFontLoader.load();
-
-  // WidgetsBinding.instance.allowFirstFrame();
 
   try {
     await dotenv.load(fileName: ".env");

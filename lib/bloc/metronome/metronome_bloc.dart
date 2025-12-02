@@ -12,7 +12,6 @@ import '../../data/basic_jangdan_data.dart';
 import '../../data/sound_manager.dart';
 import '../../model/sound.dart';
 import '../../data/sound_preferences.dart';
-import 'package:hanbae/utils/local_storage.dart';
 
 part 'metronome_event.dart';
 part 'metronome_state.dart';
@@ -279,6 +278,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       if (!state.isPlaying) {
         _precountTimer?.cancel();
         _precountTimer = null;
+        // ignore: invalid_use_of_visible_for_testing_member
         emit(state.copyWith(reserveBeatTime: 0));
         return;
       }

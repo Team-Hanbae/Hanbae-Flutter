@@ -9,7 +9,6 @@ import 'package:hanbae/presentation/metronome/metronome_options.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
-import 'package:hanbae/utils/local_storage.dart';
 
 enum AppBarMode { builtin, custom, create }
 
