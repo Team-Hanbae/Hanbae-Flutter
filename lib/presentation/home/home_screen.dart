@@ -9,6 +9,7 @@ import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/model/jangdan_category.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_list_screen.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
+import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
@@ -268,7 +269,14 @@ class HomeScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MetronomeJangdanListScreen(),
+                      ),
+                    );
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
