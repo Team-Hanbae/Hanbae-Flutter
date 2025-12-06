@@ -337,7 +337,7 @@ class HomeScreen extends StatelessWidget {
                                   color:
                                       isSelected
                                           ? Colors.transparent
-                                          : AppColors.neutral11,
+                                          : AppColors.labelAssistive,
                                   width: 1,
                                 ),
                               ),
@@ -349,7 +349,7 @@ class HomeScreen extends StatelessWidget {
                                           color: AppColors.labelInverse,
                                         )
                                         : AppTextStyles.calloutR.copyWith(
-                                          color: AppColors.labelTertiary,
+                                          color: AppColors.labelSecondary,
                                         ),
                               ),
                             ),
@@ -637,7 +637,7 @@ class HomeScreen extends StatelessWidget {
                                         children: [
                                           Text(
                                             jangdan.jangdanType.label,
-                                            style: AppTextStyles.title3Sb
+                                            style: AppTextStyles.bodySb
                                                 .copyWith(
                                                   color: AppColors.labelDefault,
                                                 ),
@@ -650,7 +650,7 @@ class HomeScreen extends StatelessWidget {
                                             style: AppTextStyles.subheadlineR
                                                 .copyWith(
                                                   color:
-                                                      AppColors.labelSecondary,
+                                                      AppColors.labelTertiary,
                                                 ),
                                           ),
                                         ],
