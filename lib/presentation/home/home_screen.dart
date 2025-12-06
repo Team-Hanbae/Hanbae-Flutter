@@ -102,10 +102,11 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
 
-            // 최근 연습
             if (recentPlayedJangdanList.isNotEmpty) ...[
+              const SizedBox(height: 24),
+
+              // 최근 연습
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -124,7 +125,7 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 16),
 
                     Row(
-                      spacing: 8,
+                      spacing: 4,
                       children: List.generate(3, (index) {
                         if (index >= recentPlayedJangdanList.length) {
                           return const Expanded(child: SizedBox());
@@ -256,8 +257,8 @@ class HomeScreen extends StatelessWidget {
                 color: AppColors.backgroundDark,
               ),
             ],
+            //최근 연습 끝
 
-            //내가 저장한 장단 끝
             const SizedBox(height: 24),
 
             // 장단 카테고리
@@ -302,13 +303,15 @@ class HomeScreen extends StatelessWidget {
 
                 SizedBox(height: 12),
 
-                // 카테고리 Segmented Control
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                // 카테고리 Segment Control
+                Container(
+                  // padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: List.generate(categories.length, (index) {
+                      children: [
+                        SizedBox(width: 16),
+                        ...List.generate(categories.length, (index) {
                         final category = categories[index];
                         final isSelected = category == selectedCategory;
 
@@ -337,7 +340,7 @@ class HomeScreen extends StatelessWidget {
                                   color:
                                       isSelected
                                           ? Colors.transparent
-                                          : AppColors.neutral11,
+                                          : AppColors.labelAssistive,
                                   width: 1,
                                 ),
                               ),
@@ -349,13 +352,14 @@ class HomeScreen extends StatelessWidget {
                                           color: AppColors.labelInverse,
                                         )
                                         : AppTextStyles.calloutR.copyWith(
-                                          color: AppColors.labelTertiary,
+                                          color: AppColors.labelSecondary,
                                         ),
                               ),
                             ),
                           ),
                         );
                       }),
+              SizedBox(width: 16)]
                     ),
                   ),
                 ),
@@ -365,7 +369,8 @@ class HomeScreen extends StatelessWidget {
             ),
 
             // 장단 리스트
-            Padding(
+            Container(
+              constraints: const BoxConstraints(minHeight: 400),
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child:
                   isCustomCategory
@@ -637,7 +642,7 @@ class HomeScreen extends StatelessWidget {
                                         children: [
                                           Text(
                                             jangdan.jangdanType.label,
-                                            style: AppTextStyles.title3Sb
+                                            style: AppTextStyles.bodySb
                                                 .copyWith(
                                                   color: AppColors.labelDefault,
                                                 ),
@@ -650,7 +655,7 @@ class HomeScreen extends StatelessWidget {
                                             style: AppTextStyles.subheadlineR
                                                 .copyWith(
                                                   color:
-                                                      AppColors.labelSecondary,
+                                                      AppColors.labelTertiary,
                                                 ),
                                           ),
                                         ],

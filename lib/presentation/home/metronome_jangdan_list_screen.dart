@@ -61,20 +61,20 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                         builder: (context, isEditing) {
                           return Row(
                             children: [
-                              IconButton(
-                                icon: Icon(Icons.add),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                              CustomJangdanCreateScreen(),
-                                    ),
-                                  );
-                                },
-                              ),
-
+                              if (!isEditing)
+                                IconButton(
+                                  icon: Icon(Icons.add),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) =>
+                                                CustomJangdanCreateScreen(),
+                                      ),
+                                    );
+                                  },
+                                ),
                               TextButton(
                                 child: Text(
                                   isEditing ? "완료" : "편집",
