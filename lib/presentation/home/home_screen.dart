@@ -102,10 +102,11 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
 
-            // 최근 연습
             if (recentPlayedJangdanList.isNotEmpty) ...[
+              const SizedBox(height: 24),
+
+              // 최근 연습
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -124,7 +125,7 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 16),
 
                     Row(
-                      spacing: 8,
+                      spacing: 4,
                       children: List.generate(3, (index) {
                         if (index >= recentPlayedJangdanList.length) {
                           return const Expanded(child: SizedBox());
@@ -256,8 +257,8 @@ class HomeScreen extends StatelessWidget {
                 color: AppColors.backgroundDark,
               ),
             ],
+            //최근 연습 끝
 
-            //내가 저장한 장단 끝
             const SizedBox(height: 24),
 
             // 장단 카테고리
