@@ -16,7 +16,8 @@ class SelectJangdan extends MetronomeEvent {
 }
 
 class Play extends MetronomeEvent {
-  const Play();
+  final AppBarMode appState;
+  const Play({this.appState = AppBarMode.builtin});
 }
 
 class Tick extends MetronomeEvent {}

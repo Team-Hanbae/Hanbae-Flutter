@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:hanbae/main.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:hanbae/model/jangdan_type.dart';
+import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/utils/local_storage.dart';
 import 'package:hive/hive.dart';
 import 'dart:async';
@@ -111,7 +112,9 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         WakelockPlus.enable();
       }
 
-      Storage().addRecentJangdan(jangdan.name);
+      if (event.appState != AppBarMode.create) {
+        Storage().addRecentJangdan(jangdan.name);
+      }
     });
 
     on<Tick>((event, emit) async {

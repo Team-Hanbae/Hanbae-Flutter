@@ -31,14 +31,12 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
   bool _awaitingSave = false;
 
   @override
-
   @override
   void deactivate() {
     if (context.read<MetronomeBloc>().state.minimum)
       context.read<MetronomeBloc>().add(const ToggleMinimum());
     super.deactivate();
   }
-
 
   String get appBarTitle {
     final selected = context.watch<MetronomeBloc>().state.selectedJangdan;
@@ -496,7 +494,10 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                                               .minimum
                                           ? 16
                                           : 32;
-                                  return MetronomeControl(iconSize: iconSize);
+                                  return MetronomeControl(
+                                    iconSize: iconSize,
+                                    appBarMode: widget.appBarMode,
+                                  );
                                 },
                               ),
                             ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // Import the flutter_bloc package
@@ -8,7 +9,12 @@ import 'dart:async';
 
 class MetronomeControl extends StatefulWidget {
   final double iconSize;
-  const MetronomeControl({super.key, required this.iconSize});
+  final AppBarMode appBarMode;
+  const MetronomeControl({
+    super.key,
+    required this.iconSize,
+    this.appBarMode = AppBarMode.builtin,
+  });
 
   @override
   _MetronomeControlState createState() => _MetronomeControlState();
@@ -228,7 +234,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                     key: const ValueKey('min_play_button'),
                     onPressed: () {
                       context.read<MetronomeBloc>().add(
-                        isPlaying ? Stop() : Play(),
+                        isPlaying ? Stop() : Play(appState: widget.appBarMode),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -253,7 +259,7 @@ class _MetronomeControlState extends State<MetronomeControl> {
                     key: const ValueKey('main_play_button'),
                     onPressed: () {
                       context.read<MetronomeBloc>().add(
-                        isPlaying ? Stop() : Play(),
+                        isPlaying ? Stop() : Play(appState: widget.appBarMode),
                       );
                     },
                     style: ElevatedButton.styleFrom(
