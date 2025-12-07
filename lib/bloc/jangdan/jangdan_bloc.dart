@@ -42,7 +42,14 @@ class JangdanBloc extends Bloc<JangdanEvent, JangdanState> {
       }
     }
 
-    emit(JangdanLoaded(jangdans: jangdans, recentJangdans: recentJangdans));
+    emit(
+      (state is JangdanLoaded)
+          ? (state as JangdanLoaded).copyWith(
+            jangdans: jangdans,
+            recentJangdans: recentJangdans,
+          )
+          : JangdanLoaded(jangdans: jangdans, recentJangdans: recentJangdans),
+    );
   }
 
   Future<void> _onAdd(AddJangdan event, Emitter<JangdanState> emit) async {
