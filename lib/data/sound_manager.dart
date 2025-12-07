@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:hanbae/model/sound.dart';
+import 'dart:developer';
 
 class SoundManager {
   static const MethodChannel _channel = MethodChannel('krabs.hanbae/sound');
@@ -10,7 +11,7 @@ class SoundManager {
     try {
       await _channel.invokeMethod('play', {'name': fileName});
     } catch (e) {
-      print('Error playing sound: $e');
+      log('Error playing sound', error: e);
     }
   }
 
@@ -19,7 +20,7 @@ class SoundManager {
     try {
       await _channel.invokeMethod('preload', {'name': fileName});
     } catch (e) {
-      print('Error preloading sound: $e');
+      log('Error preloading sound', error: e);
     }
   }
 

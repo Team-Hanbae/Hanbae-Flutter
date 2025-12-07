@@ -36,5 +36,5 @@ class UpdateJangdan extends JangdanEvent {
 
 class ChangeJangdanCategory extends JangdanEvent {
   final JangdanCategory category;
-  ChangeJangdanCategory(this.category);
+  const ChangeJangdanCategory(this.category);
 }
