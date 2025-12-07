@@ -38,7 +38,6 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
     super.deactivate();
   }
 
-
   String get appBarTitle {
     final selected = context.watch<MetronomeBloc>().state.selectedJangdan;
     switch (widget.appBarMode) {
@@ -495,7 +494,10 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                                               .minimum
                                           ? 16
                                           : 32;
-                                  return MetronomeControl(iconSize: iconSize);
+                                  return MetronomeControl(
+                                    iconSize: iconSize,
+                                    appBarMode: widget.appBarMode,
+                                  );
                                 },
                               ),
                             ],
