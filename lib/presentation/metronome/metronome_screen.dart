@@ -31,10 +31,10 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
   bool _awaitingSave = false;
 
   @override
-  @override
   void deactivate() {
-    if (context.read<MetronomeBloc>().state.minimum)
+    if (context.read<MetronomeBloc>().state.minimum) {
       context.read<MetronomeBloc>().add(const ToggleMinimum());
+    }
     super.deactivate();
   }
 

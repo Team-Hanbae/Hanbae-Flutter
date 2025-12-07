@@ -22,17 +22,17 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<JangdanBloc>().state;
-    final selectedCategory =
-        state is JangdanLoaded
-            ? state.selectedCategory
-            : JangdanCategory.minsokak;
-    final List<Jangdan?> jangdanList =
-        state is JangdanLoaded ? selectedCategory.list ?? state.jangdans : [];
+
+    if (state is! JangdanLoaded) {
+      return SizedBox();
+    }
+
+    final selectedCategory = state.selectedCategory;
+    final List<Jangdan?> jangdanList = selectedCategory.list ?? state.jangdans;
     final categories = JangdanCategory.values;
     final isCustomCategory = selectedCategory == JangdanCategory.custom;
 
-    final List<Jangdan> recentPlayedJangdanList =
-        state is JangdanLoaded ? state.recentJangdans : [];
+    final List<Jangdan> recentPlayedJangdanList = state.recentJangdans;
 
     final bannerList = [
       {
@@ -101,7 +101,6 @@ class HomeScreen extends StatelessWidget {
                 viewportFraction: 1.0,
               ),
             ),
-
 
             if (recentPlayedJangdanList.isNotEmpty) ...[
               const SizedBox(height: 24),
@@ -257,8 +256,8 @@ class HomeScreen extends StatelessWidget {
                 color: AppColors.backgroundDark,
               ),
             ],
-            //최근 연습 끝
 
+            //최근 연습 끝
             const SizedBox(height: 24),
 
             // 장단 카테고리
@@ -304,14 +303,12 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(height: 12),
 
                 // 카테고리 Segment Control
-                Container(
-                  // padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        SizedBox(width: 16),
-                        ...List.generate(categories.length, (index) {
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 16),
+                      ...List.generate(categories.length, (index) {
                         final category = categories[index];
                         final isSelected = category == selectedCategory;
 
@@ -359,8 +356,8 @@ class HomeScreen extends StatelessWidget {
                           ),
                         );
                       }),
-              SizedBox(width: 16)]
-                    ),
+                      SizedBox(width: 16),
+                    ],
                   ),
                 ),
 
