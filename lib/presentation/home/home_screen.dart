@@ -513,7 +513,7 @@ class HomeScreen extends StatelessWidget {
                                             children: [
                                               Text(
                                                 jangdan.name,
-                                                style: AppTextStyles.title3Sb
+                                                style: AppTextStyles.bodySb
                                                     .copyWith(
                                                       color:
                                                           AppColors
@@ -530,7 +530,7 @@ class HomeScreen extends StatelessWidget {
                                                     .copyWith(
                                                       color:
                                                           AppColors
-                                                              .labelSecondary,
+                                                              .labelTertiary,
                                                     ),
                                               ),
                                             ],
