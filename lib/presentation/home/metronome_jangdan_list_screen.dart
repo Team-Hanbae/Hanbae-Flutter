@@ -186,7 +186,7 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       jangdan.label,
-                                      style: AppTextStyles.title3Sb.copyWith(
+                                      style: AppTextStyles.bodySb.copyWith(
                                         color: AppColors.labelDefault,
                                       ),
                                     ),
@@ -197,7 +197,7 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                       jangdan.bakInformation,
                                       style: AppTextStyles.subheadlineR
                                           .copyWith(
-                                            color: AppColors.labelSecondary,
+                                            color: AppColors.labelTertiary,
                                           ),
                                     ),
                                   ],
@@ -439,7 +439,7 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                                   Text(
                                                     jangdan.name,
                                                     style: AppTextStyles
-                                                        .title3Sb
+                                                        .bodySb
                                                         .copyWith(
                                                           color:
                                                               AppColors
@@ -459,7 +459,7 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                                         .copyWith(
                                                           color:
                                                               AppColors
-                                                                  .labelSecondary,
+                                                                  .labelTertiary,
                                                         ),
                                                     overflow:
                                                         TextOverflow.ellipsis,
