@@ -1,4 +1,3 @@
-import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hive/hive.dart';
 import '../model/local_log.dart';
 
