@@ -1,8 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hanbae/data/local_logger.dart';
 import 'package:hanbae/main.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:hanbae/model/jangdan_type.dart';
+import 'package:hanbae/model/local_log.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/utils/local_storage.dart';
 import 'package:hive/hive.dart';
@@ -115,6 +117,13 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       if (event.appState != AppBarMode.create) {
         Storage().addRecentJangdan(jangdan.name);
       }
+
+      LocalLogger().add(
+        LocalLog(
+          createdAt: DateTime.now(),
+          jangdanType: state.selectedJangdan.jangdanType,
+        ),
+      );
     });
 
     on<Tick>((event, emit) async {
@@ -160,6 +169,14 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         final roundedDuration = (seconds * 100).round() / 100;
         final jangdanType = state.selectedJangdan.jangdanType.label;
         final jangdanName = state.selectedJangdan.name;
+
+        LocalLogger().add(
+          LocalLog(
+            createdAt: DateTime.now(),
+            jangdanType: state.selectedJangdan.jangdanType,
+            playedTime: seconds,
+          ),
+        );
 
         mixpanel.track(
           'metronome_play',
