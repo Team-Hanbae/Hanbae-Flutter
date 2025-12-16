@@ -1,3 +1,4 @@
+import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hive/hive.dart';
 import '../model/local_log.dart';
 
@@ -10,7 +11,7 @@ class LocalLogger {
   }
 
   Future<void> add(LocalLog log) async {
-    await _box.add(log); // key 자동 증가
+    await _box.add(log);
   }
 
   Future<void> deleteAt(int index) async {
