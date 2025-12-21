@@ -182,6 +182,42 @@ List<Jangdan> basicJangdanList = [
     ],
   ),
   Jangdan(
+    name: "긴염불",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.ginyeombul,
+    bpm: 25,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.weak],
+      ],
+      [
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.strong, Accent.weak, Accent.weak],
+        [Accent.medium, Accent.none, Accent.weak],
+      ],
+    ],
+  ),
+  Jangdan(
+    name: "반염불",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.banyeombul,
+    bpm: 65,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.medium],
+      ],
+      [
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.weak, Accent.weak],
+        [Accent.none, Accent.none, Accent.none],
+      ],
+    ],
+  ),
+  Jangdan(
     name: "좌질굿",
     createdAt: DateTime.now(),
     jangdanType: JangdanType.jwajilgut,
@@ -301,42 +337,6 @@ List<Jangdan> basicJangdanList = [
         [Accent.none, Accent.none, Accent.none],
         [Accent.medium, Accent.none, Accent.none],
         [Accent.weak, Accent.none, Accent.none],
-      ],
-    ],
-  ),
-  Jangdan(
-    name: "긴염불",
-    createdAt: DateTime.now(),
-    jangdanType: JangdanType.ginyeombul,
-    bpm: 25,
-    accents: [
-      [
-        [Accent.strong, Accent.none, Accent.none],
-        [Accent.weak, Accent.none, Accent.none],
-        [Accent.medium, Accent.none, Accent.weak],
-      ],
-      [
-        [Accent.weak, Accent.none, Accent.none],
-        [Accent.strong, Accent.weak, Accent.weak],
-        [Accent.medium, Accent.none, Accent.weak],
-      ],
-    ],
-  ),
-  Jangdan(
-    name: "반염불",
-    createdAt: DateTime.now(),
-    jangdanType: JangdanType.banyeombul,
-    bpm: 65,
-    accents: [
-      [
-        [Accent.strong, Accent.none, Accent.none],
-        [Accent.weak, Accent.none, Accent.none],
-        [Accent.medium, Accent.none, Accent.medium],
-      ],
-      [
-        [Accent.weak, Accent.none, Accent.none],
-        [Accent.weak, Accent.weak, Accent.weak],
-        [Accent.none, Accent.none, Accent.none],
       ],
     ],
   ),
