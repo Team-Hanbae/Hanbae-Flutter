@@ -15,9 +15,45 @@ import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
 import '../../model/jangdan_type.dart';
 import 'package:hanbae/utils/date_format.dart';
+import 'package:hanbae/utils/dialogs/christmas_dialog.dart';
+import 'package:hanbae/utils/local_storage.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  //크리스마스 팝업
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final now = DateTime.now();
+      final isChristmas =
+          (now.month == 12 && now.day == 25);
+
+      if (!isChristmas) return;
+
+      final todayKey = DateTime.now().toIso8601String().split('T').first;
+      final storage = Storage();
+
+      final shouldShow = await storage.shouldShowChristmasPopup(todayKey);
+      if (!shouldShow) return;
+
+      final result = await ChristmasDialog.show(context);
+      if (result == null) return;
+
+      await storage.setChristmasPopupDontShowToday(
+        result.dontShowToday,
+        todayKey,
+      );
+    });
+  } // initState
 
   @override
   Widget build(BuildContext context) {

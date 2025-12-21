@@ -46,4 +46,35 @@ class Storage {
     final updated = recent.where((e) => e != name).toList();
     await setRecentJangdanNames(updated);
   }
+
+  // ============================
+  // Event / Popup
+  // ============================
+
+  /// 오늘 크리스마스 팝업을 보여줘야 하는지 여부를 반환한다.
+  /// - 저장된 날짜가 오늘과 같으면 false (보여주지 않음)
+  /// - 저장된 날짜가 없거나 오늘이 아니면 true (보여줌)
+  Future<bool> shouldShowChristmasPopup(String todayKey) async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedDate = prefs.getString('christmasPopup_dontShowDate');
+
+    if (savedDate == null) return true;
+
+    return savedDate != todayKey;
+  }
+
+  /// "오늘 다시 보지 않기"가 체크되었을 때 오늘 날짜를 저장한다.
+  /// 체크되지 않았으면 기존 저장 값을 제거한다.
+  Future<void> setChristmasPopupDontShowToday(
+    bool dontShowToday,
+    String todayKey,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    if (dontShowToday) {
+      await prefs.setString('christmasPopup_dontShowDate', todayKey);
+    } else {
+      await prefs.remove('christmasPopup_dontShowDate');
+    }
+  }
 }
