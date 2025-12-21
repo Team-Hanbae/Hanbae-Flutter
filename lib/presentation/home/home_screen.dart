@@ -16,9 +16,14 @@ import 'package:hanbae/theme/text_styles.dart';
 import '../../model/jangdan_type.dart';
 import 'package:hanbae/utils/date_format.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState(); // HomeScreen
+} // HomeScreen
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<JangdanBloc>().state;
