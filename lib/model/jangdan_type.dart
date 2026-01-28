@@ -131,7 +131,7 @@ extension JangdanTypeExtension on JangdanType {
       case JangdanType.ginyeombul: return "6박 3소박";
       case JangdanType.banyeombul: return "6박 3소박";
       case JangdanType.jwajilgut: return "사물놀이";
-      case JangdanType.noraetgarak: return "노랫가락";
+      case JangdanType.noraetgarak: return "5·8·8·5·5";
       // 정악
       case JangdanType.sangnyeongsan: return "4대강 20정간";
       case JangdanType.seryeongsan: return "4대강 10정간";
