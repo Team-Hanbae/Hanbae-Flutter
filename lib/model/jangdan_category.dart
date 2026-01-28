@@ -37,6 +37,7 @@ extension JangdanCategoryExtension on JangdanCategory {
           basicJangdanData[JangdanType.ginyeombul.label],
           basicJangdanData[JangdanType.banyeombul.label],
           basicJangdanData[JangdanType.jwajilgut.label],
+          basicJangdanData[JangdanType.noraetgarak.label],
         ];
       case JangdanCategory.jeongak:
         return [

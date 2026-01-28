@@ -117,11 +117,11 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                     bottom: 100,
                   ),
                   scrollDirection: Axis.vertical,
-                  itemCount: JangdanType.values.length,
+                  itemCount: basicJangdanList.length,
                   separatorBuilder: (context, index) => SizedBox(height: 0),
                   itemBuilder: (context, index) {
-                    final jangdan = JangdanType.values[index];
-                    final selectedJangdan = basicJangdanData[jangdan.label]!;
+                    final jangdan = basicJangdanList[index].jangdanType;
+                    final selectedJangdan = basicJangdanData[jangdan.name]!;
                     return InkWell(
                       onTap: () {
                         context.read<MetronomeBloc>().add(
@@ -132,7 +132,7 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                           MaterialPageRoute(
                             builder:
                                 (context) => MetronomeScreen(
-                                  jangdan: basicJangdanData[jangdan.label]!,
+                                  jangdan: basicJangdanData[jangdan.name]!,
                                 ),
                           ),
                         );
