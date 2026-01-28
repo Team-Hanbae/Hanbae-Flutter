@@ -247,6 +247,25 @@ List<Jangdan> basicJangdanList = [
       ],
     ],
   ),
+  Jangdan(
+    name: "노랫가락 58855",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.noraetgarak,
+    bpm: 8,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none],
+        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none, Accent.medium, Accent.weak, Accent.none],
+      ],
+      [
+        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none, Accent.medium, Accent.weak, Accent.none],
+        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none],
+      ],
+      [
+        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none],
+      ],
+    ],
+  ),
   // 정악
   Jangdan(
     name: "상령산, 중령산",
