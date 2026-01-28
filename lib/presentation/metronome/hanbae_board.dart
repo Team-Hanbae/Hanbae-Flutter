@@ -19,6 +19,16 @@ class HanbaeBoard extends StatelessWidget {
       (MetronomeBloc bloc) => bloc.state.reserveBeatTime,
     );
 
+    final maxSobakCountPerRow = jangdan.accents
+        .map((row) => row.fold<int>(0, (sum, daebak) => sum + daebak.length))
+        .fold<int>(0, (maxValue, value) => value > maxValue ? value : maxValue);
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    const rowHorizontalPadding = 16.0;
+    final boardWidth = screenWidth - rowHorizontalPadding;
+    final unitWidth =
+        maxSobakCountPerRow == 0 ? 0.0 : boardWidth / maxSobakCountPerRow;
+
     return Flexible(
       child: Stack(
         children: [
@@ -37,6 +47,7 @@ class HanbaeBoard extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children:
                           row.asMap().entries.map((colEntry) {
                             final daebakIndex = colEntry.key;
@@ -50,8 +61,8 @@ class HanbaeBoard extends StatelessWidget {
                                     ) +
                                 daebakIndex;
 
-                            return Flexible(
-                              flex: daebak.length,
+                            return SizedBox(
+                              width: unitWidth * daebak.length,
                               child: BakbarSet(
                                 daebak: daebak,
                                 rowIndex: rowIndex,
@@ -89,8 +100,8 @@ class HanbaeBoard extends StatelessWidget {
                     '$reserveBeatTime',
                     style: AppTextStyles.title1B.copyWith(
                       color: AppColors.bakBarNumberDefault,
-                      fontSize: 100
-                      ),
+                      fontSize: 100,
+                    ),
                   ),
                 ),
               ),
