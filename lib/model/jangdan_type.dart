@@ -95,7 +95,7 @@ extension JangdanTypeExtension on JangdanType {
       case JangdanType.ginyeombul: return "images/logos/Ginyeombul.svg";
       case JangdanType.banyeombul: return "images/logos/Banyeombul.svg";
       case JangdanType.jwajilgut: return "images/logos/Jwajilgut.svg";
-      case JangdanType.noraetgarak: return "images/logos/Jwajilgut.svg";
+      case JangdanType.noraetgarak: return "images/logos/Noraetgarak58855.svg";
       // 정악
       case JangdanType.sangnyeongsan: return "images/logos/Sangnyeongsan.svg";
       case JangdanType.seryeongsan: return "images/logos/Seryeongsan.svg";
