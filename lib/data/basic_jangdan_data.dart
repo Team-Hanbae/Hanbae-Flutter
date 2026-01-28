@@ -380,5 +380,5 @@ List<Jangdan> basicJangdanList = [
 ];
 
 final Map<String, Jangdan> basicJangdanData = {
-  for (final item in basicJangdanList) item.name: item
+  for (final item in basicJangdanList) item.jangdanType.label: item
 };
