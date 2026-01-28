@@ -97,29 +97,15 @@ List<Jangdan> basicJangdanList = [
     ],
   ),
   Jangdan(
-    name: "굿거리",
+    name: "엇모리",
     createdAt: DateTime.now(),
-    jangdanType: JangdanType.gutgeori,
-    bpm: 50,
+    jangdanType: JangdanType.eonmori,
+    bpm: 95,
     accents: [
       [
-        [Accent.strong, Accent.none, Accent.medium],
-        [Accent.weak, Accent.none, Accent.none],
+        [Accent.strong, Accent.none, Accent.weak],
+        [Accent.medium, Accent.none],
         [Accent.weak, Accent.none, Accent.medium],
-        [Accent.weak, Accent.none, Accent.none],
-      ],
-    ],
-  ),
-  Jangdan(
-    name: "동살풀이",
-    createdAt: DateTime.now(),
-    jangdanType: JangdanType.dongsalpuri,
-    bpm: 125,
-    accents: [
-      [
-        [Accent.strong, Accent.none],
-        [Accent.weak, Accent.none],
-        [Accent.weak, Accent.medium],
         [Accent.weak, Accent.none],
       ],
     ],
@@ -139,16 +125,32 @@ List<Jangdan> basicJangdanList = [
     ],
   ),
   Jangdan(
-    name: "엇모리",
+    name: "엇중모리",
     createdAt: DateTime.now(),
-    jangdanType: JangdanType.eonmori,
-    bpm: 95,
+    jangdanType: JangdanType.eotjungmori,
+    bpm: 78,
     accents: [
       [
-        [Accent.strong, Accent.none, Accent.weak],
-        [Accent.medium, Accent.none],
-        [Accent.weak, Accent.none, Accent.medium],
+        [Accent.strong, Accent.none],
         [Accent.weak, Accent.none],
+        [Accent.medium, Accent.none],
+        [Accent.weak, Accent.none],
+        [Accent.medium, Accent.none],
+        [Accent.weak, Accent.none],
+      ],
+    ],
+  ),
+  Jangdan(
+    name: "굿거리",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.gutgeori,
+    bpm: 50,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.medium],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.medium],
+        [Accent.weak, Accent.none, Accent.none],
       ],
     ],
   ),
@@ -166,18 +168,65 @@ List<Jangdan> basicJangdanList = [
     ],
   ),
   Jangdan(
-    name: "엇중모리",
+    name: "동살풀이",
     createdAt: DateTime.now(),
-    jangdanType: JangdanType.eotjungmori,
-    bpm: 78,
+    jangdanType: JangdanType.dongsalpuri,
+    bpm: 125,
     accents: [
       [
         [Accent.strong, Accent.none],
         [Accent.weak, Accent.none],
-        [Accent.medium, Accent.none],
+        [Accent.weak, Accent.medium],
         [Accent.weak, Accent.none],
-        [Accent.medium, Accent.none],
-        [Accent.weak, Accent.none],
+      ],
+    ],
+  ),
+  Jangdan(
+    name: "노랫가락 58855",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.noraetgarak,
+    bpm: 8,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none],
+        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none, Accent.medium, Accent.weak, Accent.none],
+      ],
+      [
+        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none, Accent.medium, Accent.weak, Accent.none],
+        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none],
+      ],
+      [
+        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none],
+      ],
+    ],
+  ),
+  Jangdan(
+    name: "좌질굿",
+    createdAt: DateTime.now(),
+    jangdanType: JangdanType.jwajilgut,
+    bpm: 100,
+    accents: [
+      [
+        [Accent.weak, Accent.medium],
+        [Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+      ],
+      [
+        [Accent.weak, Accent.medium],
+        [Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+      ],
+      [
+        [Accent.weak, Accent.medium],
+        [Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+        [Accent.strong, Accent.weak, Accent.medium],
+      ],
+      [
+        [Accent.strong, Accent.none, Accent.weak, Accent.weak, Accent.none],
+        [Accent.strong, Accent.none, Accent.weak, Accent.weak, Accent.none],
       ],
     ],
   ),
@@ -214,55 +263,6 @@ List<Jangdan> basicJangdanList = [
         [Accent.weak, Accent.none, Accent.none],
         [Accent.weak, Accent.weak, Accent.weak],
         [Accent.none, Accent.none, Accent.none],
-      ],
-    ],
-  ),
-  Jangdan(
-    name: "좌질굿",
-    createdAt: DateTime.now(),
-    jangdanType: JangdanType.jwajilgut,
-    bpm: 100,
-    accents: [
-      [
-        [Accent.weak, Accent.medium],
-        [Accent.weak, Accent.medium],
-        [Accent.strong, Accent.weak, Accent.medium],
-        [Accent.strong, Accent.weak, Accent.medium],
-      ],
-      [
-        [Accent.weak, Accent.medium],
-        [Accent.weak, Accent.medium],
-        [Accent.strong, Accent.weak, Accent.medium],
-        [Accent.strong, Accent.weak, Accent.medium],
-      ],
-      [
-        [Accent.weak, Accent.medium],
-        [Accent.weak, Accent.medium],
-        [Accent.strong, Accent.weak, Accent.medium],
-        [Accent.strong, Accent.weak, Accent.medium],
-      ],
-      [
-        [Accent.strong, Accent.none, Accent.weak, Accent.weak, Accent.none],
-        [Accent.strong, Accent.none, Accent.weak, Accent.weak, Accent.none],
-      ],
-    ],
-  ),
-  Jangdan(
-    name: "노랫가락 58855",
-    createdAt: DateTime.now(),
-    jangdanType: JangdanType.noraetgarak,
-    bpm: 8,
-    accents: [
-      [
-        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none],
-        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none, Accent.medium, Accent.weak, Accent.none],
-      ],
-      [
-        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none, Accent.medium, Accent.weak, Accent.none],
-        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none],
-      ],
-      [
-        [Accent.strong, Accent.none, Accent.medium, Accent.weak, Accent.none],
       ],
     ],
   ),
