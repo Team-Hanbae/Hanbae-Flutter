@@ -51,6 +51,8 @@ class JangdanTypeAdapter extends TypeAdapter<JangdanType> {
         return JangdanType.jeolhwa;
       case 18:
         return JangdanType.dodeuri;
+      case 19:
+        return JangdanType.noraetgarak;
       default:
         return JangdanType.jinyang;
     }
@@ -115,6 +117,9 @@ class JangdanTypeAdapter extends TypeAdapter<JangdanType> {
         break;
       case JangdanType.dodeuri:
         writer.writeByte(18);
+        break;
+      case JangdanType.noraetgarak:
+        writer.writeByte(19);
         break;
     }
   }
