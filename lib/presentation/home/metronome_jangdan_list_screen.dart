@@ -117,10 +117,10 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                     bottom: 100,
                   ),
                   scrollDirection: Axis.vertical,
-                  itemCount: JangdanType.values.length,
+                  itemCount: basicJangdanList.length,
                   separatorBuilder: (context, index) => SizedBox(height: 0),
                   itemBuilder: (context, index) {
-                    final jangdan = JangdanType.values[index];
+                    final jangdan = basicJangdanList[index].jangdanType;
                     final selectedJangdan = basicJangdanData[jangdan.label]!;
                     return InkWell(
                       onTap: () {

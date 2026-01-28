@@ -26,17 +26,18 @@ extension JangdanCategoryExtension on JangdanCategory {
         return [
           basicJangdanData[JangdanType.jinyang.label],
           basicJangdanData[JangdanType.jungmori.label],
-          basicJangdanData[JangdanType.eotjungmori.label],
           basicJangdanData[JangdanType.jungjungmori.label],
           basicJangdanData[JangdanType.jajinmori.label],
-          basicJangdanData[JangdanType.semachi.label],
           basicJangdanData[JangdanType.eonmori.label],
           basicJangdanData[JangdanType.hwimori.label],
+          basicJangdanData[JangdanType.eotjungmori.label],
           basicJangdanData[JangdanType.gutgeori.label],
+          basicJangdanData[JangdanType.semachi.label],
           basicJangdanData[JangdanType.dongsalpuri.label],
+          basicJangdanData[JangdanType.noraetgarak.label],
+          basicJangdanData[JangdanType.jwajilgut.label],
           basicJangdanData[JangdanType.ginyeombul.label],
           basicJangdanData[JangdanType.banyeombul.label],
-          basicJangdanData[JangdanType.jwajilgut.label],
         ];
       case JangdanCategory.jeongak:
         return [
