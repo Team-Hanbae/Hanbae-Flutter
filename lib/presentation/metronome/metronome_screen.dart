@@ -9,6 +9,8 @@ import 'package:hanbae/presentation/metronome/metronome_options.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
+import 'package:hanbae/utils/local_storage.dart';
+import 'package:hanbae/presentation/metronome/metronome_onboarding_overlay.dart';
 
 enum AppBarMode { builtin, custom, create }
 
@@ -29,6 +31,42 @@ class MetronomeScreen extends StatefulWidget {
 class _MetronomeScreenState extends State<MetronomeScreen> {
   bool _showFlashOverlay = false;
   bool _awaitingSave = false;
+  bool _showOnboarding = false;
+  int _onboardingStep = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _maybeShowOnboarding();
+  }
+
+  Future<void> _maybeShowOnboarding() async {
+    final seen = await Storage().getMetronomeOnboardingSeen();
+    if (!seen && mounted) {
+      setState(() {
+        _showOnboarding = true;
+        _onboardingStep = 0;
+      });
+    }
+  }
+
+  Future<void> _completeOnboarding() async {
+    await Storage().setMetronomeOnboardingSeen();
+    if (!mounted) return;
+    setState(() {
+      _showOnboarding = false;
+    });
+  }
+
+  void _nextOnboardingStep() {
+    if (_onboardingStep >= 3) {
+      _completeOnboarding();
+      return;
+    }
+    setState(() {
+      _onboardingStep += 1;
+    });
+  }
 
   @override
   void deactivate() {
@@ -525,6 +563,12 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
               ),
             ),
           ),
+          if (_showOnboarding)
+            MetronomeOnboardingOverlay(
+              step: _onboardingStep,
+              onNext: _nextOnboardingStep,
+              onSkip: _completeOnboarding,
+            ),
         ],
       ),
     );
