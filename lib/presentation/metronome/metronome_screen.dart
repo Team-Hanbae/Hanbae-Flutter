@@ -41,7 +41,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
   }
 
   Future<void> _maybeShowOnboarding() async {
-    final seen = await Storage().getFirstUserCheck();
+    final seen = await Storage().getMetronomeOnboardingSeen();
     if (!seen && mounted) {
       setState(() {
         _showOnboarding = true;
@@ -51,7 +51,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
   }
 
   Future<void> _completeOnboarding() async {
-    await Storage().setFirstUserCheck();
+    await Storage().setMetronomeOnboardingSeen();
     if (!mounted) return;
     setState(() {
       _showOnboarding = false;
