@@ -41,11 +41,13 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
   }
 
   Future<void> _maybeShowOnboarding() async {
-    if (!mounted) return;
-    setState(() {
-      _showOnboarding = true;
-      _onboardingStep = 0;
-    });
+    final seen = await Storage().getFirstUserCheck();
+    if (!seen && mounted) {
+      setState(() {
+        _showOnboarding = true;
+        _onboardingStep = 0;
+      });
+    }
   }
 
   Future<void> _completeOnboarding() async {
