@@ -17,11 +17,13 @@ enum AppBarMode { builtin, custom, create }
 class MetronomeScreen extends StatefulWidget {
   final Jangdan jangdan;
   final AppBarMode appBarMode;
+  final bool forceShowOnboarding;
 
   const MetronomeScreen({
     super.key,
     required this.jangdan,
     this.appBarMode = AppBarMode.builtin,
+    this.forceShowOnboarding = false,
   });
 
   @override
@@ -37,7 +39,12 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
   @override
   void initState() {
     super.initState();
-    _maybeShowOnboarding();
+    if (widget.forceShowOnboarding) {
+      _showOnboarding = true;
+      _onboardingStep = 0;
+    } else {
+      _maybeShowOnboarding();
+    }
   }
 
   Future<void> _maybeShowOnboarding() async {

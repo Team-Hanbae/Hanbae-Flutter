@@ -79,6 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
         "image": "assets/images/banner/SurveyBanner.png",
         "link": "https://forms.gle/pKarubn5MPXkudgw6",
       },
+      {
+        "image": "assets/images/banner/OnboardingBanner.png",
+        "action": "onboarding",
+      },
     ];
 
     final screenWidth = MediaQuery.of(context).size.width;
@@ -106,18 +110,43 @@ class _HomeScreenState extends State<HomeScreen> {
               items:
                   bannerList.map((item) {
                     final imagePath = item["image"]!;
-                    final link = item["link"]!;
                     return Builder(
                       builder: (BuildContext context) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: GestureDetector(
                             onTap: () async {
-                              final Uri url = Uri.parse(link);
-                              if (await canLaunchUrl(url)) {
-                                await launchUrl(
-                                  url,
-                                  mode: LaunchMode.externalApplication,
+                              final link = item["link"];
+                              final action = item["action"];
+                              if (link != null) {
+                                final Uri url = Uri.parse(link);
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(
+                                    url,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                }
+                                return;
+                              }
+                              if (action == "onboarding") {
+                                final jangdan =
+                                    basicJangdanData["자진모리"];
+                                if (jangdan == null) {
+                                  return;
+                                }
+                                context.read<MetronomeBloc>().add(
+                                  SelectJangdan(jangdan),
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => MetronomeScreen(
+                                          jangdan: jangdan,
+                                          appBarMode: AppBarMode.builtin,
+                                          forceShowOnboarding: true,
+                                        ),
+                                  ),
                                 );
                               }
                             },
