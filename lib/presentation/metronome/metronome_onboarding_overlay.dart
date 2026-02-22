@@ -279,7 +279,7 @@ Rect _highlightRectForStep(int step, Size size) {
       const height = 150.0;
       const left = 16.0;
       const right = 16.0;
-      const bottom = 130.0;
+      const bottom = 140.0;
       final top = size.height - bottom - height;
       return Rect.fromLTWH(left, top, size.width - left - right, height);
     case 2:
