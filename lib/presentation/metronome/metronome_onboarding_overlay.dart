@@ -125,7 +125,7 @@ class MetronomeOnboardingOverlay extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    right: -10,
+                    right: -15,
                     child: Image.asset(
                       'assets/images/icon/Onboarding_Next.png',
                       width: 22,
