@@ -17,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 late Mixpanel mixpanel;
 
@@ -62,6 +63,7 @@ void main() async {
   await Hive.openBox<LocalLog>('localLogBox');
 
   await SoundManager.preloadAllSounds();
+  await MobileAds.instance.initialize();
 
   final jangdanRepository = JangdanRepository();
   final storage = Storage();
