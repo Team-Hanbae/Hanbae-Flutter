@@ -22,6 +22,7 @@ class MetronomeOnboardingOverlay extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final content = _stepContent(step);
     final isLast = step >= 3;
+    final highlightRect = _highlightRectForStep(step, size);
 
     return Positioned.fill(
       child: Material(
@@ -33,53 +34,53 @@ class MetronomeOnboardingOverlay extends StatelessWidget {
               onTap: onNext,
               child: Container(color: AppColors.dimmerHeavy),
             ),
-            _buildHighlight(context, size),
+            _buildHighlight(context, size, highlightRect),
             _buildLottie(step),
-            _buildFloatingText(context, content, isLast),
+            _buildFloatingText(context, content, isLast, highlightRect, size),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHighlight(BuildContext context, Size size) {
+  Widget _buildHighlight(BuildContext context, Size size, Rect rect) {
     switch (step) {
       case 0:
         return Positioned(
-          top: 72,
-          left: 0,
-          right: 0,
+          top: rect.top,
+          left: rect.left,
+          right: size.width - rect.right,
           child: IgnorePointer(
             child: SizedBox(
-              height: size.height * 0.45,
+              height: rect.height,
               child: Column(children: [HanbaeBoard()]),
             ),
           ),
         );
       case 1:
         return Positioned(
-          left: 16,
-          right: 16,
-          bottom: 130,
+          left: rect.left,
+          right: size.width - rect.right,
+          top: rect.top,
           child: IgnorePointer(child: _OnboardingBpmControl()),
         );
       case 2:
         return Positioned(
-          right: 28,
-          bottom: 110,
+          left: rect.left,
+          top: rect.top,
           child: IgnorePointer(child: _OnboardingTempoButton()),
         );
       case 3:
         return Positioned(
-          left: 16,
-          right: 16,
-          bottom: 324,
+          left: rect.left,
+          right: size.width - rect.right,
+          top: rect.top,
           child: IgnorePointer(child: _OnboardingOptionsShort()),
         );
       default:
         return Positioned(
-          left: 16,
-          right: 16,
+          left: rect.left,
+          right: size.width - rect.right,
           child: IgnorePointer(child: _OnboardingOptionsShort()),
         );
     }
@@ -89,8 +90,10 @@ class MetronomeOnboardingOverlay extends StatelessWidget {
     BuildContext context,
     _OnboardingContent content,
     bool isLast,
+    Rect highlightRect,
+    Size size,
   ) {
-    final position = _textPositionForStep(step);
+    final position = _textPositionForStep(step, highlightRect, size);
     return Positioned(
       left: position.left,
       right: position.right,
@@ -182,18 +185,49 @@ class MetronomeOnboardingOverlay extends StatelessWidget {
     }
   }
 
-  _TextPosition _textPositionForStep(int step) {
+  _TextPosition _textPositionForStep(int step, Rect highlightRect, Size size) {
+    const textBlockHeight = 160.0;
+    double clampTop(double value) {
+      return value.clamp(16.0, size.height - textBlockHeight);
+    }
+
+    double clampBottom(double value) {
+      return value.clamp(16.0, size.height - 16.0);
+    }
+
     switch (step) {
       case 0:
-        return const _TextPosition(left: 20, right: 20, bottom: 250);
+        // 하이라이트 하단에서 40px 내려서 시작
+        return _TextPosition(
+          left: 20,
+          right: 20,
+          top: clampTop(highlightRect.bottom + 40),
+        );
       case 1:
-        return const _TextPosition(left: 20, right: 20, top: 400);
+        // 하이라이트 상단에서 40px 위로 배치
+        return _TextPosition(
+          left: 20,
+          right: 20,
+          bottom: clampBottom(size.height - highlightRect.top + 40),
+        );
       case 2:
-        return const _TextPosition(left: 20, right: 20, bottom: 240);
+        return _TextPosition(
+          left: 20,
+          right: 20,
+          bottom: clampBottom(size.height - highlightRect.top + 40),
+        );
       case 3:
-        return const _TextPosition(left: 20, right: 20, top: 280);
+        return _TextPosition(
+          left: 20,
+          right: 20,
+          bottom: clampBottom(size.height - highlightRect.top + 40),
+        );
       default:
-        return const _TextPosition(left: 20, right: 20, top: 280);
+        return _TextPosition(
+          left: 20,
+          right: 20,
+          bottom: clampBottom(size.height - highlightRect.top + 40),
+        );
     }
   }
 
@@ -223,6 +257,45 @@ class MetronomeOnboardingOverlay extends StatelessWidget {
       default:
         return null;
     }
+  }
+}
+
+Rect _highlightRectForStep(int step, Size size) {
+  switch (step) {
+    case 0:
+      return Rect.fromLTWH(
+        0,
+        72,
+        size.width,
+        size.height * 0.45,
+      );
+    case 1:
+      // BPM 컨트롤 하이라이트 영역(대략 높이 기준)
+      const height = 150.0;
+      const left = 16.0;
+      const right = 16.0;
+      const bottom = 130.0;
+      final top = size.height - bottom - height;
+      return Rect.fromLTWH(left, top, size.width - left - right, height);
+    case 2:
+      // 템포 버튼 영역
+      const width = 112.0;
+      const height = 74.0;
+      const right = 28.0;
+      const bottom = 110.0;
+      final left = size.width - right - width;
+      final top = size.height - bottom - height;
+      return Rect.fromLTWH(left, top, width, height);
+    case 3:
+      // 옵션 영역(높이 대략)
+      const height = 66.0;
+      const left = 16.0;
+      const right = 16.0;
+      const bottom = 324.0;
+      final top = size.height - bottom - height;
+      return Rect.fromLTWH(left, top, size.width - left - right, height);
+    default:
+      return Rect.fromLTWH(16, 0, size.width - 32, 66);
   }
 }
 
