@@ -17,6 +17,8 @@ import '../../model/jangdan_type.dart';
 import 'package:hanbae/utils/date_format.dart';
 import 'package:hanbae/utils/dialogs/christmas_dialog.dart';
 import 'package:hanbae/utils/local_storage.dart';
+import 'package:hanbae/presentation/common/ad_banner.dart';
+import 'package:hanbae/utils/admob_ids.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -740,6 +742,10 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 80),
           ],
         ),
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: FixedBannerAd(adUnitId: AdMobIds.bannerAdUnitId),
       ),
     );
   }

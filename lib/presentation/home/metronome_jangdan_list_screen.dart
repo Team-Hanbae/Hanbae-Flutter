@@ -10,6 +10,8 @@ import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
 import 'package:hanbae/utils/date_format.dart';
+import 'package:hanbae/presentation/common/ad_banner.dart';
+import 'package:hanbae/utils/admob_ids.dart';
 
 class EditingCubit extends Cubit<bool> {
   EditingCubit() : super(false);
@@ -633,6 +635,10 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                   },
                 ),
               ],
+            ),
+            bottomNavigationBar: SafeArea(
+              top: false,
+              child: FixedBannerAd(adUnitId: AdMobIds.bannerAdUnitId),
             ),
           );
         },
