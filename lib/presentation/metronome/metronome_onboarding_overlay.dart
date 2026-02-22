@@ -35,7 +35,7 @@ class MetronomeOnboardingOverlay extends StatelessWidget {
               child: Container(color: AppColors.dimmerHeavy),
             ),
             _buildHighlight(context, size, highlightRect),
-            _buildLottie(step),
+            _buildLottie(step, highlightRect, size),
             _buildFloatingText(context, content, isLast, highlightRect, size),
           ],
         ),
@@ -120,7 +120,7 @@ class MetronomeOnboardingOverlay extends StatelessWidget {
                 children: [
                   Text(
                     '다음',
-                    style: AppTextStyles.bodyR.copyWith(
+                    style: AppTextStyles.title3R.copyWith(
                       color: AppColors.labelDefault,
                     ),
                   ),
@@ -141,17 +141,22 @@ class MetronomeOnboardingOverlay extends StatelessWidget {
     );
   }
 
-  Widget _buildLottie(int step) {
+  Widget _buildLottie(int step, Rect highlightRect, Size size) {
     final config = _lottieConfigForStep(step);
     if (config == null) {
       return const SizedBox.shrink();
     }
 
+    final lottieRect = _centeredRectWithOffset(
+      highlightRect: highlightRect,
+      lottieSize: Size(config.width, config.height),
+      offset: config.offset,
+      screen: size,
+    );
+
     return Positioned(
-      left: config.position.left,
-      right: config.position.right,
-      top: config.position.top,
-      bottom: config.position.bottom,
+      left: lottieRect.left,
+      top: lottieRect.top,
       child: IgnorePointer(
         child: SizedBox(
           width: config.width,
@@ -236,21 +241,21 @@ class MetronomeOnboardingOverlay extends StatelessWidget {
       case 0:
         return const _LottieConfig(
           asset: 'assets/lotties/repeat_touch.json',
-          position: _TextPosition(left: 24, right: 24, top: 260),
+          offset: Offset(-10, -5),
           width: 110,
           height: 115,
         );
       case 1:
         return const _LottieConfig(
           asset: 'assets/lotties/scroll_horizontal.json',
-          position: _TextPosition(right: 18, bottom: 80),
+          offset: Offset(50, 75),
           width: 256,
           height: 128,
         );
       case 2:
         return const _LottieConfig(
           asset: 'assets/lotties/repeat_touch.json',
-          position: _TextPosition(right: 0, bottom: 35),
+          offset: Offset(40, 30),
           width: 110,
           height: 115,
         );
@@ -316,16 +321,38 @@ class _TextPosition {
 
 class _LottieConfig {
   final String asset;
-  final _TextPosition position;
+  final Offset offset;
   final double width;
   final double height;
 
   const _LottieConfig({
     required this.asset,
-    required this.position,
+    required this.offset,
     required this.width,
     required this.height,
   });
+}
+
+Rect _centeredRectWithOffset({
+  required Rect highlightRect,
+  required Size lottieSize,
+  required Offset offset,
+  required Size screen,
+}) {
+  final left =
+      highlightRect.center.dx - (lottieSize.width / 2) + offset.dx;
+  final top =
+      highlightRect.center.dy - (lottieSize.height / 2) + offset.dy;
+
+  final clampedLeft = left.clamp(0.0, screen.width - lottieSize.width);
+  final clampedTop = top.clamp(0.0, screen.height - lottieSize.height);
+
+  return Rect.fromLTWH(
+    clampedLeft,
+    clampedTop,
+    lottieSize.width,
+    lottieSize.height,
+  );
 }
 
 class _OnboardingTempoButton extends StatelessWidget {
