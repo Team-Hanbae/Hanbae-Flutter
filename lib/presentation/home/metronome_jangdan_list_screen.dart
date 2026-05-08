@@ -5,6 +5,7 @@ import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan_type.dart';
+import 'package:hanbae/model/saved_jangdan_item.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
@@ -22,7 +23,9 @@ class EditingCubit extends Cubit<bool> {
 }
 
 class MetronomeJangdanListScreen extends StatelessWidget {
-  const MetronomeJangdanListScreen({super.key});
+  final int initialTabIndex;
+
+  const MetronomeJangdanListScreen({super.key, this.initialTabIndex = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +35,7 @@ class MetronomeJangdanListScreen extends StatelessWidget {
 
     return DefaultTabController(
       length: 2,
+      initialIndex: initialTabIndex,
       child: Builder(
         builder: (context) {
           final tabController = DefaultTabController.of(context);
@@ -223,7 +227,7 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                     if (state is JangdanInitial) {
                       return Center(child: CircularProgressIndicator());
                     } else if (state is JangdanLoaded) {
-                      final jangdans = state.jangdans;
+                      final savedItems = state.savedItems;
                       return ListView.builder(
                         padding: EdgeInsets.only(
                           left: 16,
@@ -231,9 +235,9 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                           right: 16,
                           bottom: 100,
                         ),
-                        itemCount: jangdans.isEmpty ? 1 : jangdans.length,
+                        itemCount: savedItems.isEmpty ? 1 : savedItems.length,
                         itemBuilder: (context, index) {
-                          if (jangdans.isEmpty) {
+                          if (savedItems.isEmpty) {
                             return Column(
                               children: [
                                 SizedBox(height: 10),
@@ -300,11 +304,15 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                             );
                           }
 
-                          final jangdan = jangdans[index];
+                          final item = savedItems[index];
+                          final jangdan = item.jangdan;
+                          final sequence = item.sequence;
+                          final isSequence =
+                              item.kind == SavedJangdanItemKind.sequence;
                           return Column(
                             children: [
                               Dismissible(
-                                key: ValueKey(jangdan.name),
+                                key: ValueKey('${item.kind.name}:${item.name}'),
                                 direction: DismissDirection.endToStart,
 
                                 background: Container(
@@ -379,7 +387,9 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                 },
                                 onDismissed: (_) {
                                   context.read<JangdanBloc>().add(
-                                    DeleteJangdan(jangdan.name),
+                                    isSequence
+                                        ? DeleteJangdanSequence(item.name)
+                                        : DeleteJangdan(item.name),
                                   );
                                 },
                                 child: ListTile(
@@ -407,9 +417,16 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                             Container(
                                               decoration: BoxDecoration(
                                                 color: AppColors.orange13,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(10),
-                                                ),
+                                                shape:
+                                                    isSequence
+                                                        ? BoxShape.circle
+                                                        : BoxShape.rectangle,
+                                                borderRadius:
+                                                    isSequence
+                                                        ? null
+                                                        : BorderRadius.all(
+                                                          Radius.circular(10),
+                                                        ),
                                               ),
                                               child: SizedBox(
                                                 width: 64,
@@ -418,14 +435,28 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                                   child: SizedBox(
                                                     width: 36,
                                                     height: 36,
-                                                    child: SvgPicture.asset(
-                                                      "assets/${jangdan.jangdanType.logoAssetPath}",
-                                                      colorFilter:
-                                                          ColorFilter.mode(
-                                                            AppColors.orange8,
-                                                            BlendMode.srcIn,
-                                                          ),
-                                                    ),
+                                                    child:
+                                                        isSequence
+                                                            ? SvgPicture.asset(
+                                                              'assets/images/logos/Sequence.svg',
+                                                              colorFilter:
+                                                                  const ColorFilter.mode(
+                                                                    AppColors
+                                                                        .orange8,
+                                                                    BlendMode
+                                                                        .srcIn,
+                                                                  ),
+                                                            )
+                                                            : SvgPicture.asset(
+                                                              "assets/${jangdan!.jangdanType.logoAssetPath}",
+                                                              colorFilter:
+                                                                  ColorFilter.mode(
+                                                                    AppColors
+                                                                        .orange8,
+                                                                    BlendMode
+                                                                        .srcIn,
+                                                                  ),
+                                                            ),
                                                   ),
                                                 ),
                                               ),
@@ -439,9 +470,8 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    jangdan.name,
-                                                    style: AppTextStyles
-                                                        .bodySb
+                                                    item.name,
+                                                    style: AppTextStyles.bodySb
                                                         .copyWith(
                                                           color:
                                                               AppColors
@@ -455,7 +485,11 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                                   const SizedBox(height: 4),
 
                                                   Text(
-                                                    jangdan.jangdanType.label,
+                                                    isSequence
+                                                        ? ''
+                                                        : jangdan!
+                                                            .jangdanType
+                                                            .label,
                                                     style: AppTextStyles
                                                         .subheadlineR
                                                         .copyWith(
@@ -474,9 +508,7 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                             Spacer(),
 
                                             Text(
-                                              formatDateShort(
-                                                jangdan.createdAt,
-                                              ),
+                                              formatDateShort(item.createdAt),
                                               style: AppTextStyles.subheadlineR
                                                   .copyWith(
                                                     color:
@@ -564,9 +596,13 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                                                             JangdanBloc
                                                                           >()
                                                                           .add(
-                                                                            DeleteJangdan(
-                                                                              jangdan.name,
-                                                                            ),
+                                                                            isSequence
+                                                                                ? DeleteJangdanSequence(
+                                                                                  item.name,
+                                                                                )
+                                                                                : DeleteJangdan(
+                                                                                  item.name,
+                                                                                ),
                                                                           ),
                                                                     },
                                                                 child: Text(
@@ -598,15 +634,27 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                     if (isEditing) return;
 
                                     context.read<MetronomeBloc>().add(
-                                      SelectJangdan(jangdan),
+                                      isSequence
+                                          ? SelectSequence(sequence!)
+                                          : SelectJangdan(jangdan!),
                                     );
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder:
                                             (_) => MetronomeScreen(
-                                              jangdan: jangdan,
-                                              appBarMode: AppBarMode.custom,
+                                              jangdan:
+                                                  isSequence
+                                                      ? sequence!
+                                                          .items
+                                                          .first
+                                                          .jangdan
+                                                      : jangdan!,
+                                              sequence: sequence,
+                                              appBarMode:
+                                                  isSequence
+                                                      ? AppBarMode.sequence
+                                                      : AppBarMode.custom,
                                             ),
                                       ),
                                     );

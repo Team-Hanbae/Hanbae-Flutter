@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:hanbae/data/basic_jangdan_data.dart';
+import 'package:hanbae/model/recent_play_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Storage {
@@ -41,20 +45,72 @@ class Storage {
     return prefs.getStringList('recentJangdanNames') ?? [];
   }
 
-  Future<void> addRecentJangdan(String name) async {
-    final recent = await getRecentJangdanNames();
+  Future<List<RecentPlayItem>> getRecentPlayItems() async {
+    final prefs = await SharedPreferences.getInstance();
+    final rawItems = prefs.getStringList('recentPlayItems');
+    if (rawItems != null) {
+      return rawItems
+          .map((raw) {
+            try {
+              final decoded = jsonDecode(raw);
+              if (decoded is! Map<String, dynamic>) return null;
+              return RecentPlayItem.fromJson(decoded);
+            } catch (_) {
+              return null;
+            }
+          })
+          .whereType<RecentPlayItem>()
+          .toList();
+    }
 
-    // 중복 제거 + 가장 앞에 삽입
-    final updated = [name, ...recent.where((e) => e != name)];
-
-    // 최대 3개까지만 유지
-    await setRecentJangdanNames(updated);
+    final legacyNames = await getRecentJangdanNames();
+    final migrated =
+        legacyNames
+            .map(
+              (name) => RecentPlayItem(
+                kind:
+                    basicJangdanData.containsKey(name)
+                        ? RecentPlayKind.builtin
+                        : RecentPlayKind.custom,
+                name: name,
+              ),
+            )
+            .toList();
+    await setRecentPlayItems(migrated);
+    return migrated;
   }
-  
-  Future<void> removeRecentJangdan(String name) async {
-    final recent = await getRecentJangdanNames();
-    final updated = recent.where((e) => e != name).toList();
-    await setRecentJangdanNames(updated);
+
+  Future<void> setRecentPlayItems(List<RecentPlayItem> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(
+      'recentPlayItems',
+      items.map((item) => jsonEncode(item.toJson())).toList(),
+    );
+    await setRecentJangdanNames(items.map((item) => item.name).toList());
+  }
+
+  Future<void> addRecentJangdan(
+    String name, {
+    RecentPlayKind kind = RecentPlayKind.custom,
+  }) async {
+    final recent = await getRecentPlayItems();
+    final next = RecentPlayItem(kind: kind, name: name);
+    final updated =
+        [
+          next,
+          ...recent.where((e) => e.kind != kind || e.name != name),
+        ].take(3).toList();
+
+    await setRecentPlayItems(updated);
+  }
+
+  Future<void> removeRecentJangdan(String name, {RecentPlayKind? kind}) async {
+    final recent = await getRecentPlayItems();
+    final updated =
+        recent
+            .where((e) => e.name != name || (kind != null && e.kind != kind))
+            .toList();
+    await setRecentPlayItems(updated);
   }
 
   // ============================

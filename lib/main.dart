@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/model/local_log.dart';
+import 'package:hanbae/model/jangdan_sequence.dart';
 import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
 import 'package:hanbae/presentation/splash/splash.dart';
 import 'package:hanbae/theme/colors.dart';
@@ -13,6 +14,7 @@ import 'package:hanbae/model/accent.dart';
 import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/jangdan_repository.dart';
+import 'package:hanbae/data/jangdan_sequence_repository.dart';
 import 'package:flutter/services.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:flutter/foundation.dart';
@@ -59,13 +61,17 @@ void main() async {
   Hive.registerAdapter(AccentAdapter());
   Hive.registerAdapter(JangdanTypeAdapter());
   Hive.registerAdapter(LocalLogAdapter());
+  Hive.registerAdapter(JangdanSequenceAdapter());
+  Hive.registerAdapter(JangdanSequenceItemAdapter());
   await Hive.openBox<Jangdan>('customJangdanBox');
+  await Hive.openBox<JangdanSequence>('jangdanSequenceBox');
   await Hive.openBox<LocalLog>('localLogBox');
 
   await SoundManager.preloadAllSounds();
   await MobileAds.instance.initialize();
 
   final jangdanRepository = JangdanRepository();
+  final sequenceRepository = JangdanSequenceRepository();
   final storage = Storage();
 
   runApp(
@@ -73,7 +79,10 @@ void main() async {
       providers: [
         BlocProvider(create: (_) => MetronomeBloc()),
         BlocProvider(
-          create: (_) => JangdanBloc(jangdanRepository, storage)..add(LoadJangdan()),
+          create:
+              (_) =>
+                  JangdanBloc(jangdanRepository, sequenceRepository, storage)
+                    ..add(LoadJangdan()),
         ),
         BlocProvider(create: (_) => EditingCubit()),
       ],
