@@ -19,20 +19,12 @@ class JangdanSequenceCreateScreen extends StatefulWidget {
 
 class _JangdanSequenceCreateScreenState
     extends State<JangdanSequenceCreateScreen> {
-  final _nameController = TextEditingController();
   int _step = 0;
   final List<Jangdan> _selectedJangdans = [];
   final List<int> _repeatCounts = [];
   bool _awaitingSave = false;
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
-
   void _reset() {
-    _nameController.clear();
     _step = 0;
     _selectedJangdans.clear();
     _repeatCounts.clear();
@@ -66,8 +58,7 @@ class _JangdanSequenceCreateScreenState
     });
   }
 
-  void _save() {
-    final name = _nameController.text.trim();
+  void _save(String name) {
     if (name.isEmpty || _selectedJangdans.length < 2) return;
     final items = List.generate(
       _selectedJangdans.length,
@@ -170,20 +161,90 @@ class _JangdanSequenceCreateScreenState
 
   bool get _primaryEnabled {
     if (_step == 0) return _selectedJangdans.length >= 2;
-    if (_step == 2) {
-      return _nameController.text.trim().isNotEmpty &&
-          _selectedJangdans.length >= 2 &&
-          !_awaitingSave;
-    }
+    if (_step == 2) return _selectedJangdans.length >= 2 && !_awaitingSave;
     return true;
   }
 
-  void _primaryAction() {
+  Future<void> _primaryAction() async {
     if (_step < 2) {
       setState(() => _step += 1);
     } else {
-      _save();
+      final name = await _showNameDialog();
+      if (name == null) return;
+      _save(name);
     }
+  }
+
+  Future<String?> _showNameDialog() async {
+    var name = '';
+    return showDialog<String>(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            final trimmedName = name.trim();
+            return AlertDialog(
+              backgroundColor: AppColors.backgroundElevated,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              title: Text(
+                '장단 모음집 저장',
+                style: AppTextStyles.bodySb.copyWith(
+                  color: AppColors.labelPrimary,
+                ),
+              ),
+              content: TextField(
+                maxLength: 10,
+                autofocus: true,
+                cursorColor: AppColors.brandNormal,
+                style: AppTextStyles.bodyR.copyWith(
+                  color: AppColors.labelDefault,
+                ),
+                decoration: InputDecoration(
+                  hintText: '장단 모음집 이름',
+                  hintStyle: AppTextStyles.bodyR.copyWith(
+                    color: AppColors.labelTertiary,
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.brandNormal),
+                  ),
+                ),
+                onChanged: (value) {
+                  setDialogState(() => name = value);
+                },
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, null),
+                  child: Text(
+                    '취소',
+                    style: AppTextStyles.bodyR.copyWith(
+                      color: AppColors.labelSecondary,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed:
+                      trimmedName.isEmpty
+                          ? null
+                          : () => Navigator.pop(context, trimmedName),
+                  child: Text(
+                    '저장',
+                    style: AppTextStyles.bodyR.copyWith(
+                      color:
+                          trimmedName.isEmpty
+                              ? AppColors.labelDisable
+                              : AppColors.brandNormal,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   Widget _buildStep(List<Jangdan> jangdans) {
@@ -211,10 +272,8 @@ class _JangdanSequenceCreateScreenState
         );
       default:
         return _PreviewStep(
-          nameController: _nameController,
           selectedJangdans: _selectedJangdans,
           repeatCounts: _repeatCounts,
-          onNameChanged: () => setState(() {}),
         );
     }
   }
@@ -315,16 +374,12 @@ class _RepeatStep extends StatelessWidget {
 }
 
 class _PreviewStep extends StatelessWidget {
-  final TextEditingController nameController;
   final List<Jangdan> selectedJangdans;
   final List<int> repeatCounts;
-  final VoidCallback onNameChanged;
 
   const _PreviewStep({
-    required this.nameController,
     required this.selectedJangdans,
     required this.repeatCounts,
-    required this.onNameChanged,
   });
 
   @override
@@ -333,27 +388,6 @@ class _PreviewStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _StepHeading(title: '설정한 순서와 횟수대로 재생돼요'),
-        const SizedBox(height: 20),
-        TextField(
-          controller: nameController,
-          maxLength: 10,
-          onChanged: (_) => onNameChanged(),
-          cursorColor: AppColors.brandNormal,
-          style: AppTextStyles.bodyR.copyWith(color: AppColors.labelDefault),
-          decoration: InputDecoration(
-            counterText: '',
-            hintText: '장단 모음집 이름',
-            hintStyle: AppTextStyles.bodyR.copyWith(
-              color: AppColors.labelTertiary,
-            ),
-            enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.neutral11),
-            ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.brandHeavy),
-            ),
-          ),
-        ),
         const SizedBox(height: 28),
         _JangdanListFrame(
           children: List.generate(selectedJangdans.length, (index) {
