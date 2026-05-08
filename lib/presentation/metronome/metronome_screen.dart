@@ -655,11 +655,11 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         child: IntrinsicHeight(
                           child: Column(
                             children: [
+                              if (widget.appBarMode == AppBarMode.sequence)
+                                _SequenceStateBar(),
                               BlocBuilder<MetronomeBloc, MetronomeState>(
                                 builder: (context, state) => HanbaeBoard(),
                               ),
-                              if (widget.appBarMode == AppBarMode.sequence)
-                                _SequenceStateBar(),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16.0,
@@ -727,37 +727,50 @@ class _SequenceStateBar extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final item = sequence.items[state.currentSequenceIndex];
+    final repeatLabel =
+        state.isPlaying ? state.currentSequenceRepeat.toString() : '0';
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
         onTap: () => _showSequenceSheet(context, sequence),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          height: 36,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: AppColors.backgroundMute,
-            borderRadius: BorderRadius.circular(12),
+            color: AppColors.backgroundDark,
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Row(
             children: [
-              Icon(Icons.queue_music_rounded, color: AppColors.orange8),
-              const SizedBox(width: 12),
+              const Icon(
+                Icons.playlist_play_rounded,
+                color: AppColors.labelDefault,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   item.jangdan.jangdanType.label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.bodySb.copyWith(
+                  style: AppTextStyles.subheadlineR.copyWith(
                     color: AppColors.labelDefault,
+                    fontSize: 15,
+                    height: 20 / 15,
+                    letterSpacing: -0.23,
                   ),
                 ),
               ),
               Text(
-                '${state.currentSequenceRepeat}/${item.repeatCount}회',
-                style: AppTextStyles.calloutR.copyWith(
-                  color: AppColors.labelSecondary,
+                '$repeatLabel/${item.repeatCount}',
+                style: AppTextStyles.subheadlineR.copyWith(
+                  color: AppColors.labelDefault,
+                  fontSize: 15,
+                  height: 20 / 15,
+                  letterSpacing: -0.23,
                 ),
               ),
             ],
