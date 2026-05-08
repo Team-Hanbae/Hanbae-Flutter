@@ -5,6 +5,8 @@ import 'package:hanbae/main.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/model/local_log.dart';
+import 'package:hanbae/model/jangdan_sequence.dart';
+import 'package:hanbae/model/recent_play_item.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/utils/local_storage.dart';
 import 'package:hive/hive.dart';
@@ -64,7 +66,59 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
     on<SelectJangdan>((event, emit) {
       emit(
-        state.copyWith(selectedJangdan: event.jangdan, bpm: event.jangdan.bpm),
+        state.copyWith(
+          selectedJangdan: event.jangdan,
+          bpm: event.jangdan.bpm,
+          clearSequence: true,
+        ),
+      );
+    });
+
+    on<SelectSequence>((event, emit) {
+      final sequence = event.sequence;
+      if (sequence.items.isEmpty) return;
+      emit(
+        state.copyWith(
+          selectedJangdan: sequence.items.first.jangdan,
+          bpm: sequence.items.first.jangdan.bpm,
+          currentSequence: sequence,
+          currentSequenceIndex: 0,
+          currentSequenceRepeat: 1,
+        ),
+      );
+    });
+
+    on<JumpToSequenceItem>((event, emit) {
+      final sequence = state.currentSequence;
+      if (sequence == null ||
+          event.index < 0 ||
+          event.index >= sequence.items.length) {
+        return;
+      }
+      final item = sequence.items[event.index];
+      emit(
+        state.copyWith(
+          selectedJangdan: item.jangdan,
+          bpm: item.jangdan.bpm,
+          currentSequenceIndex: event.index,
+          currentSequenceRepeat: 1,
+          currentRowIndex: item.jangdan.accents.length - 1,
+          currentDaebakIndex: item.jangdan.accents.last.length - 1,
+          currentSobakIndex: item.jangdan.accents.last.last.length - 1,
+        ),
+      );
+    });
+
+    on<ReplaceCurrentSequence>((event, emit) {
+      if (event.sequence.items.isEmpty) return;
+      emit(
+        state.copyWith(
+          currentSequence: event.sequence,
+          currentSequenceIndex: 0,
+          currentSequenceRepeat: 1,
+          selectedJangdan: event.sequence.items.first.jangdan,
+          bpm: event.sequence.items.first.jangdan.bpm,
+        ),
       );
     });
 
@@ -114,8 +168,16 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         WakelockPlus.enable();
       }
 
-      if (event.appState != AppBarMode.create) {
-        Storage().addRecentJangdan(jangdan.name);
+      if (event.appState == AppBarMode.sequence &&
+          state.currentSequence != null) {
+        Storage().addRecentJangdan(
+          state.currentSequence!.name,
+          kind: RecentPlayKind.sequence,
+        );
+      } else if (event.appState == AppBarMode.builtin) {
+        Storage().addRecentJangdan(jangdan.name, kind: RecentPlayKind.builtin);
+      } else if (event.appState == AppBarMode.custom) {
+        Storage().addRecentJangdan(jangdan.name, kind: RecentPlayKind.custom);
       }
 
       LocalLogger().add(
@@ -152,13 +214,18 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         }
       }
 
-      emit(
-        state.copyWith(
-          currentRowIndex: row,
-          currentDaebakIndex: daebak,
-          currentSobakIndex: sobak,
-        ),
+      final completedCycle = row == 0 && daebak == 0 && sobak == 0;
+      var nextState = state.copyWith(
+        currentRowIndex: row,
+        currentDaebakIndex: daebak,
+        currentSobakIndex: sobak,
       );
+
+      if (completedCycle && nextState.currentSequence != null) {
+        nextState = _advanceSequence(nextState);
+      }
+
+      emit(nextState);
     });
 
     on<Stop>((event, emit) {
@@ -193,16 +260,31 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
       _stopPreciseTicker();
       WakelockPlus.disable();
-      emit(state.copyWith(isPlaying: false, reserveBeatTime: 0));
+      if (state.currentSequence != null) {
+        final first = state.currentSequence!.items.first.jangdan;
+        emit(
+          state.copyWith(
+            isPlaying: false,
+            reserveBeatTime: 0,
+            currentSequenceIndex: 0,
+            currentSequenceRepeat: 1,
+            selectedJangdan: first,
+            bpm: first.bpm,
+          ),
+        );
+      } else {
+        emit(state.copyWith(isPlaying: false, reserveBeatTime: 0));
+      }
     });
 
     on<ChangeBpm>((event, emit) {
       add(const StopTapping());
       final newBpm = (state.bpm + event.delta).clamp(1, 300);
+      final updated = state.selectedJangdan.copyWith(bpm: newBpm);
       emit(
-        state.copyWith(
-          selectedJangdan: state.selectedJangdan.copyWith(bpm: newBpm),
-          bpm: newBpm,
+        _syncCurrentSequenceItem(
+          state.copyWith(selectedJangdan: updated, bpm: newBpm),
+          updated,
         ),
       );
     });
@@ -232,8 +314,18 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         }
         final averageMs = intervals.reduce((a, b) => a + b) / intervals.length;
         final bpm = (60000 / averageMs).round().clamp(10, 300);
+        final updatedJangdan = state.selectedJangdan.copyWith(bpm: bpm);
 
-        emit(state.copyWith(bpm: bpm, isTapping: true));
+        emit(
+          _syncCurrentSequenceItem(
+            state.copyWith(
+              selectedJangdan: updatedJangdan,
+              bpm: bpm,
+              isTapping: true,
+            ),
+            updatedJangdan,
+          ),
+        );
       }
 
       if (_tapHistory.length > 5) {
@@ -267,7 +359,12 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           next;
 
       final updatedJangdan = oldJangdan.copyWith(accents: updatedAccents);
-      emit(state.copyWith(selectedJangdan: updatedJangdan));
+      emit(
+        _syncCurrentSequenceItem(
+          state.copyWith(selectedJangdan: updatedJangdan),
+          updatedJangdan,
+        ),
+      );
     });
 
     on<ToggleSobak>((event, emit) {
@@ -341,5 +438,41 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     _tickTimer = null;
     _precountTimer?.cancel();
     _precountTimer = null;
+  }
+
+  MetronomeState _advanceSequence(MetronomeState current) {
+    final sequence = current.currentSequence;
+    if (sequence == null || sequence.items.isEmpty) return current;
+    final item = sequence.items[current.currentSequenceIndex];
+
+    if (current.currentSequenceRepeat < item.repeatCount) {
+      return current.copyWith(
+        currentSequenceRepeat: current.currentSequenceRepeat + 1,
+      );
+    }
+
+    final nextIndex =
+        (current.currentSequenceIndex + 1) % sequence.items.length;
+    final nextJangdan = sequence.items[nextIndex].jangdan;
+    return current.copyWith(
+      currentSequenceIndex: nextIndex,
+      currentSequenceRepeat: 1,
+      selectedJangdan: nextJangdan,
+      bpm: nextJangdan.bpm,
+    );
+  }
+
+  MetronomeState _syncCurrentSequenceItem(
+    MetronomeState current,
+    Jangdan updatedJangdan,
+  ) {
+    final sequence = current.currentSequence;
+    if (sequence == null) return current;
+    final updatedItems = [...sequence.items];
+    final index = current.currentSequenceIndex;
+    updatedItems[index] = updatedItems[index].copyWith(jangdan: updatedJangdan);
+    return current.copyWith(
+      currentSequence: sequence.copyWith(items: updatedItems),
+    );
   }
 }

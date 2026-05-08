@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
+import 'package:hanbae/data/jangdan_sequence_repository.dart';
 import 'package:hanbae/model/jangdan.dart';
+import 'package:hanbae/model/jangdan_sequence.dart';
 import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/presentation/metronome/hanbae_board.dart';
 import 'package:hanbae/presentation/metronome/metronome_control.dart';
@@ -12,16 +14,18 @@ import 'package:hanbae/theme/text_styles.dart';
 import 'package:hanbae/utils/local_storage.dart';
 import 'package:hanbae/presentation/metronome/metronome_onboarding_overlay.dart';
 
-enum AppBarMode { builtin, custom, create }
+enum AppBarMode { builtin, custom, create, sequence }
 
 class MetronomeScreen extends StatefulWidget {
   final Jangdan jangdan;
+  final JangdanSequence? sequence;
   final AppBarMode appBarMode;
   final bool forceShowOnboarding;
 
   const MetronomeScreen({
     super.key,
     required this.jangdan,
+    this.sequence,
     this.appBarMode = AppBarMode.builtin,
     this.forceShowOnboarding = false,
   });
@@ -39,6 +43,13 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.sequence != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.read<MetronomeBloc>().add(SelectSequence(widget.sequence!));
+        }
+      });
+    }
     if (widget.forceShowOnboarding) {
       _showOnboarding = true;
       _onboardingStep = 0;
@@ -92,6 +103,10 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
         return '${selected.jangdanType.label} | ${selected.name}';
       case AppBarMode.create:
         return '${selected.jangdanType.label} 장단 만들기';
+      case AppBarMode.sequence:
+        return context.watch<MetronomeBloc>().state.currentSequence?.name ??
+            widget.sequence?.name ??
+            selected.name;
     }
   }
 
@@ -419,6 +434,125 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
             ),
           ),
         ];
+      case AppBarMode.sequence:
+        return [
+          IconButton(
+            icon: Icon(Icons.replay),
+            onPressed: () {
+              final current =
+                  context.read<MetronomeBloc>().state.currentSequence ??
+                  widget.sequence;
+              if (current == null) return;
+              final sequence =
+                  JangdanSequenceRepository().get(current.name) ?? current;
+              context.read<MetronomeBloc>().add(Stop());
+              context.read<MetronomeBloc>().add(
+                ReplaceCurrentSequence(sequence),
+              );
+            },
+          ),
+          PopupMenuButton<String>(
+            icon: Icon(Icons.pending_outlined),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            color: AppColors.backgroundElevated,
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    value: 'update',
+                    child: Text('변경사항 저장하기', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: 'save',
+                    child: Text('다른 이름으로 저장', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: 'rename',
+                    child: Text('장단이름 변경하기', style: AppTextStyles.bodyR),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Text('장단 삭제하기', style: AppTextStyles.bodyR),
+                  ),
+                ],
+            onSelected: _handleSequenceMenu,
+          ),
+        ];
+    }
+  }
+
+  Future<void> _handleSequenceMenu(String value) async {
+    final bloc = context.read<MetronomeBloc>();
+    final current = bloc.state.currentSequence ?? widget.sequence;
+    if (current == null) return;
+
+    switch (value) {
+      case 'update':
+        context.read<JangdanBloc>().add(
+          UpdateJangdanSequence(current.name, current),
+        );
+        break;
+      case 'save':
+      case 'rename':
+        final controller = TextEditingController(
+          text: value == 'rename' ? current.name : '',
+        );
+        final result = await showDialog<String>(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                backgroundColor: AppColors.backgroundElevated,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                title: Text(
+                  value == 'rename' ? '장단이름 변경하기' : '다른 이름으로 저장',
+                  style: TextStyle(color: AppColors.labelPrimary),
+                ),
+                content: TextField(
+                  controller: controller,
+                  maxLength: 10,
+                  autofocus: true,
+                  cursorColor: AppColors.brandNormal,
+                  decoration: const InputDecoration(hintText: '장단 이름을 입력하세요'),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      '취소',
+                      style: TextStyle(color: AppColors.labelSecondary),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, controller.text),
+                    child: Text(
+                      value == 'rename' ? '변경' : '저장',
+                      style: TextStyle(color: AppColors.brandNormal),
+                    ),
+                  ),
+                ],
+              ),
+        );
+        if (result == null || result.trim().isEmpty) return;
+        final renamed = current.copyWith(name: result.trim());
+        if (value == 'rename') {
+          context.read<JangdanBloc>().add(
+            UpdateJangdanSequence(current.name, renamed),
+          );
+        } else {
+          context.read<JangdanBloc>().add(
+            AddJangdanSequence(renamed.copyWith(createdAt: DateTime.now())),
+          );
+        }
+        bloc.add(ReplaceCurrentSequence(renamed));
+        break;
+      case 'delete':
+        context.read<JangdanBloc>().add(DeleteJangdanSequence(current.name));
+        bloc.add(Stop());
+        Navigator.pop(context);
+        break;
     }
   }
 
@@ -524,6 +658,8 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                               BlocBuilder<MetronomeBloc, MetronomeState>(
                                 builder: (context, state) => HanbaeBoard(),
                               ),
+                              if (widget.appBarMode == AppBarMode.sequence)
+                                _SequenceStateBar(),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16.0,
@@ -578,6 +714,89 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
             ),
         ],
       ),
+    );
+  }
+}
+
+class _SequenceStateBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<MetronomeBloc>().state;
+    final sequence = state.currentSequence;
+    if (sequence == null || sequence.items.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    final item = sequence.items[state.currentSequenceIndex];
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => _showSequenceSheet(context, sequence),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundMute,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.queue_music_rounded, color: AppColors.orange8),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  item.jangdan.jangdanType.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.bodySb.copyWith(
+                    color: AppColors.labelDefault,
+                  ),
+                ),
+              ),
+              Text(
+                '${state.currentSequenceRepeat}/${item.repeatCount}회',
+                style: AppTextStyles.calloutR.copyWith(
+                  color: AppColors.labelSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showSequenceSheet(BuildContext context, JangdanSequence sequence) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.backgroundElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: sequence.items.length,
+            itemBuilder: (context, index) {
+              final item = sequence.items[index];
+              return ListTile(
+                title: Text(item.jangdan.name, style: AppTextStyles.bodySb),
+                subtitle: Text(
+                  '${item.jangdan.jangdanType.label} · ${item.repeatCount}회',
+                ),
+                onTap: () {
+                  sheetContext.read<MetronomeBloc>().add(
+                    JumpToSequenceItem(index),
+                  );
+                  Navigator.pop(sheetContext);
+                },
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

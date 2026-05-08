@@ -34,6 +34,31 @@ class UpdateJangdan extends JangdanEvent {
   List<Object?> get props => [key, jangdan];
 }
 
+class AddJangdanSequence extends JangdanEvent {
+  final JangdanSequence sequence;
+  const AddJangdanSequence(this.sequence);
+
+  @override
+  List<Object?> get props => [sequence];
+}
+
+class UpdateJangdanSequence extends JangdanEvent {
+  final String key;
+  final JangdanSequence sequence;
+  const UpdateJangdanSequence(this.key, this.sequence);
+
+  @override
+  List<Object?> get props => [key, sequence];
+}
+
+class DeleteJangdanSequence extends JangdanEvent {
+  final String key;
+  const DeleteJangdanSequence(this.key);
+
+  @override
+  List<Object?> get props => [key];
+}
+
 class ChangeJangdanCategory extends JangdanEvent {
   final JangdanCategory category;
   const ChangeJangdanCategory(this.category);

@@ -15,6 +15,30 @@ class SelectJangdan extends MetronomeEvent {
   List<Object?> get props => [jangdan];
 }
 
+class SelectSequence extends MetronomeEvent {
+  final JangdanSequence sequence;
+  const SelectSequence(this.sequence);
+
+  @override
+  List<Object?> get props => [sequence];
+}
+
+class JumpToSequenceItem extends MetronomeEvent {
+  final int index;
+  const JumpToSequenceItem(this.index);
+
+  @override
+  List<Object?> get props => [index];
+}
+
+class ReplaceCurrentSequence extends MetronomeEvent {
+  final JangdanSequence sequence;
+  const ReplaceCurrentSequence(this.sequence);
+
+  @override
+  List<Object?> get props => [sequence];
+}
+
 class Play extends MetronomeEvent {
   final AppBarMode appState;
   const Play({this.appState = AppBarMode.builtin});

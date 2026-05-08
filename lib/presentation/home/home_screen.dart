@@ -7,6 +7,7 @@ import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/model/jangdan_category.dart';
+import 'package:hanbae/model/saved_jangdan_item.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -28,7 +29,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   //크리스마스 팝업
   @override
   void initState() {
@@ -36,8 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final now = DateTime.now();
-      final isChristmas =
-          (now.month == 12 && now.day == 25);
+      final isChristmas = (now.month == 12 && now.day == 25);
 
       if (!isChristmas) return;
 
@@ -69,8 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Jangdan?> jangdanList = selectedCategory.list ?? state.jangdans;
     final categories = JangdanCategory.values;
     final isCustomCategory = selectedCategory == JangdanCategory.custom;
+    final savedItems = state.savedItems;
 
-    final List<Jangdan> recentPlayedJangdanList = state.recentJangdans;
+    final recentItems = state.recentItems;
 
     final bannerList = [
       {
@@ -131,8 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return;
                               }
                               if (action == "onboarding") {
-                                final jangdan =
-                                    basicJangdanData["자진모리"];
+                                final jangdan = basicJangdanData["자진모리"];
                                 if (jangdan == null) {
                                   return;
                                 }
@@ -169,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            if (recentPlayedJangdanList.isNotEmpty) ...[
+            if (recentItems.isNotEmpty) ...[
               const SizedBox(height: 24),
 
               // 최근 연습
@@ -193,27 +192,41 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       spacing: 4,
                       children: List.generate(3, (index) {
-                        if (index >= recentPlayedJangdanList.length) {
+                        if (index >= recentItems.length) {
                           return const Expanded(child: SizedBox());
                         }
 
-                        final jangdan = recentPlayedJangdanList[index];
+                        final item = recentItems[index];
+                        final jangdan = item.jangdan;
+                        final sequence = item.sequence;
+                        final isSequence =
+                            item.kind == SavedJangdanItemKind.sequence;
                         final isCustomJangdan =
-                            jangdan.name != jangdan.jangdanType.label;
+                            isSequence ||
+                            jangdan!.name != jangdan.jangdanType.label;
 
                         return Expanded(
                           child: InkWell(
                             onTap: () {
                               context.read<MetronomeBloc>().add(
-                                SelectJangdan(jangdan),
+                                isSequence
+                                    ? SelectSequence(sequence!)
+                                    : SelectJangdan(jangdan!),
                               );
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder:
                                       (context) => MetronomeScreen(
-                                        jangdan: jangdan,
-                                        appBarMode: AppBarMode.custom,
+                                        jangdan:
+                                            isSequence
+                                                ? sequence!.items.first.jangdan
+                                                : jangdan!,
+                                        sequence: sequence,
+                                        appBarMode:
+                                            isSequence
+                                                ? AppBarMode.sequence
+                                                : AppBarMode.custom,
                                       ),
                                 ),
                               );
@@ -264,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     children: [
                                       isCustomJangdan
                                           ? Text(
-                                            jangdan.name,
+                                            item.name,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: AppTextStyles.calloutSb
@@ -284,7 +297,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           ),
                                       Text(
-                                        jangdan.jangdanType.label,
+                                        isSequence
+                                            ? '장단 모음집'
+                                            : jangdan!.jangdanType.label,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style:
@@ -439,7 +454,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child:
                   isCustomCategory
                       // 커스텀 장단 리스트
-                      ? jangdanList.isEmpty
+                      ? savedItems.isEmpty
                           ? Column(
                             children: [
                               SizedBox(height: 10),
@@ -508,23 +523,39 @@ class _HomeScreenState extends State<HomeScreen> {
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             scrollDirection: Axis.vertical,
-                            itemCount: jangdanList.length,
+                            itemCount: savedItems.length,
                             separatorBuilder:
                                 (context, index) => SizedBox(height: 0),
                             itemBuilder: (context, index) {
-                              final jangdan = jangdanList[index]!;
+                              final item = savedItems[index];
+                              final jangdan = item.jangdan;
+                              final sequence = item.sequence;
+                              final isSequence =
+                                  item.kind == SavedJangdanItemKind.sequence;
                               return InkWell(
                                 onTap: () {
                                   context.read<MetronomeBloc>().add(
-                                    SelectJangdan(jangdan),
+                                    isSequence
+                                        ? SelectSequence(sequence!)
+                                        : SelectJangdan(jangdan!),
                                   );
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder:
                                           (context) => MetronomeScreen(
-                                            jangdan: jangdan,
-                                            appBarMode: AppBarMode.custom,
+                                            jangdan:
+                                                isSequence
+                                                    ? sequence!
+                                                        .items
+                                                        .first
+                                                        .jangdan
+                                                    : jangdan!,
+                                            sequence: sequence,
+                                            appBarMode:
+                                                isSequence
+                                                    ? AppBarMode.sequence
+                                                    : AppBarMode.custom,
                                           ),
                                     ),
                                   );
@@ -548,9 +579,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                           Container(
                                             decoration: BoxDecoration(
                                               color: AppColors.orange13,
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(10),
-                                              ),
+                                              shape:
+                                                  isSequence
+                                                      ? BoxShape.circle
+                                                      : BoxShape.rectangle,
+                                              borderRadius:
+                                                  isSequence
+                                                      ? null
+                                                      : BorderRadius.all(
+                                                        Radius.circular(10),
+                                                      ),
                                             ),
                                             child: SizedBox(
                                               width: 64,
@@ -559,14 +597,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 child: SizedBox(
                                                   width: 36,
                                                   height: 36,
-                                                  child: SvgPicture.asset(
-                                                    "assets/${jangdan.jangdanType.logoAssetPath}",
-                                                    colorFilter:
-                                                        ColorFilter.mode(
-                                                          AppColors.orange8,
-                                                          BlendMode.srcIn,
-                                                        ),
-                                                  ),
+                                                  child:
+                                                      isSequence
+                                                          ? SvgPicture.asset(
+                                                            'assets/images/logos/Sequence.svg',
+                                                            colorFilter:
+                                                                const ColorFilter.mode(
+                                                                  AppColors
+                                                                      .orange8,
+                                                                  BlendMode
+                                                                      .srcIn,
+                                                                ),
+                                                          )
+                                                          : SvgPicture.asset(
+                                                            "assets/${jangdan!.jangdanType.logoAssetPath}",
+                                                            colorFilter:
+                                                                ColorFilter.mode(
+                                                                  AppColors
+                                                                      .orange8,
+                                                                  BlendMode
+                                                                      .srcIn,
+                                                                ),
+                                                          ),
                                                 ),
                                               ),
                                             ),
@@ -579,7 +631,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                jangdan.name,
+                                                item.name,
                                                 style: AppTextStyles.bodySb
                                                     .copyWith(
                                                       color:
@@ -591,7 +643,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                               const SizedBox(height: 4),
 
                                               Text(
-                                                jangdan.jangdanType.label,
+                                                isSequence
+                                                    ? ''
+                                                    : jangdan!
+                                                        .jangdanType
+                                                        .label,
                                                 style: AppTextStyles
                                                     .subheadlineR
                                                     .copyWith(
@@ -606,7 +662,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           Spacer(),
 
                                           Text(
-                                            formatDateShort(jangdan.createdAt),
+                                            formatDateShort(item.createdAt),
                                             style: AppTextStyles.subheadlineR
                                                 .copyWith(
                                                   color:

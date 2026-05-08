@@ -17,6 +17,9 @@ class MetronomeState extends Equatable {
   /// 예비박 여부
   final bool reserveBeat;
   final int reserveBeatTime;
+  final JangdanSequence? currentSequence;
+  final int currentSequenceIndex;
+  final int currentSequenceRepeat;
 
   const MetronomeState({
     required this.selectedJangdan,
@@ -32,6 +35,9 @@ class MetronomeState extends Equatable {
     required this.minimum,
     required this.reserveBeat,
     this.reserveBeatTime = 0,
+    this.currentSequence,
+    this.currentSequenceIndex = 0,
+    this.currentSequenceRepeat = 1,
   });
 
   MetronomeState copyWith({
@@ -48,6 +54,10 @@ class MetronomeState extends Equatable {
     bool? minimum,
     bool? reserveBeat,
     int? reserveBeatTime,
+    JangdanSequence? currentSequence,
+    bool clearSequence = false,
+    int? currentSequenceIndex,
+    int? currentSequenceRepeat,
   }) {
     return MetronomeState(
       selectedJangdan: selectedJangdan ?? this.selectedJangdan,
@@ -63,6 +73,11 @@ class MetronomeState extends Equatable {
       minimum: minimum ?? this.minimum,
       reserveBeat: reserveBeat ?? this.reserveBeat,
       reserveBeatTime: reserveBeatTime ?? this.reserveBeatTime,
+      currentSequence:
+          clearSequence ? null : currentSequence ?? this.currentSequence,
+      currentSequenceIndex: currentSequenceIndex ?? this.currentSequenceIndex,
+      currentSequenceRepeat:
+          currentSequenceRepeat ?? this.currentSequenceRepeat,
     );
   }
 
@@ -81,5 +96,8 @@ class MetronomeState extends Equatable {
     minimum,
     reserveBeat,
     reserveBeatTime,
+    currentSequence,
+    currentSequenceIndex,
+    currentSequenceRepeat,
   ];
 }
