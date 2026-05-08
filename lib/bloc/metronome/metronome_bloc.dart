@@ -70,6 +70,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           selectedJangdan: event.jangdan,
           bpm: event.jangdan.bpm,
           clearSequence: true,
+          skipNextSequenceAdvance: false,
         ),
       );
     });
@@ -84,6 +85,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentSequence: sequence,
           currentSequenceIndex: 0,
           currentSequenceRepeat: 1,
+          skipNextSequenceAdvance: true,
         ),
       );
     });
@@ -105,6 +107,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentRowIndex: item.jangdan.accents.length - 1,
           currentDaebakIndex: item.jangdan.accents.last.length - 1,
           currentSobakIndex: item.jangdan.accents.last.last.length - 1,
+          skipNextSequenceAdvance: true,
         ),
       );
     });
@@ -118,6 +121,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentSequenceRepeat: 1,
           selectedJangdan: event.sequence.items.first.jangdan,
           bpm: event.sequence.items.first.jangdan.bpm,
+          skipNextSequenceAdvance: true,
         ),
       );
     });
@@ -154,6 +158,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           currentRowIndex: lastRowIndex,
           currentDaebakIndex: lastDaebakIndex,
           currentSobakIndex: lastSobakIndex,
+          skipNextSequenceAdvance: state.currentSequence != null,
         ),
       );
 
@@ -189,7 +194,8 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     });
 
     on<Tick>((event, emit) async {
-      final jangdan = state.selectedJangdan;
+      var tickState = state;
+      var jangdan = tickState.selectedJangdan;
       int row = state.currentRowIndex;
       int daebak = state.currentDaebakIndex;
       int sobak = state.currentSobakIndex;
@@ -207,23 +213,31 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         sobak = 0;
       }
 
-      final accent = jangdan.accents[row][daebak][sobak];
-      if (state.isSobakOn || sobak == 0) {
-        if (accent != Accent.none) {
-          SoundManager.play(state.currentSound, accent);
+      final completedCycle = row == 0 && daebak == 0 && sobak == 0;
+      if (completedCycle && tickState.currentSequence != null) {
+        if (tickState.skipNextSequenceAdvance) {
+          tickState = tickState.copyWith(skipNextSequenceAdvance: false);
+        } else {
+          tickState = _advanceSequence(tickState);
+          jangdan = tickState.selectedJangdan;
+          row = 0;
+          daebak = 0;
+          sobak = 0;
         }
       }
 
-      final completedCycle = row == 0 && daebak == 0 && sobak == 0;
-      var nextState = state.copyWith(
+      final accent = jangdan.accents[row][daebak][sobak];
+      if (tickState.isSobakOn || sobak == 0) {
+        if (accent != Accent.none) {
+          SoundManager.play(tickState.currentSound, accent);
+        }
+      }
+
+      final nextState = tickState.copyWith(
         currentRowIndex: row,
         currentDaebakIndex: daebak,
         currentSobakIndex: sobak,
       );
-
-      if (completedCycle && nextState.currentSequence != null) {
-        nextState = _advanceSequence(nextState);
-      }
 
       emit(nextState);
     });
@@ -270,6 +284,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
             currentSequenceRepeat: 1,
             selectedJangdan: first,
             bpm: first.bpm,
+            skipNextSequenceAdvance: true,
           ),
         );
       } else {
@@ -448,6 +463,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     if (current.currentSequenceRepeat < item.repeatCount) {
       return current.copyWith(
         currentSequenceRepeat: current.currentSequenceRepeat + 1,
+        skipNextSequenceAdvance: false,
       );
     }
 
@@ -459,6 +475,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       currentSequenceRepeat: 1,
       selectedJangdan: nextJangdan,
       bpm: nextJangdan.bpm,
+      skipNextSequenceAdvance: false,
     );
   }
 

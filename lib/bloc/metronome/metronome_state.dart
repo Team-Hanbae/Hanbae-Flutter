@@ -20,6 +20,7 @@ class MetronomeState extends Equatable {
   final JangdanSequence? currentSequence;
   final int currentSequenceIndex;
   final int currentSequenceRepeat;
+  final bool skipNextSequenceAdvance;
 
   const MetronomeState({
     required this.selectedJangdan,
@@ -38,6 +39,7 @@ class MetronomeState extends Equatable {
     this.currentSequence,
     this.currentSequenceIndex = 0,
     this.currentSequenceRepeat = 1,
+    this.skipNextSequenceAdvance = false,
   });
 
   MetronomeState copyWith({
@@ -58,6 +60,7 @@ class MetronomeState extends Equatable {
     bool clearSequence = false,
     int? currentSequenceIndex,
     int? currentSequenceRepeat,
+    bool? skipNextSequenceAdvance,
   }) {
     return MetronomeState(
       selectedJangdan: selectedJangdan ?? this.selectedJangdan,
@@ -78,6 +81,8 @@ class MetronomeState extends Equatable {
       currentSequenceIndex: currentSequenceIndex ?? this.currentSequenceIndex,
       currentSequenceRepeat:
           currentSequenceRepeat ?? this.currentSequenceRepeat,
+      skipNextSequenceAdvance:
+          skipNextSequenceAdvance ?? this.skipNextSequenceAdvance,
     );
   }
 
@@ -99,5 +104,6 @@ class MetronomeState extends Equatable {
     currentSequence,
     currentSequenceIndex,
     currentSequenceRepeat,
+    skipNextSequenceAdvance,
   ];
 }
