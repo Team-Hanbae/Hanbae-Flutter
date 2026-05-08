@@ -105,8 +105,15 @@ class _JangdanSequenceCreateScreenState
         }
       },
       child: PopScope(
+        canPop: _step == 0,
         onPopInvokedWithResult: (didPop, result) {
-          if (didPop) _reset();
+          if (didPop) {
+            _reset();
+            return;
+          }
+          if (_step > 0) {
+            setState(() => _step -= 1);
+          }
         },
         child: Scaffold(
           backgroundColor: AppColors.backgroundDefault,
