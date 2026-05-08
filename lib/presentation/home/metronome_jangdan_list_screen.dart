@@ -8,7 +8,6 @@ import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/model/saved_jangdan_item.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
-import 'package:hanbae/presentation/sequence/jangdan_sequence_create_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
 import 'package:hanbae/utils/date_format.dart';
@@ -78,20 +77,6 @@ class MetronomeJangdanListScreen extends StatelessWidget {
                                         builder:
                                             (context) =>
                                                 CustomJangdanCreateScreen(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              if (!isEditing)
-                                IconButton(
-                                  icon: Icon(Icons.library_add_outlined),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) =>
-                                                const JangdanSequenceCreateScreen(),
                                       ),
                                     );
                                   },

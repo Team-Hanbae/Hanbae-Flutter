@@ -10,6 +10,7 @@ import 'package:hanbae/model/jangdan_category.dart';
 import 'package:hanbae/model/saved_jangdan_item.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
+import 'package:hanbae/presentation/sequence/jangdan_sequence_create_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
@@ -331,15 +332,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               const SizedBox(height: 32),
-
-              Container(
-                width: double.infinity,
-                height: 10,
-                color: AppColors.backgroundDark,
-              ),
             ],
 
             //최근 연습 끝
+            _SequenceCreateBanner(),
+
             const SizedBox(height: 24),
 
             // 장단 카테고리
@@ -803,6 +800,112 @@ class _HomeScreenState extends State<HomeScreen> {
         top: false,
         child: FixedBannerAd(adUnitId: AdMobIds.bannerAdUnitId),
       ),
+    );
+  }
+}
+
+class _SequenceCreateBanner extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          height: 10,
+          color: AppColors.backgroundDark,
+        ),
+        const SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(500),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const JangdanSequenceCreateScreen(),
+                ),
+              );
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(500),
+              child: SizedBox(
+                height: 78,
+                width: double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset(
+                      'assets/images/img_Sequence.png',
+                      fit: BoxFit.cover,
+                    ),
+                    Positioned(
+                      left: 27,
+                      top: 14,
+                      child: Row(
+                        children: [
+                          Text(
+                            '장단 연속연습',
+                            style: AppTextStyles.title2B.copyWith(
+                              color: AppColors.labelPrimary,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF131313),
+                              borderRadius: BorderRadius.circular(500),
+                            ),
+                            child: Text(
+                              '새로운 기능!',
+                              style: AppTextStyles.footnoteSb.copyWith(
+                                color: AppColors.labelDefault,
+                                fontSize: 13,
+                                height: 18 / 13,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      left: 28,
+                      top: 44,
+                      child: Text(
+                        '서로 다른 장단을 이어서 연습해보세요!',
+                        style: AppTextStyles.subheadlineR.copyWith(
+                          color: AppColors.labelPrimary,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 17,
+                      top: 19,
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.labelPrimary.withAlpha(77),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.chevron_right_rounded,
+                          color: AppColors.labelPrimary,
+                          size: 32,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
