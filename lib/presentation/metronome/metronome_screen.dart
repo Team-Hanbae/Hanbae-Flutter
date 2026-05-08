@@ -655,10 +655,15 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                         child: IntrinsicHeight(
                           child: Column(
                             children: [
-                              if (widget.appBarMode == AppBarMode.sequence)
-                                _SequenceStateBar(),
                               BlocBuilder<MetronomeBloc, MetronomeState>(
-                                builder: (context, state) => HanbaeBoard(),
+                                builder:
+                                    (context, state) => HanbaeBoard(
+                                      header:
+                                          widget.appBarMode ==
+                                                  AppBarMode.sequence
+                                              ? _SequenceStateBar()
+                                              : null,
+                                    ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(

@@ -7,7 +7,9 @@ import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart'; // Import the MetronomeBloc
 
 class HanbaeBoard extends StatelessWidget {
-  const HanbaeBoard({super.key});
+  final Widget? header;
+
+  const HanbaeBoard({super.key, this.header});
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +36,12 @@ class HanbaeBoard extends StatelessWidget {
         children: [
           Column(
             children: [
+              if (header != null) header!,
               SizedBox(
                 height:
-                    (jangdan.jangdanType.sobakSegmentCount != null)
+                    header != null
+                        ? 8.0
+                        : (jangdan.jangdanType.sobakSegmentCount != null)
                         ? 16.0
                         : 28.0,
               ),
@@ -157,13 +162,14 @@ class SobakSegment extends StatelessWidget {
                     return Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: !isSobakOn || !isPlaying || reserveBeat != 0
-                                ? AppColors.frame
-                                : (activedSobak * 2 == index
-                                    ? (index == 0
-                                        ? AppColors.sobakSegmentDaebak
-                                        : AppColors.sobakSegmentSobak)
-                                    : AppColors.frame),
+                          color:
+                              !isSobakOn || !isPlaying || reserveBeat != 0
+                                  ? AppColors.frame
+                                  : (activedSobak * 2 == index
+                                      ? (index == 0
+                                          ? AppColors.sobakSegmentDaebak
+                                          : AppColors.sobakSegmentSobak)
+                                      : AppColors.frame),
                         ),
                       ),
                     );
@@ -351,18 +357,20 @@ class Bakbar extends StatelessWidget {
             // 주황 박스
             Align(
               alignment: Alignment.bottomCenter,
-              child: fillFraction == 0
-              ? SizedBox.shrink()
-              : FractionallySizedBox(
-                  heightFactor: fillFraction,
-                  widthFactor: 1.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: isActive ? AppColors.bakBarGradient : null,
-                      color: isActive ? null : AppColors.bakBarInactive,
-                    ),
-                  ),
-                ),
+              child:
+                  fillFraction == 0
+                      ? SizedBox.shrink()
+                      : FractionallySizedBox(
+                        heightFactor: fillFraction,
+                        widthFactor: 1.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient:
+                                isActive ? AppColors.bakBarGradient : null,
+                            color: isActive ? null : AppColors.bakBarInactive,
+                          ),
+                        ),
+                      ),
             ),
 
             // 상단 숫자
