@@ -266,6 +266,38 @@ List<Jangdan> basicJangdanList = [
       ],
     ],
   ),
+  Jangdan(
+    name: "칠채",
+    createdAt: DateTime.now(),
+    bpm: 110,
+    jangdanType: JangdanType.chilchae,
+    accents: [
+      [
+        [Accent.strong, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.none],
+      ],
+      [
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.none],
+      ],
+      [
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+        [Accent.medium, Accent.none, Accent.none],
+        [Accent.weak, Accent.none, Accent.none],
+      ],
+    ],
+  ),
   // 정악
   Jangdan(
     name: "상령산, 중령산",

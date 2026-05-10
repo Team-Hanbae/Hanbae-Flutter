@@ -2,6 +2,10 @@
 
 part of 'jangdan_sequence.dart';
 
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
 class JangdanSequenceAdapter extends TypeAdapter<JangdanSequence> {
   @override
   final int typeId = 4;

@@ -49,6 +49,9 @@ enum JangdanType {
   dodeuri,
   @HiveField(19)
   noraetgarak,
+  // 칠채(사물놀이 추가)
+  @HiveField(20)
+  chilchae,
 }
 
 extension JangdanTypeExtension on JangdanType {
@@ -69,7 +72,8 @@ extension JangdanTypeExtension on JangdanType {
       case JangdanType.jwajilgut: return "좌질굿";
       case JangdanType.ginyeombul: return "긴염불";
       case JangdanType.banyeombul: return "반염불";
-      
+      case JangdanType.chilchae: return "칠채";
+
       // 정악
       case JangdanType.sangnyeongsan: return "상령산, 중령산";
       case JangdanType.seryeongsan: return "세령산, 가락덜이";
@@ -97,6 +101,7 @@ extension JangdanTypeExtension on JangdanType {
       case JangdanType.jwajilgut: return "images/logos/Jwajilgut.svg";
       case JangdanType.ginyeombul: return "images/logos/Ginyeombul.svg";
       case JangdanType.banyeombul: return "images/logos/Banyeombul.svg";
+      case JangdanType.chilchae: return "images/logos/Chilchae.svg";
       // 정악
       case JangdanType.sangnyeongsan: return "images/logos/Sangnyeongsan.svg";
       case JangdanType.seryeongsan: return "images/logos/Seryeongsan.svg";
@@ -133,6 +138,7 @@ extension JangdanTypeExtension on JangdanType {
       case JangdanType.jwajilgut: return "사물놀이";
       case JangdanType.ginyeombul: return "6박 3소박";
       case JangdanType.banyeombul: return "6박 3소박";
+      case JangdanType.chilchae: return "사물놀이";
       // 정악
       case JangdanType.sangnyeongsan: return "4대강 20정간";
       case JangdanType.seryeongsan: return "4대강 10정간";

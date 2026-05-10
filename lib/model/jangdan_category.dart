@@ -55,6 +55,7 @@ extension JangdanCategoryExtension on JangdanCategory {
           basicJangdanData[JangdanType.jajinmori.label],
           basicJangdanData[JangdanType.hwimori.label],
           basicJangdanData[JangdanType.jwajilgut.label],
+          basicJangdanData[JangdanType.chilchae.label],
         ];
       case JangdanCategory.custom:
         return null;
