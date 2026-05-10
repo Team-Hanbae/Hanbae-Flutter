@@ -75,10 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final bannerList = [
       {
-        "image": "assets/images/banner/JeongakBanner.png",
-        "link": "https://forms.gle/BxXn9vp7qWVQ6eoQA",
-      },
-      {
         "image": "assets/images/banner/SurveyBanner.png",
         "link": "https://forms.gle/pKarubn5MPXkudgw6",
       },
