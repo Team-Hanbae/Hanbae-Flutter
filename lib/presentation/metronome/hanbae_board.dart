@@ -379,13 +379,22 @@ class Bakbar extends StatelessWidget {
                 top: 20,
                 left: 0,
                 right: 0,
-                child: Text(
-                  bakNumber.toString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: AppColors.labelPrimary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.center,
+                    child: Text(
+                      bakNumber.toString(),
+                      maxLines: 1,
+                      softWrap: false,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: AppColors.labelPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ),
