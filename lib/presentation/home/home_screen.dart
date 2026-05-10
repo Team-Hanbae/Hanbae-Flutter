@@ -11,6 +11,7 @@ import 'package:hanbae/model/saved_jangdan_item.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
 import 'package:hanbae/presentation/sequence/jangdan_sequence_create_screen.dart';
+import 'package:hanbae/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
@@ -816,6 +817,7 @@ class _SequenceCreateBanner extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(500),
             onTap: () {
+              mixpanel.track('sequence_entry_click');
               Navigator.push(
                 context,
                 MaterialPageRoute(
