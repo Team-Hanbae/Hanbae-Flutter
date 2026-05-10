@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
+import 'package:hanbae/data/analytics_service.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/model/jangdan_category.dart';
@@ -11,7 +12,6 @@ import 'package:hanbae/model/saved_jangdan_item.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
 import 'package:hanbae/presentation/sequence/jangdan_sequence_create_screen.dart';
-import 'package:hanbae/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
@@ -817,7 +817,7 @@ class _SequenceCreateBanner extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(500),
             onTap: () {
-              mixpanel.track('sequence_entry_click');
+              analytics.sequenceEntryClick();
               Navigator.push(
                 context,
                 MaterialPageRoute(

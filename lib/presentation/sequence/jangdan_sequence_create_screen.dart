@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
+import 'package:hanbae/data/analytics_service.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/model/jangdan_sequence.dart';
 import 'package:hanbae/model/jangdan_type.dart';
-import 'package:hanbae/main.dart';
 import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
@@ -69,10 +69,7 @@ class _JangdanSequenceCreateScreenState
         jangdan: _selectedJangdans[index],
       ),
     );
-    final properties = {
-      for (final jangdan in _selectedJangdans) jangdan.jangdanType.label: true,
-    };
-    mixpanel.track('sequence_save', properties: properties);
+    analytics.sequenceSave(_selectedJangdans);
     setState(() => _awaitingSave = true);
     context.read<JangdanBloc>().add(
       AddJangdanSequence(
