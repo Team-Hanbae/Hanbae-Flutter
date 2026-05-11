@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
+import 'package:hanbae/data/analytics_service.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/model/jangdan_sequence.dart';
 import 'package:hanbae/model/jangdan_type.dart';
@@ -68,6 +69,7 @@ class _JangdanSequenceCreateScreenState
         jangdan: _selectedJangdans[index],
       ),
     );
+    analytics.sequenceSave(_selectedJangdans);
     setState(() => _awaitingSave = true);
     context.read<JangdanBloc>().add(
       AddJangdanSequence(

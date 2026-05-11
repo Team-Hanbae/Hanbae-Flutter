@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hanbae/data/analytics_service.dart';
 import 'package:hanbae/data/local_logger.dart';
-import 'package:hanbae/main.dart';
 import 'package:hanbae/model/accent.dart';
 import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/model/local_log.dart';
@@ -259,15 +259,11 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           ),
         );
 
-        mixpanel.track(
-          'metronome_play',
-          properties: {
-            'duration': roundedDuration,
-            'sound_type': state.currentSound.label,
-            'jangdan_type': jangdanType,
-            'jangdan_name':
-                jangdanType == jangdanName ? "template" : jangdanName,
-          },
+        analytics.metronomePlay(
+          duration: roundedDuration,
+          soundType: state.currentSound.label,
+          jangdanType: jangdanType,
+          jangdanName: jangdanType == jangdanName ? "template" : jangdanName,
         );
         _playStartTime = null;
       }

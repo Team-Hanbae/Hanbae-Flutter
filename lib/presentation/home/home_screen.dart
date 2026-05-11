@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
+import 'package:hanbae/data/analytics_service.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/model/jangdan_category.dart';
@@ -816,6 +817,7 @@ class _SequenceCreateBanner extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(500),
             onTap: () {
+              analytics.sequenceEntryClick();
               Navigator.push(
                 context,
                 MaterialPageRoute(

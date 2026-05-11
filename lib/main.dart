@@ -15,13 +15,12 @@ import 'package:hanbae/model/jangdan_type.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/jangdan_repository.dart';
 import 'package:hanbae/data/jangdan_sequence_repository.dart';
+import 'package:hanbae/data/analytics_service.dart';
 import 'package:flutter/services.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
-late Mixpanel mixpanel;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +49,11 @@ void main() async {
             ? dotenv.env['MIXPANEL_DEV_TOKEN']!
             : dotenv.env['MIXPANEL_PROD_TOKEN']!;
 
-    mixpanel = await Mixpanel.init(mixpanelToken, trackAutomaticEvents: false);
+    final mixpanel = await Mixpanel.init(
+      mixpanelToken,
+      trackAutomaticEvents: false,
+    );
+    analytics.setMixpanel(mixpanel);
   } catch (e) {
     print(e.toString());
   }
