@@ -99,44 +99,46 @@ class MetronomeOnboardingOverlay extends StatelessWidget {
       right: position.right,
       top: position.top,
       bottom: position.bottom,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            content.description,
-            style: AppTextStyles.title3Sb.copyWith(
-              color: AppColors.labelDefault,
+      child: IgnorePointer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              content.description,
+              style: AppTextStyles.title3Sb.copyWith(
+                color: AppColors.labelDefault,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          Align(
-            alignment: Alignment.center,
-            child: SizedBox(
-              width: 60,
-              child: Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
-                children: [
-                  Text(
-                    '다음',
-                    style: AppTextStyles.title3R.copyWith(
-                      color: AppColors.labelDefault,
+            const SizedBox(height: 16),
+            Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 60,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
+                  children: [
+                    Text(
+                      '다음',
+                      style: AppTextStyles.title3R.copyWith(
+                        color: AppColors.labelDefault,
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    right: -15,
-                    child: Image.asset(
-                      'assets/images/icon/Onboarding_Next.png',
-                      width: 22,
-                      height: 28,
+                    Positioned(
+                      right: -15,
+                      child: Image.asset(
+                        'assets/images/icon/Onboarding_Next.png',
+                        width: 22,
+                        height: 28,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
