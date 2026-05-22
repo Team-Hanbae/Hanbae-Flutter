@@ -6,6 +6,7 @@ import 'package:hanbae/data/analytics_service.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/model/jangdan_sequence.dart';
 import 'package:hanbae/model/jangdan_type.dart';
+import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
@@ -33,6 +34,7 @@ class _JangdanSequenceCreateScreenState
   }
 
   Future<void> _openPicker(List<Jangdan> jangdans) async {
+    final screenContext = context;
     final picked = await showModalBottomSheet<List<Jangdan>>(
       context: context,
       isScrollControlled: true,
@@ -40,7 +42,19 @@ class _JangdanSequenceCreateScreenState
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (context) => _JangdanMultiPicker(jangdans: jangdans),
+      builder:
+          (context) => _JangdanMultiPicker(
+            jangdans: jangdans,
+            onCreateJangdan: () {
+              Navigator.pop(context);
+              Navigator.push(
+                screenContext,
+                MaterialPageRoute(
+                  builder: (_) => const CustomJangdanCreateScreen(),
+                ),
+              );
+            },
+          ),
     );
     if (picked == null || picked.isEmpty) return;
     setState(() {
@@ -162,7 +176,7 @@ class _JangdanSequenceCreateScreenState
                   if (_showBottomAddButton) ...[
                     _AddJangdanButton(
                       label: '장단 더 추가하기',
-                      enabled: jangdans.isNotEmpty,
+                      enabled: true,
                       onPressed: () => _openPicker(jangdans),
                     ),
                     const SizedBox(height: 12),
@@ -339,7 +353,7 @@ class _SelectionStep extends StatelessWidget {
           _AddJangdanButton(
             label: '장단 선택하기',
             emphasized: true,
-            enabled: jangdans.isNotEmpty,
+            enabled: true,
             onPressed: onAdd,
           )
         else ...[
@@ -855,7 +869,12 @@ class _RepeatStepper extends StatelessWidget {
 
 class _JangdanMultiPicker extends StatefulWidget {
   final List<Jangdan> jangdans;
-  const _JangdanMultiPicker({required this.jangdans});
+  final VoidCallback onCreateJangdan;
+
+  const _JangdanMultiPicker({
+    required this.jangdans,
+    required this.onCreateJangdan,
+  });
 
   @override
   State<_JangdanMultiPicker> createState() => _JangdanMultiPickerState();
@@ -921,52 +940,124 @@ class _JangdanMultiPickerState extends State<_JangdanMultiPicker> {
             ),
             const Divider(height: 1, color: AppColors.neutral11),
             Expanded(
-              child: ListView.separated(
-                itemCount: widget.jangdans.length,
-                separatorBuilder:
-                    (context, index) =>
-                        const Divider(height: 1, color: AppColors.neutral11),
-                itemBuilder: (context, index) {
-                  final jangdan = widget.jangdans[index];
-                  final selected = _selected.contains(index);
-                  return CheckboxListTile(
-                    value: selected,
-                    activeColor: AppColors.brandHeavy,
-                    checkColor: AppColors.labelPrimary,
-                    controlAffinity: ListTileControlAffinity.trailing,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 6,
-                    ),
-                    secondary: _JangdanSymbol(jangdanType: jangdan.jangdanType),
-                    title: Text(
-                      jangdan.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.bodySb.copyWith(
-                        color: AppColors.labelDefault,
+              child:
+                  widget.jangdans.isEmpty
+                      ? _EmptyJangdanPickerState(
+                        onCreateJangdan: widget.onCreateJangdan,
+                      )
+                      : ListView.separated(
+                        itemCount: widget.jangdans.length,
+                        separatorBuilder:
+                            (context, index) => const Divider(
+                              height: 1,
+                              color: AppColors.neutral11,
+                            ),
+                        itemBuilder: (context, index) {
+                          final jangdan = widget.jangdans[index];
+                          final selected = _selected.contains(index);
+                          return CheckboxListTile(
+                            value: selected,
+                            activeColor: AppColors.brandHeavy,
+                            checkColor: AppColors.labelPrimary,
+                            controlAffinity: ListTileControlAffinity.trailing,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 6,
+                            ),
+                            secondary: _JangdanSymbol(
+                              jangdanType: jangdan.jangdanType,
+                            ),
+                            title: Text(
+                              jangdan.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.bodySb.copyWith(
+                                color: AppColors.labelDefault,
+                              ),
+                            ),
+                            subtitle: Text(
+                              jangdan.jangdanType.label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.subheadlineR.copyWith(
+                                color: AppColors.labelTertiary,
+                              ),
+                            ),
+                            onChanged: (_) {
+                              setState(() {
+                                selected
+                                    ? _selected.remove(index)
+                                    : _selected.add(index);
+                              });
+                            },
+                          );
+                        },
                       ),
-                    ),
-                    subtitle: Text(
-                      jangdan.jangdanType.label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.subheadlineR.copyWith(
-                        color: AppColors.labelTertiary,
-                      ),
-                    ),
-                    onChanged: (_) {
-                      setState(() {
-                        selected
-                            ? _selected.remove(index)
-                            : _selected.add(index);
-                      });
-                    },
-                  );
-                },
-              ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyJangdanPickerState extends StatelessWidget {
+  final VoidCallback onCreateJangdan;
+
+  const _EmptyJangdanPickerState({required this.onCreateJangdan});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 36, 16, 0),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 44, horizontal: 16),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundMute,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '저장한 장단이 없어요.\n장단을 먼저 저장해야 모음집을 만들 수 있어요.',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.calloutR.copyWith(
+                  color: AppColors.labelDefault,
+                  fontSize: 16,
+                  height: 21 / 16,
+                  letterSpacing: -0.31,
+                ),
+              ),
+              const SizedBox(height: 20),
+              FilledButton(
+                onPressed: onCreateJangdan,
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.brandHeavy,
+                  foregroundColor: AppColors.labelPrimary,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  '장단 만들러 가기',
+                  style: AppTextStyles.bodySb.copyWith(
+                    color: AppColors.labelPrimary,
+                    fontSize: 17,
+                    height: 22 / 17,
+                    letterSpacing: -0.43,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
