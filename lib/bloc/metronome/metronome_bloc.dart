@@ -26,7 +26,6 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
   Timer? _tapResetTimer;
   Timer? _precountTimer;
   final List<DateTime> _tapHistory = [];
-  double _averageSobakPerDaebak = 1.0;
   final Box<Jangdan> _jangdanBox = Hive.box<Jangdan>('customJangdanBox');
   DateTime? _playStartTime;
 
@@ -78,10 +77,11 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     on<SelectSequence>((event, emit) {
       final sequence = event.sequence;
       if (sequence.items.isEmpty) return;
+      final firstJangdan = sequence.items.first.jangdan;
       emit(
         state.copyWith(
-          selectedJangdan: sequence.items.first.jangdan,
-          bpm: sequence.items.first.jangdan.bpm,
+          selectedJangdan: firstJangdan,
+          bpm: firstJangdan.bpm,
           currentSequence: sequence,
           currentSequenceIndex: 0,
           currentSequenceRepeat: 1,
@@ -114,13 +114,14 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
 
     on<ReplaceCurrentSequence>((event, emit) {
       if (event.sequence.items.isEmpty) return;
+      final firstJangdan = event.sequence.items.first.jangdan;
       emit(
         state.copyWith(
           currentSequence: event.sequence,
           currentSequenceIndex: 0,
           currentSequenceRepeat: 1,
-          selectedJangdan: event.sequence.items.first.jangdan,
-          bpm: event.sequence.items.first.jangdan.bpm,
+          selectedJangdan: firstJangdan,
+          bpm: firstJangdan.bpm,
           skipNextSequenceAdvance: true,
         ),
       );
@@ -141,16 +142,6 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       final lastDaebakIndex = jangdan.accents[lastRowIndex].length - 1;
       final lastSobakIndex =
           jangdan.accents[lastRowIndex][lastDaebakIndex].length - 1;
-
-      final totalDaebak = jangdan.accents.expand((row) => row).length;
-      final totalSobak =
-          jangdan.accents
-              .expand((row) => row)
-              .expand((daebak) => daebak)
-              .length;
-      final averageSobakPerDaebak = totalSobak / totalDaebak;
-
-      _averageSobakPerDaebak = averageSobakPerDaebak;
 
       emit(
         state.copyWith(
@@ -240,6 +231,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
       );
 
       emit(nextState);
+      _scheduleNextTick(nextState);
     });
 
     on<Stop>((event, emit) {
@@ -428,20 +420,8 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
   }
 
   void _startPreciseTicker() {
-    void tickLoop() {
-      final bpm = state.bpm;
-      final interval = Duration(
-        milliseconds: (60000 / (bpm * _averageSobakPerDaebak)).round(),
-      );
-
-      _tickTimer = Timer(interval, () {
-        add(Tick());
-        tickLoop();
-      });
-    }
-
+    _tickTimer?.cancel();
     add(Tick());
-    tickLoop();
   }
 
   void _stopPreciseTicker() {
@@ -487,5 +467,24 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
     return current.copyWith(
       currentSequence: sequence.copyWith(items: updatedItems),
     );
+  }
+
+  double _averageSobakPerDaebakFor(Jangdan jangdan) {
+    final totalDaebak = jangdan.accents.expand((row) => row).length;
+    final totalSobak =
+        jangdan.accents.expand((row) => row).expand((daebak) => daebak).length;
+    return totalSobak / totalDaebak;
+  }
+
+  void _scheduleNextTick(MetronomeState tickState) {
+    if (!tickState.isPlaying) return;
+    _tickTimer?.cancel();
+    final averageSobakPerDaebak = _averageSobakPerDaebakFor(
+      tickState.selectedJangdan,
+    );
+    final interval = Duration(
+      milliseconds: (60000 / (tickState.bpm * averageSobakPerDaebak)).round(),
+    );
+    _tickTimer = Timer(interval, () => add(Tick()));
   }
 }
