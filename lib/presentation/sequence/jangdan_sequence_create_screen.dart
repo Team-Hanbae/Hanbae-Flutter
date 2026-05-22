@@ -156,10 +156,23 @@ class _JangdanSequenceCreateScreenState
             top: false,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 26),
-              child: _BottomActionButton(
-                label: _step == 2 ? '저장하기' : '다음',
-                enabled: _primaryEnabled,
-                onPressed: _primaryAction,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_showBottomAddButton) ...[
+                    _AddJangdanButton(
+                      label: '장단 더 추가하기',
+                      enabled: jangdans.isNotEmpty,
+                      onPressed: () => _openPicker(jangdans),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  _BottomActionButton(
+                    label: _step == 2 ? '저장하기' : '다음',
+                    enabled: _primaryEnabled,
+                    onPressed: _primaryAction,
+                  ),
+                ],
               ),
             ),
           ),
@@ -173,6 +186,8 @@ class _JangdanSequenceCreateScreenState
     if (_step == 2) return _selectedJangdans.length >= 2 && !_awaitingSave;
     return true;
   }
+
+  bool get _showBottomAddButton => _step == 0 && _selectedJangdans.isNotEmpty;
 
   Future<void> _primaryAction() async {
     if (_step < 2) {
@@ -334,12 +349,6 @@ class _SelectionStep extends StatelessWidget {
               onDelete: onDelete,
               onReorder: onReorder,
             ),
-          ),
-          const SizedBox(height: 28),
-          _AddJangdanButton(
-            label: '장단 추가하기',
-            enabled: jangdans.isNotEmpty,
-            onPressed: onAdd,
           ),
         ],
       ],
@@ -505,9 +514,10 @@ class _AddJangdanButton extends StatelessWidget {
       onTap: enabled ? onPressed : null,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        height: 54,
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: emphasized ? AppColors.orange13 : AppColors.neutral11,
+          color: emphasized ? AppColors.orange13 : AppColors.neutral9,
           borderRadius: BorderRadius.circular(12),
           border:
               emphasized
