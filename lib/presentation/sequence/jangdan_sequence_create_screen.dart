@@ -155,7 +155,7 @@ class _JangdanSequenceCreateScreenState
           bottomNavigationBar: SafeArea(
             top: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 60),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 26),
               child: _BottomActionButton(
                 label: _step == 2 ? '저장하기' : '다음',
                 enabled: _primaryEnabled,
@@ -328,10 +328,12 @@ class _SelectionStep extends StatelessWidget {
             onPressed: onAdd,
           )
         else ...[
-          _ReorderableJangdanList(
-            selectedJangdans: selectedJangdans,
-            onDelete: onDelete,
-            onReorder: onReorder,
+          Expanded(
+            child: _ReorderableJangdanList(
+              selectedJangdans: selectedJangdans,
+              onDelete: onDelete,
+              onReorder: onReorder,
+            ),
           ),
           const SizedBox(height: 28),
           _AddJangdanButton(
@@ -363,19 +365,21 @@ class _RepeatStep extends StatelessWidget {
       children: [
         const _StepHeading(title: '장단 반복 횟수를 정하세요'),
         const SizedBox(height: 28),
-        _JangdanListFrame(
-          children: List.generate(selectedJangdans.length, (index) {
-            final count = repeatCounts[index];
-            return _SequenceJangdanRow(
-              jangdan: selectedJangdans[index],
-              trailing: _RepeatStepper(
-                value: count,
-                onDecrease:
-                    count <= 1 ? null : () => onChanged(index, count - 1),
-                onIncrease: () => onChanged(index, count + 1),
-              ),
-            );
-          }),
+        Expanded(
+          child: _JangdanListFrame(
+            children: List.generate(selectedJangdans.length, (index) {
+              final count = repeatCounts[index];
+              return _SequenceJangdanRow(
+                jangdan: selectedJangdans[index],
+                trailing: _RepeatStepper(
+                  value: count,
+                  onDecrease:
+                      count <= 1 ? null : () => onChanged(index, count - 1),
+                  onIncrease: () => onChanged(index, count + 1),
+                ),
+              );
+            }),
+          ),
         ),
       ],
     );
@@ -398,18 +402,20 @@ class _PreviewStep extends StatelessWidget {
       children: [
         const _StepHeading(title: '설정한 순서와 횟수대로 재생돼요'),
         const SizedBox(height: 28),
-        _JangdanListFrame(
-          children: List.generate(selectedJangdans.length, (index) {
-            return _SequenceJangdanRow(
-              jangdan: selectedJangdans[index],
-              trailing: Text(
-                '${repeatCounts[index]}회',
-                style: AppTextStyles.bodyR.copyWith(
-                  color: AppColors.labelDefault,
+        Expanded(
+          child: _JangdanListFrame(
+            children: List.generate(selectedJangdans.length, (index) {
+              return _SequenceJangdanRow(
+                jangdan: selectedJangdans[index],
+                trailing: Text(
+                  '${repeatCounts[index]}회',
+                  style: AppTextStyles.bodyR.copyWith(
+                    color: AppColors.labelDefault,
+                  ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ),
       ],
     );
@@ -455,7 +461,7 @@ class _StepHeading extends StatelessWidget {
           Text(
             title,
             style: AppTextStyles.title2R.copyWith(
-              color: const Color(0xFFF2F2F2),
+              color: AppColors.labelPrimary,
               fontSize: 22,
               height: 28 / 22,
               letterSpacing: -0.4,
@@ -574,7 +580,7 @@ class _JangdanListFrame extends StatelessWidget {
       decoration: const BoxDecoration(
         border: Border(top: BorderSide(color: AppColors.neutral11, width: 1)),
       ),
-      child: Column(children: children),
+      child: ListView(padding: EdgeInsets.zero, children: children),
     );
   }
 }
@@ -597,8 +603,7 @@ class _ReorderableJangdanList extends StatelessWidget {
         border: Border(top: BorderSide(color: AppColors.neutral11, width: 1)),
       ),
       child: ReorderableListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.zero,
         buildDefaultDragHandles: false,
         proxyDecorator: (child, index, animation) {
           return Material(
