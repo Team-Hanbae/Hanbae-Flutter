@@ -509,33 +509,78 @@ class _AddJangdanButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: enabled ? onPressed : null,
-      child: Container(
-        width: double.infinity,
-        height: 54,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: emphasized ? AppColors.orange13 : AppColors.neutral9,
-          borderRadius: BorderRadius.circular(12),
-          border:
-              emphasized
-                  ? Border.all(color: AppColors.brandHeavy, width: 1)
-                  : null,
-        ),
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: AppTextStyles.bodySb.copyWith(
-            color: enabled ? AppColors.labelPrimary : AppColors.labelTertiary,
-            fontSize: 17,
-            height: 22 / 17,
-            letterSpacing: -0.43,
-          ),
+    final button = Container(
+      width: double.infinity,
+      height: 54,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: emphasized ? AppColors.orange13 : AppColors.neutral9,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: AppTextStyles.bodySb.copyWith(
+          color: enabled ? AppColors.labelPrimary : AppColors.labelTertiary,
+          fontSize: 17,
+          height: 22 / 17,
+          letterSpacing: -0.43,
         ),
       ),
     );
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: enabled ? onPressed : null,
+      child:
+          emphasized
+              ? CustomPaint(
+                foregroundPainter: _DashedRoundedRectPainter(
+                  color: AppColors.brandHeavy,
+                  radius: 12,
+                ),
+                child: button,
+              )
+              : button,
+    );
+  }
+}
+
+class _DashedRoundedRectPainter extends CustomPainter {
+  final Color color;
+  final double radius;
+
+  const _DashedRoundedRectPainter({required this.color, required this.radius});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const dashLength = 4.0;
+    const gapLength = 4.0;
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = 1
+          ..style = PaintingStyle.stroke;
+    final rect = Offset.zero & size;
+    final roundedRect = RRect.fromRectAndRadius(
+      rect.deflate(0.5),
+      Radius.circular(radius),
+    );
+    final path = Path()..addRRect(roundedRect);
+
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      while (distance < metric.length) {
+        final next = distance + dashLength;
+        canvas.drawPath(metric.extractPath(distance, next), paint);
+        distance = next + gapLength;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedRoundedRectPainter oldDelegate) {
+    return oldDelegate.color != color || oldDelegate.radius != radius;
   }
 }
 
