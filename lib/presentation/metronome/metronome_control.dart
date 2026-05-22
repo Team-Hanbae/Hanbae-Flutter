@@ -21,7 +21,9 @@ class MetronomeControl extends StatefulWidget {
 }
 
 class _MetronomeControlState extends State<MetronomeControl> {
+  static const double _dragPixelsPerBpm = 8;
   Timer? _bpmChangeTimer;
+  double _bpmDragRemainder = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -46,21 +48,10 @@ class _MetronomeControlState extends State<MetronomeControl> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
           child: GestureDetector(
-            onHorizontalDragUpdate: (direction) {
-              int gestureSpeed = 2;
-              if (minimum) {
-                gestureSpeed = 1;
-              }
-              if (direction.delta.dx < 0) {
-                final bpm = context.read<MetronomeBloc>().state.bpm;
-                final gap = ((bpm - 1) ~/ gestureSpeed * gestureSpeed) - bpm;
-                context.read<MetronomeBloc>().add(ChangeBpm(gap));
-              } else if (direction.delta.dx > 0) {
-                final bpm = context.read<MetronomeBloc>().state.bpm;
-                final gap = ((bpm + 2) ~/ gestureSpeed * gestureSpeed) - bpm;
-                context.read<MetronomeBloc>().add(ChangeBpm(gap));
-              }
-            },
+            onHorizontalDragStart: (_) => _bpmDragRemainder = 0,
+            onHorizontalDragUpdate: _handleBpmDragUpdate,
+            onHorizontalDragEnd: (_) => _bpmDragRemainder = 0,
+            onHorizontalDragCancel: () => _bpmDragRemainder = 0,
             child: Column(
               children: [
                 AnimatedContainer(
@@ -102,6 +93,15 @@ class _MetronomeControlState extends State<MetronomeControl> {
         ),
       ),
     );
+  }
+
+  void _handleBpmDragUpdate(DragUpdateDetails details) {
+    _bpmDragRemainder += details.delta.dx;
+    final steps = (_bpmDragRemainder / _dragPixelsPerBpm).truncate();
+    if (steps == 0) return;
+
+    _bpmDragRemainder -= steps * _dragPixelsPerBpm;
+    context.read<MetronomeBloc>().add(ChangeBpm(steps));
   }
 
   Widget metronomeControlWidget(isTapping, minimum, isPlaying) {
