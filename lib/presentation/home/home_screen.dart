@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,6 +15,7 @@ import 'package:hanbae/model/saved_jangdan_item.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
 import 'package:hanbae/presentation/sequence/jangdan_sequence_create_screen.dart';
+import 'package:hanbae/presentation/sequence/jangdan_sequence_onboarding_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hanbae/presentation/metronome/metronome_screen.dart';
 import 'package:hanbae/theme/colors.dart';
@@ -857,7 +861,70 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _SequenceCreateBanner extends StatelessWidget {
+class _SequenceCreateBanner extends StatefulWidget {
+  @override
+  State<_SequenceCreateBanner> createState() => _SequenceCreateBannerState();
+}
+
+class _SequenceCreateBannerState extends State<_SequenceCreateBanner> {
+  Timer? _debugOnboardingTimer;
+  bool _debugOnboardingTriggered = false;
+
+  @override
+  void dispose() {
+    _debugOnboardingTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _openSequenceCreate(BuildContext context) async {
+    analytics.sequenceEntryClick();
+    final seen = await Storage().getSequenceOnboardingSeen();
+    if (!context.mounted) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) =>
+                seen
+                    ? const JangdanSequenceCreateScreen()
+                    : const JangdanSequenceOnboardingScreen(),
+      ),
+    );
+  }
+
+  void _openSequenceOnboarding(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const JangdanSequenceOnboardingScreen(),
+      ),
+    );
+  }
+
+  void _startDebugOnboardingTimer(BuildContext context) {
+    if (!kDebugMode) return;
+    _debugOnboardingTriggered = false;
+    _debugOnboardingTimer?.cancel();
+    _debugOnboardingTimer = Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      _debugOnboardingTriggered = true;
+      _openSequenceOnboarding(context);
+    });
+  }
+
+  void _cancelDebugOnboardingTimer() {
+    _debugOnboardingTimer?.cancel();
+    _debugOnboardingTimer = null;
+  }
+
+  void _handleTapUp(BuildContext context) {
+    final skipTap = _debugOnboardingTriggered;
+    _debugOnboardingTriggered = false;
+    _cancelDebugOnboardingTimer();
+    if (skipTap) return;
+    _openSequenceCreate(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -872,15 +939,9 @@ class _SequenceCreateBanner extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: InkWell(
             borderRadius: BorderRadius.circular(500),
-            onTap: () {
-              analytics.sequenceEntryClick();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const JangdanSequenceCreateScreen(),
-                ),
-              );
-            },
+            onTapDown: (_) => _startDebugOnboardingTimer(context),
+            onTapCancel: _cancelDebugOnboardingTimer,
+            onTapUp: (_) => _handleTapUp(context),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(500),
               child: SizedBox(
