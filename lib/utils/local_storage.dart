@@ -25,6 +25,16 @@ class Storage {
     return prefs.getBool('metronomeOnboardingSeen') ?? false;
   }
 
+  Future<void> setSequenceOnboardingSeen() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('sequenceOnboardingSeen', true);
+  }
+
+  Future<bool> getSequenceOnboardingSeen() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('sequenceOnboardingSeen') ?? false;
+  }
+
   Future<bool> setReserveBeat(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.setBool('reserveBeat', value);
