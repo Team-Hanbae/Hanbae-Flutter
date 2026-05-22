@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/jangdan_sequence_repository.dart';
 import 'package:hanbae/model/jangdan.dart';
@@ -788,33 +789,161 @@ class _SequenceStateBar extends StatelessWidget {
   void _showSequenceSheet(BuildContext context, JangdanSequence sequence) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.backgroundElevated,
+      backgroundColor: AppColors.backgroundMute,
+      isScrollControlled: true,
+      showDragHandle: true,
+      useSafeArea: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       builder: (sheetContext) {
-        return SafeArea(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: sequence.items.length,
-            itemBuilder: (context, index) {
-              final item = sequence.items[index];
-              return ListTile(
-                title: Text(item.jangdan.name, style: AppTextStyles.bodySb),
-                subtitle: Text(
-                  '${item.jangdan.jangdanType.label} · ${item.repeatCount}회',
-                ),
-                onTap: () {
-                  sheetContext.read<MetronomeBloc>().add(
-                    JumpToSequenceItem(index),
-                  );
-                  Navigator.pop(sheetContext);
-                },
-              );
-            },
-          ),
+        return _SequencePlaylistSheet(
+          sequence: sequence,
+          onSelect: (index) {
+            sheetContext.read<MetronomeBloc>().add(JumpToSequenceItem(index));
+            Navigator.pop(sheetContext);
+          },
         );
       },
+    );
+  }
+}
+
+class _SequencePlaylistSheet extends StatelessWidget {
+  final JangdanSequence sequence;
+  final ValueChanged<int> onSelect;
+
+  const _SequencePlaylistSheet({
+    required this.sequence,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final sheetHeight = (screenHeight * 0.56).clamp(360.0, 560.0);
+
+    return SizedBox(
+      height: sheetHeight,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 16, 12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '재생 목록',
+                    style: AppTextStyles.bodySb.copyWith(
+                      color: AppColors.labelDefault,
+                      fontSize: 17,
+                      height: 22 / 17,
+                      letterSpacing: -0.43,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
+              itemCount: sequence.items.length,
+              separatorBuilder:
+                  (context, index) =>
+                      const Divider(height: 1, color: AppColors.neutral11),
+              itemBuilder: (context, index) {
+                final item = sequence.items[index];
+                return _SequencePlaylistRow(
+                  item: item,
+                  onTap: () => onSelect(index),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SequencePlaylistRow extends StatelessWidget {
+  final JangdanSequenceItem item;
+  final VoidCallback onTap;
+
+  const _SequencePlaylistRow({required this.item, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final jangdan = item.jangdan;
+
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      leading: _SequenceSheetJangdanSymbol(jangdanType: jangdan.jangdanType),
+      title: Text(
+        jangdan.name,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: AppTextStyles.bodySb.copyWith(
+          color: AppColors.labelDefault,
+          fontSize: 17,
+          height: 22 / 17,
+          letterSpacing: -0.43,
+        ),
+      ),
+      subtitle: Text(
+        jangdan.jangdanType.label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: AppTextStyles.subheadlineR.copyWith(
+          color: AppColors.labelTertiary,
+          fontSize: 15,
+          height: 20 / 15,
+          letterSpacing: -0.23,
+        ),
+      ),
+      trailing: Text(
+        '${item.repeatCount}회',
+        style: AppTextStyles.bodyR.copyWith(
+          color: AppColors.labelDefault,
+          fontSize: 17,
+          height: 22 / 17,
+          letterSpacing: -0.43,
+        ),
+      ),
+      onTap: onTap,
+    );
+  }
+}
+
+class _SequenceSheetJangdanSymbol extends StatelessWidget {
+  final JangdanType jangdanType;
+
+  const _SequenceSheetJangdanSymbol({required this.jangdanType});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 64,
+      height: 62,
+      decoration: BoxDecoration(
+        color: AppColors.orange13,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: SizedBox(
+          width: 36,
+          height: 36,
+          child: SvgPicture.asset(
+            'assets/${jangdanType.logoAssetPath}',
+            colorFilter: const ColorFilter.mode(
+              AppColors.orange8,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

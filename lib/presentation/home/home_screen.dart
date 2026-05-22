@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final storage = Storage();
 
       final shouldShow = await storage.shouldShowChristmasPopup(todayKey);
-      if (!shouldShow) return;
+      if (!mounted || !shouldShow) return;
 
       final result = await ChristmasDialog.show(context);
       if (result == null) return;
@@ -199,32 +199,61 @@ class _HomeScreenState extends State<HomeScreen> {
                         final sequence = item.sequence;
                         final isSequence =
                             item.kind == SavedJangdanItemKind.sequence;
+                        final playableSequence =
+                            isSequence &&
+                                    sequence != null &&
+                                    sequence.items.isNotEmpty
+                                ? sequence
+                                : null;
+                        final displayJangdan =
+                            isSequence
+                                ? playableSequence?.items.first.jangdan
+                                : jangdan;
+                        if (displayJangdan == null) {
+                          return const Expanded(child: SizedBox());
+                        }
                         final isCustomJangdan =
-                            isSequence ||
-                            jangdan!.name != jangdan.jangdanType.label;
+                            !isSequence &&
+                            displayJangdan.name !=
+                                displayJangdan.jangdanType.label;
 
                         return Expanded(
                           child: InkWell(
                             onTap: () {
+                              if (isSequence) {
+                                final selectedSequence = playableSequence;
+                                if (selectedSequence == null) return;
+                                context.read<MetronomeBloc>().add(
+                                  SelectSequence(selectedSequence),
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => MetronomeScreen(
+                                          jangdan:
+                                              selectedSequence
+                                                  .items
+                                                  .first
+                                                  .jangdan,
+                                          sequence: selectedSequence,
+                                          appBarMode: AppBarMode.sequence,
+                                        ),
+                                  ),
+                                );
+                                return;
+                              }
+
                               context.read<MetronomeBloc>().add(
-                                isSequence
-                                    ? SelectSequence(sequence!)
-                                    : SelectJangdan(jangdan!),
+                                SelectJangdan(displayJangdan),
                               );
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder:
                                       (context) => MetronomeScreen(
-                                        jangdan:
-                                            isSequence
-                                                ? sequence!.items.first.jangdan
-                                                : jangdan!,
-                                        sequence: sequence,
-                                        appBarMode:
-                                            isSequence
-                                                ? AppBarMode.sequence
-                                                : AppBarMode.custom,
+                                        jangdan: displayJangdan,
+                                        appBarMode: AppBarMode.custom,
                                       ),
                                 ),
                               );
@@ -287,7 +316,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             width: 36,
                                             height: 36,
                                             child: SvgPicture.asset(
-                                              "assets/${jangdan.jangdanType.logoAssetPath}",
+                                              isSequence
+                                                  ? 'assets/images/logos/Sequence.svg'
+                                                  : "assets/${displayJangdan.jangdanType.logoAssetPath}",
                                               colorFilter: ColorFilter.mode(
                                                 AppColors.orange8,
                                                 BlendMode.srcIn,
@@ -296,8 +327,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                       Text(
                                         isSequence
-                                            ? '장단 모음집'
-                                            : jangdan!.jangdanType.label,
+                                            ? item.name
+                                            : displayJangdan.jangdanType.label,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style:
@@ -526,30 +557,55 @@ class _HomeScreenState extends State<HomeScreen> {
                               final sequence = item.sequence;
                               final isSequence =
                                   item.kind == SavedJangdanItemKind.sequence;
+                              final playableSequence =
+                                  isSequence &&
+                                          sequence != null &&
+                                          sequence.items.isNotEmpty
+                                      ? sequence
+                                      : null;
+                              final displayJangdan =
+                                  isSequence
+                                      ? playableSequence?.items.first.jangdan
+                                      : jangdan;
+                              if (displayJangdan == null) {
+                                return const SizedBox.shrink();
+                              }
                               return InkWell(
                                 onTap: () {
+                                  if (isSequence) {
+                                    final selectedSequence = playableSequence;
+                                    if (selectedSequence == null) return;
+                                    context.read<MetronomeBloc>().add(
+                                      SelectSequence(selectedSequence),
+                                    );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => MetronomeScreen(
+                                              jangdan:
+                                                  selectedSequence
+                                                      .items
+                                                      .first
+                                                      .jangdan,
+                                              sequence: selectedSequence,
+                                              appBarMode: AppBarMode.sequence,
+                                            ),
+                                      ),
+                                    );
+                                    return;
+                                  }
+
                                   context.read<MetronomeBloc>().add(
-                                    isSequence
-                                        ? SelectSequence(sequence!)
-                                        : SelectJangdan(jangdan!),
+                                    SelectJangdan(displayJangdan),
                                   );
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder:
                                           (context) => MetronomeScreen(
-                                            jangdan:
-                                                isSequence
-                                                    ? sequence!
-                                                        .items
-                                                        .first
-                                                        .jangdan
-                                                    : jangdan!,
-                                            sequence: sequence,
-                                            appBarMode:
-                                                isSequence
-                                                    ? AppBarMode.sequence
-                                                    : AppBarMode.custom,
+                                            jangdan: displayJangdan,
+                                            appBarMode: AppBarMode.custom,
                                           ),
                                     ),
                                   );
@@ -604,7 +660,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 ),
                                                           )
                                                           : SvgPicture.asset(
-                                                            "assets/${jangdan!.jangdanType.logoAssetPath}",
+                                                            "assets/${displayJangdan.jangdanType.logoAssetPath}",
                                                             colorFilter:
                                                                 ColorFilter.mode(
                                                                   AppColors
@@ -639,7 +695,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               Text(
                                                 isSequence
                                                     ? ''
-                                                    : jangdan!
+                                                    : displayJangdan
                                                         .jangdanType
                                                         .label,
                                                 style: AppTextStyles
