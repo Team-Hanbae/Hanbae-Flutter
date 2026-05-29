@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -38,8 +40,12 @@ class MetronomeScreen extends StatefulWidget {
 class _MetronomeScreenState extends State<MetronomeScreen> {
   bool _showFlashOverlay = false;
   bool _awaitingSave = false;
+  bool _awaitingUpdateToast = false;
   bool _showOnboarding = false;
   int _onboardingStep = 0;
+  final _hanbaeBoardKey = GlobalKey();
+  OverlayEntry? _saveToastEntry;
+  Timer? _saveToastTimer;
 
   @override
   void initState() {
@@ -67,6 +73,69 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
         _onboardingStep = 0;
       });
     }
+  }
+
+  void _showChangesSavedToast() {
+    _saveToastTimer?.cancel();
+    _saveToastEntry?.remove();
+
+    final overlay = Overlay.maybeOf(context, rootOverlay: true);
+    if (overlay == null) return;
+
+    final boardRenderBox =
+        _hanbaeBoardKey.currentContext?.findRenderObject() as RenderBox?;
+    final boardOffset =
+        boardRenderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+    final boardHeight = boardRenderBox?.size.height ?? 0;
+    final boardCenterY = boardOffset.dy + (boardHeight / 2);
+    final top = boardCenterY - 27;
+
+    _saveToastEntry = OverlayEntry(
+      builder:
+          (context) => Positioned(
+            top: top,
+            left: 0,
+            right: 0,
+            child: IgnorePointer(
+              child: Center(
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Primitives.common0.withAlpha(204),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '변경사항을 저장했습니다.',
+                      style: AppTextStyles.bodyR.copyWith(
+                        color: AppColors.labelPrimary,
+                        fontSize: 17,
+                        height: 22 / 17,
+                        letterSpacing: -0.4,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+    );
+    overlay.insert(_saveToastEntry!);
+    _saveToastTimer = Timer(const Duration(seconds: 2), () {
+      _saveToastEntry?.remove();
+      _saveToastEntry = null;
+    });
+  }
+
+  @override
+  void dispose() {
+    _saveToastTimer?.cancel();
+    _saveToastEntry?.remove();
+    super.dispose();
   }
 
   Future<void> _completeOnboarding() async {
@@ -219,6 +288,9 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                 case 'update':
                   final updatedJangdan =
                       context.read<MetronomeBloc>().state.selectedJangdan;
+                  setState(() {
+                    _awaitingUpdateToast = true;
+                  });
                   context.read<JangdanBloc>().add(
                     UpdateJangdan(updatedJangdan.name, updatedJangdan),
                   );
@@ -490,6 +562,9 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
 
     switch (value) {
       case 'update':
+        setState(() {
+          _awaitingUpdateToast = true;
+        });
         context.read<JangdanBloc>().add(
           UpdateJangdanSequence(current.name, current),
         );
@@ -581,6 +656,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
             if (state is JangdanError) {
               setState(() {
                 _awaitingSave = false;
+                _awaitingUpdateToast = false;
               });
               showDialog(
                 context: context,
@@ -616,6 +692,11 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
               });
               Navigator.pop(context);
               Navigator.pop(context);
+            } else if (state is JangdanLoaded && _awaitingUpdateToast) {
+              setState(() {
+                _awaitingUpdateToast = false;
+              });
+              _showChangesSavedToast();
             }
           },
         ),
@@ -659,6 +740,7 @@ class _MetronomeScreenState extends State<MetronomeScreen> {
                               BlocBuilder<MetronomeBloc, MetronomeState>(
                                 builder:
                                     (context, state) => HanbaeBoard(
+                                      key: _hanbaeBoardKey,
                                       header:
                                           widget.appBarMode ==
                                                   AppBarMode.sequence
