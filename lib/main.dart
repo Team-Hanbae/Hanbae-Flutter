@@ -55,7 +55,7 @@ void main() async {
     );
     analytics.setMixpanel(mixpanel);
   } catch (e) {
-    print(e.toString());
+    debugPrint(e.toString());
   }
 
   await Hive.initFlutter();
@@ -94,8 +94,35 @@ void main() async {
   );
 }
 
-class Hanbae extends StatelessWidget {
+class Hanbae extends StatefulWidget {
   const Hanbae({super.key});
+
+  @override
+  State<Hanbae> createState() => _HanbaeState();
+}
+
+class _HanbaeState extends State<Hanbae> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+      analytics.appEntry();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      analytics.appEntry();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
