@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hanbae/presentation/sequence/jangdan_sequence_create_screen.dart';
 import 'package:hanbae/theme/colors.dart';
 import 'package:hanbae/theme/text_styles.dart';
@@ -131,19 +132,22 @@ class _FeatureList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
           _FeatureItem(
-            icon: Icons.music_note_rounded,
+            iconAsset: 'assets/images/icon/Icon_MusicBox.svg',
             text: '원하는 장단을 골라 순서를 만들고',
           ),
           SizedBox(height: 16),
-          _FeatureItem(icon: Icons.replay_rounded, text: '각 장단의 반복 횟수를 설정하면'),
+          _FeatureItem(
+            iconAsset: 'assets/images/icon/Icon_rotate.svg',
+            text: '각 장단의 반복 횟수를 설정하면',
+          ),
           SizedBox(height: 16),
           _FeatureItem(
-            icon: Icons.play_circle_fill_rounded,
+            iconAsset: 'assets/images/icon/Icon_Play.svg',
             text: '끊기지 않고 이어서 재생돼요!',
           ),
           SizedBox(height: 16),
           _FeatureItem(
-            icon: Icons.create_new_folder_rounded,
+            iconAsset: 'assets/images/icon/Icon_NewFolderFill.svg',
             text: '저장해두고 다시 연습할 수 있어요!',
           ),
         ],
@@ -153,17 +157,17 @@ class _FeatureList extends StatelessWidget {
 }
 
 class _FeatureItem extends StatelessWidget {
-  final IconData icon;
+  final String iconAsset;
   final String text;
 
-  const _FeatureItem({required this.icon, required this.text});
+  const _FeatureItem({required this.iconAsset, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 20, color: AppColors.labelPrimary),
+        SvgPicture.asset(iconAsset, width: 20, height: 20),
         const SizedBox(width: 10),
         Text(
           text,
