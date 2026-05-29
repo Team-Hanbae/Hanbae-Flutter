@@ -11,6 +11,10 @@ class AnalyticsService {
     _mixpanel = mixpanel;
   }
 
+  void appEntry() {
+    _mixpanel?.track('app_entry');
+  }
+
   void sequenceEntryClick() {
     _mixpanel?.track('sequence_entry_click');
   }
