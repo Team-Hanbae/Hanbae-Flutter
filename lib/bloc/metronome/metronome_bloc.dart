@@ -256,6 +256,7 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           soundType: state.currentSound.label,
           jangdanType: jangdanType,
           jangdanName: jangdanType == jangdanName ? "template" : jangdanName,
+          isSequence: state.currentSequence != null,
         );
         _playStartTime = null;
       }

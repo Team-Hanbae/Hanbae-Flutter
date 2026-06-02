@@ -33,6 +33,7 @@ class AnalyticsService {
     required String soundType,
     required String jangdanType,
     required String jangdanName,
+    required bool isSequence,
   }) {
     _mixpanel?.track(
       'metronome_play',
@@ -41,6 +42,7 @@ class AnalyticsService {
         'sound_type': soundType,
         'jangdan_type': jangdanType,
         'jangdan_name': jangdanName,
+        'is_sequence': isSequence,
       },
     );
   }
