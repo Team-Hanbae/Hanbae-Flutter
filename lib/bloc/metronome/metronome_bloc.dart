@@ -241,7 +241,14 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
         final seconds = duration / 1000;
         final roundedDuration = (seconds * 100).round() / 100;
         final jangdanType = state.selectedJangdan.jangdanType.label;
-        final jangdanName = state.selectedJangdan.name;
+        final currentSequence = state.currentSequence;
+        final isSequence = currentSequence != null;
+        final jangdanName =
+            isSequence
+                ? currentSequence.name
+                : (jangdanType == state.selectedJangdan.name
+                    ? "template"
+                    : state.selectedJangdan.name);
 
         LocalLogger().add(
           LocalLog(
@@ -255,8 +262,8 @@ class MetronomeBloc extends Bloc<MetronomeEvent, MetronomeState> {
           duration: roundedDuration,
           soundType: state.currentSound.label,
           jangdanType: jangdanType,
-          jangdanName: jangdanType == jangdanName ? "template" : jangdanName,
-          isSequence: state.currentSequence != null,
+          jangdanName: jangdanName,
+          isSequence: isSequence,
         );
         _playStartTime = null;
       }
