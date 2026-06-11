@@ -28,6 +28,23 @@ class AnalyticsService {
     );
   }
 
+  void homePromotionImpression({
+    required String id,
+    required String promotionType,
+  }) {
+    _mixpanel?.track(
+      'home_promotion_impression',
+      properties: {'id': id, 'promotion_type': promotionType},
+    );
+  }
+
+  void homePromotionClick({required String id, required String promotionType}) {
+    _mixpanel?.track(
+      'home_promotion_click',
+      properties: {'id': id, 'promotion_type': promotionType},
+    );
+  }
+
   void metronomePlay({
     required double duration,
     required String soundType,
