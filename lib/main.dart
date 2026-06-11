@@ -17,6 +17,7 @@ import 'package:hanbae/data/jangdan_repository.dart';
 import 'package:hanbae/data/jangdan_sequence_repository.dart';
 import 'package:hanbae/data/analytics_service.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,6 +25,12 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint(e.toString());
+  }
 
   final fontLoader = FontLoader('Pretendard');
   fontLoader.addFont(rootBundle.load('assets/fonts/Pretendard-Black.ttf'));
