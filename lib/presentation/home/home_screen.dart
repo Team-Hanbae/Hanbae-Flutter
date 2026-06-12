@@ -38,7 +38,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<HomePromotionBanner> _remoteBanners = const [];
+  List<HomeAdModal> _remoteAdModals = const [];
   final Set<String> _impressedRemoteBannerIds = {};
+  final Set<String> _dismissedAdModalIds = {};
+  bool _isAdModalShowing = false;
 
   //크리스마스 팝업
   @override
@@ -73,9 +76,11 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
     setState(() {
       _remoteBanners = promotions.banners;
+      _remoteAdModals = promotions.adModals;
       _impressedRemoteBannerIds.clear();
     });
     _trackRemoteBannerImpression(0);
+    _showNextAdModalIfNeeded();
   }
 
   void _trackRemoteBannerImpression(int index) {
@@ -134,6 +139,52 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!context.mounted) return;
       await _openMetronomeTutorial(context);
     }
+  }
+
+  Future<void> _showNextAdModalIfNeeded() async {
+    if (_isAdModalShowing || !mounted) return;
+
+    for (final modal in _remoteAdModals) {
+      if (_dismissedAdModalIds.contains(modal.id)) continue;
+      if (await Storage().isHomeAdModalHidden(modal.id)) continue;
+      if (!mounted || _isAdModalShowing) return;
+      await _showAdModal(modal);
+      return;
+    }
+  }
+
+  Future<void> _showAdModal(HomeAdModal modal) async {
+    _isAdModalShowing = true;
+    analytics.homePromotionImpression(id: modal.id, promotionType: 'modal');
+
+    final dontShowToday = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: AppColors.dimmerStrong,
+      builder:
+          (dialogContext) => _HomeAdModalDialog(
+            modal: modal,
+            onImageTap: () => _handleAdModalImageTap(modal),
+          ),
+    );
+
+    _dismissedAdModalIds.add(modal.id);
+    if (dontShowToday == true) {
+      await Storage().hideHomeAdModalToday(modal.id);
+    }
+    _isAdModalShowing = false;
+
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showNextAdModalIfNeeded();
+    });
+  }
+
+  Future<void> _handleAdModalImageTap(HomeAdModal modal) async {
+    analytics.homePromotionClick(id: modal.id, promotionType: 'modal');
+    final linkUrl = modal.linkUrl;
+    if (linkUrl == null) return;
+    await launchUrl(linkUrl, mode: LaunchMode.externalApplication);
   }
 
   @override
@@ -952,6 +1003,165 @@ class _BannerImagePlaceholder extends StatelessWidget {
       child: Icon(
         Icons.image_not_supported_outlined,
         color: AppColors.labelTertiary,
+      ),
+    );
+  }
+}
+
+class _HomeAdModalDialog extends StatefulWidget {
+  final HomeAdModal modal;
+  final VoidCallback onImageTap;
+
+  const _HomeAdModalDialog({required this.modal, required this.onImageTap});
+
+  @override
+  State<_HomeAdModalDialog> createState() => _HomeAdModalDialogState();
+}
+
+class _HomeAdModalDialogState extends State<_HomeAdModalDialog> {
+  bool _dontShowToday = false;
+
+  void _close() {
+    Navigator.pop(context, _dontShowToday);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _close,
+        child: Center(
+          child: GestureDetector(
+            onTap: () {},
+            child: SizedBox(
+              width: 320,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 320,
+                          height: 44,
+                          color: AppColors.backgroundDefault,
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 16),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.neutral8,
+                                  borderRadius: BorderRadius.circular(500),
+                                ),
+                                child: Text(
+                                  '광고',
+                                  style: AppTextStyles.footnoteSb.copyWith(
+                                    color: AppColors.labelPrimary,
+                                    fontSize: 13,
+                                    height: 18 / 13,
+                                    letterSpacing: -0.08,
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              IconButton(
+                                onPressed: _close,
+                                icon: SvgPicture.asset(
+                                  'assets/images/icon/x_mark.svg',
+                                  width: 16,
+                                  height: 16,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: widget.onImageTap,
+                          child: Image.network(
+                            widget.modal.imageUrl.toString(),
+                            width: 320,
+                            fit: BoxFit.fitWidth,
+                            errorBuilder:
+                                (context, error, stackTrace) => const SizedBox(
+                                  width: 320,
+                                  height: 320,
+                                  child: _BannerImagePlaceholder(),
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      setState(() {
+                        _dontShowToday = !_dontShowToday;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color:
+                                  _dontShowToday
+                                      ? AppColors.brandHeavy
+                                      : Colors.transparent,
+                              border: Border.all(
+                                color:
+                                    _dontShowToday
+                                        ? AppColors.brandHeavy
+                                        : AppColors.labelSecondary,
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child:
+                                _dontShowToday
+                                    ? const Icon(
+                                      Icons.check_rounded,
+                                      color: AppColors.labelPrimary,
+                                      size: 16,
+                                    )
+                                    : null,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            '오늘 다시 보지 않기',
+                            style: AppTextStyles.calloutR.copyWith(
+                              color: AppColors.labelPrimary,
+                              fontSize: 16,
+                              height: 21 / 16,
+                              letterSpacing: -0.31,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
