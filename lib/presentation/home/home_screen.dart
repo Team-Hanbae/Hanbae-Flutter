@@ -9,8 +9,10 @@ import 'package:hanbae/bloc/metronome/metronome_bloc.dart';
 import 'package:hanbae/bloc/jangdan/jangdan_bloc.dart';
 import 'package:hanbae/data/analytics_service.dart';
 import 'package:hanbae/data/basic_jangdan_data.dart';
+import 'package:hanbae/data/remote_config_service.dart';
 import 'package:hanbae/model/jangdan.dart';
 import 'package:hanbae/model/jangdan_category.dart';
+import 'package:hanbae/model/home_promotion.dart';
 import 'package:hanbae/model/saved_jangdan_item.dart';
 import 'package:hanbae/presentation/custom_jangdan/custom_jangdan_create_screen.dart';
 import 'package:hanbae/presentation/home/metronome_jangdan_list_screen.dart';
@@ -35,10 +37,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<HomePromotionBanner> _remoteBanners = const [];
+  List<HomeAdModal> _remoteAdModals = const [];
+  final Set<String> _impressedRemoteBannerIds = {};
+  final Set<String> _dismissedAdModalIds = {};
+  bool _isAdModalShowing = false;
+
   //크리스마스 팝업
   @override
   void initState() {
     super.initState();
+    _loadRemoteBanners();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final now = DateTime.now();
@@ -62,6 +71,122 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   } // initState
 
+  Future<void> _loadRemoteBanners() async {
+    final promotions = await remoteConfigService.fetchHomePromotions();
+    if (!mounted) return;
+    setState(() {
+      _remoteBanners = promotions.banners;
+      _remoteAdModals = promotions.adModals;
+      _impressedRemoteBannerIds.clear();
+    });
+    _trackRemoteBannerImpression(0);
+    _showNextAdModalIfNeeded();
+  }
+
+  void _trackRemoteBannerImpression(int index) {
+    if (index < 0 || index >= _remoteBanners.length) return;
+    final banner = _remoteBanners[index];
+    if (!_impressedRemoteBannerIds.add(banner.id)) return;
+    analytics.homePromotionImpression(id: banner.id, promotionType: 'banner');
+  }
+
+  Future<void> _openMetronomeTutorial(BuildContext context) async {
+    final jangdan = basicJangdanData["자진모리"];
+    if (jangdan == null) return;
+    context.read<MetronomeBloc>().add(SelectJangdan(jangdan));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => MetronomeScreen(
+              jangdan: jangdan,
+              appBarMode: AppBarMode.builtin,
+              forceShowOnboarding: true,
+            ),
+      ),
+    );
+  }
+
+  Future<void> _handleRemoteBannerTap(
+    BuildContext context,
+    HomePromotionBanner banner,
+  ) async {
+    analytics.homePromotionClick(id: banner.id, promotionType: 'banner');
+
+    final linkUrl = banner.linkUrl;
+    if (linkUrl != null) {
+      await launchUrl(linkUrl, mode: LaunchMode.externalApplication);
+      return;
+    }
+
+    if (banner.id == 'metronome_tutorial') {
+      if (!context.mounted) return;
+      await _openMetronomeTutorial(context);
+    }
+  }
+
+  Future<void> _handleLocalBannerTap(
+    BuildContext context,
+    _LocalHomeBanner banner,
+  ) async {
+    final linkUrl = banner.linkUrl;
+    if (linkUrl != null) {
+      await launchUrl(linkUrl, mode: LaunchMode.externalApplication);
+      return;
+    }
+
+    if (banner.action == _LocalHomeBannerAction.metronomeTutorial) {
+      if (!context.mounted) return;
+      await _openMetronomeTutorial(context);
+    }
+  }
+
+  Future<void> _showNextAdModalIfNeeded() async {
+    if (_isAdModalShowing || !mounted) return;
+
+    for (final modal in _remoteAdModals) {
+      if (_dismissedAdModalIds.contains(modal.id)) continue;
+      if (await Storage().isHomeAdModalHidden(modal.id)) continue;
+      if (!mounted || _isAdModalShowing) return;
+      await _showAdModal(modal);
+      return;
+    }
+  }
+
+  Future<void> _showAdModal(HomeAdModal modal) async {
+    _isAdModalShowing = true;
+    analytics.homePromotionImpression(id: modal.id, promotionType: 'modal');
+
+    final dontShowToday = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: AppColors.dimmerStrong,
+      builder:
+          (dialogContext) => _HomeAdModalDialog(
+            modal: modal,
+            onImageTap: () => _handleAdModalImageTap(modal),
+          ),
+    );
+
+    _dismissedAdModalIds.add(modal.id);
+    if (dontShowToday == true) {
+      await Storage().hideHomeAdModalToday(modal.id);
+    }
+    _isAdModalShowing = false;
+
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showNextAdModalIfNeeded();
+    });
+  }
+
+  Future<void> _handleAdModalImageTap(HomeAdModal modal) async {
+    analytics.homePromotionClick(id: modal.id, promotionType: 'modal');
+    final linkUrl = modal.linkUrl;
+    if (linkUrl == null) return;
+    await launchUrl(linkUrl, mode: LaunchMode.externalApplication);
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = context.watch<JangdanBloc>().state;
@@ -78,16 +203,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final recentItems = state.recentItems;
 
-    final bannerList = [
-      {
-        "image": "assets/images/banner/SurveyBanner.png",
-        "link": "https://forms.gle/pKarubn5MPXkudgw6",
-      },
-      {
-        "image": "assets/images/banner/OnboardingBanner.png",
-        "action": "onboarding",
-      },
+    final localBannerList = [
+      _LocalHomeBanner(
+        imageAsset: "assets/images/banner/SurveyBanner.png",
+        linkUrl: Uri.parse("https://forms.gle/pKarubn5MPXkudgw6"),
+      ),
+      const _LocalHomeBanner(
+        imageAsset: "assets/images/banner/OnboardingBanner.png",
+        action: _LocalHomeBannerAction.metronomeTutorial,
+      ),
     ];
+    final useRemoteBanners = _remoteBanners.isNotEmpty;
 
     final screenWidth = MediaQuery.of(context).size.width;
     const horizontalPadding = 16.0;
@@ -112,50 +238,40 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             CarouselSlider(
               items:
-                  bannerList.map((item) {
-                    final imagePath = item["image"]!;
+                  (useRemoteBanners ? _remoteBanners : localBannerList).map((
+                    item,
+                  ) {
                     return Builder(
                       builder: (BuildContext context) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: GestureDetector(
                             onTap: () async {
-                              final link = item["link"];
-                              final action = item["action"];
-                              if (link != null) {
-                                final Uri url = Uri.parse(link);
-                                if (await canLaunchUrl(url)) {
-                                  await launchUrl(
-                                    url,
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                }
-                                return;
-                              }
-                              if (action == "onboarding") {
-                                final jangdan = basicJangdanData["자진모리"];
-                                if (jangdan == null) {
-                                  return;
-                                }
-                                context.read<MetronomeBloc>().add(
-                                  SelectJangdan(jangdan),
-                                );
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => MetronomeScreen(
-                                          jangdan: jangdan,
-                                          appBarMode: AppBarMode.builtin,
-                                          forceShowOnboarding: true,
-                                        ),
-                                  ),
-                                );
+                              if (item is HomePromotionBanner) {
+                                await _handleRemoteBannerTap(context, item);
+                              } else if (item is _LocalHomeBanner) {
+                                await _handleLocalBannerTap(context, item);
                               }
                             },
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(16),
-                              child: Image.asset(imagePath),
+                              child:
+                                  item is HomePromotionBanner
+                                      ? Image.network(
+                                        item.imageUrl.toString(),
+                                        width: imageWidth,
+                                        height: bannerHeight,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const _BannerImagePlaceholder(),
+                                      )
+                                      : Image.asset(
+                                        (item as _LocalHomeBanner).imageAsset,
+                                        width: imageWidth,
+                                        height: bannerHeight,
+                                        fit: BoxFit.cover,
+                                      ),
                             ),
                           ),
                         );
@@ -167,6 +283,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 autoPlay: true,
                 autoPlayInterval: const Duration(seconds: 5),
                 viewportFraction: 1.0,
+                onPageChanged: (index, reason) {
+                  if (useRemoteBanners) {
+                    _trackRemoteBannerImpression(index);
+                  }
+                },
               ),
             ),
 
@@ -856,6 +977,191 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: SafeArea(
         top: false,
         child: FixedBannerAd(adUnitId: AdMobIds.bannerAdUnitId),
+      ),
+    );
+  }
+}
+
+enum _LocalHomeBannerAction { metronomeTutorial }
+
+class _LocalHomeBanner {
+  final String imageAsset;
+  final Uri? linkUrl;
+  final _LocalHomeBannerAction? action;
+
+  const _LocalHomeBanner({required this.imageAsset, this.linkUrl, this.action});
+}
+
+class _BannerImagePlaceholder extends StatelessWidget {
+  const _BannerImagePlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppColors.backgroundMute,
+      alignment: Alignment.center,
+      child: Icon(
+        Icons.image_not_supported_outlined,
+        color: AppColors.labelTertiary,
+      ),
+    );
+  }
+}
+
+class _HomeAdModalDialog extends StatefulWidget {
+  final HomeAdModal modal;
+  final VoidCallback onImageTap;
+
+  const _HomeAdModalDialog({required this.modal, required this.onImageTap});
+
+  @override
+  State<_HomeAdModalDialog> createState() => _HomeAdModalDialogState();
+}
+
+class _HomeAdModalDialogState extends State<_HomeAdModalDialog> {
+  bool _dontShowToday = false;
+
+  void _close() {
+    Navigator.pop(context, _dontShowToday);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _close,
+        child: Center(
+          child: GestureDetector(
+            onTap: () {},
+            child: SizedBox(
+              width: 320,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 320,
+                          height: 44,
+                          color: AppColors.backgroundDefault,
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 16),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.neutral8,
+                                  borderRadius: BorderRadius.circular(500),
+                                ),
+                                child: Text(
+                                  '광고',
+                                  style: AppTextStyles.footnoteSb.copyWith(
+                                    color: AppColors.labelPrimary,
+                                    fontSize: 13,
+                                    height: 18 / 13,
+                                    letterSpacing: -0.08,
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              IconButton(
+                                onPressed: _close,
+                                icon: SvgPicture.asset(
+                                  'assets/images/icon/x_mark.svg',
+                                  width: 16,
+                                  height: 16,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: widget.onImageTap,
+                          child: Image.network(
+                            widget.modal.imageUrl.toString(),
+                            width: 320,
+                            fit: BoxFit.fitWidth,
+                            errorBuilder:
+                                (context, error, stackTrace) => const SizedBox(
+                                  width: 320,
+                                  height: 320,
+                                  child: _BannerImagePlaceholder(),
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      setState(() {
+                        _dontShowToday = !_dontShowToday;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color:
+                                  _dontShowToday
+                                      ? AppColors.brandHeavy
+                                      : Colors.transparent,
+                              border: Border.all(
+                                color:
+                                    _dontShowToday
+                                        ? AppColors.brandHeavy
+                                        : AppColors.labelSecondary,
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child:
+                                _dontShowToday
+                                    ? const Icon(
+                                      Icons.check_rounded,
+                                      color: AppColors.labelPrimary,
+                                      size: 16,
+                                    )
+                                    : null,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            '오늘 다시 보지 않기',
+                            style: AppTextStyles.calloutR.copyWith(
+                              color: AppColors.labelPrimary,
+                              fontSize: 16,
+                              height: 21 / 16,
+                              letterSpacing: -0.31,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

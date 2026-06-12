@@ -39,6 +39,10 @@ jobs:
           echo "MIXPANEL_DEV_TOKEN=${{ secrets.MIXPANEL_DEV_TOKEN }}" >> .env
           echo "MIXPANEL_PROD_TOKEN=${{ secrets.MIXPANEL_PROD_TOKEN }}" >> .env
 
+      - name: Create google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > android/app/google-services.json
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -94,6 +98,10 @@ jobs:
         run: |
           echo "MIXPANEL_DEV_TOKEN=${{ secrets.MIXPANEL_DEV_TOKEN }}" >> .env
           echo "MIXPANEL_PROD_TOKEN=${{ secrets.MIXPANEL_PROD_TOKEN }}" >> .env
+
+      - name: Create google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > android/app/google-services.json
 
       - name: Create Store Json Key
         uses: jsdaniell/create-json@v1.2.3

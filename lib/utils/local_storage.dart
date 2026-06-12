@@ -123,6 +123,24 @@ class Storage {
     await setRecentPlayItems(updated);
   }
 
+  Future<bool> isHomeAdModalHidden(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final hiddenUntil = prefs.getInt('home_ad_modal_hidden_until_$id') ?? 0;
+    return DateTime.fromMillisecondsSinceEpoch(
+      hiddenUntil,
+    ).isAfter(DateTime.now());
+  }
+
+  Future<void> hideHomeAdModalToday(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now();
+    final nextMidnight = DateTime(now.year, now.month, now.day + 1);
+    await prefs.setInt(
+      'home_ad_modal_hidden_until_$id',
+      nextMidnight.millisecondsSinceEpoch,
+    );
+  }
+
   // ============================
   // Event / Popup
   // ============================
